@@ -1,5 +1,5 @@
-
-
+#Copyright (c) 2023 University of Bern, Bern, Switzerland. 
+#Author: Wasimuddin (wasim.bt@gmail.com; https://www.researchgate.net/profile/Wasim-Uddin)
 
 # library(phyloseq); packageVersion("dada2") # 
 # [1] ‘1.24.0’
