@@ -34,47 +34,47 @@
 
 ######------------Mouse------------############
 
-CMRE9_Mouse <- subset_samples(CMRE9, Sampletype == "feces")
-CMRE9_Mousea = prune_taxa(taxa_sums(CMRE9_Mouse) > 0, CMRE9_Mouse) 
-CMRE9_Mouseb <- prune_taxa(taxa_sums(CMRE9_Mousea) > 100, CMRE9_Mousea)
+CMRE5_Mouse <- subset_samples(CMRE5, Sampletype == "feces")
+CMRE5_Mousea = prune_taxa(taxa_sums(CMRE5_Mouse) > 0, CMRE5_Mouse) 
+CMRE5_Mouseb <- prune_taxa(taxa_sums(CMRE5_Mousea) > 100, CMRE5_Mousea)
 ##################################################
 ######------------Mouse-Ctr------------############
-CMRE9_Mouseb_Ctr <- subset_samples(CMRE9_Mouseb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
-CMRE9_Mouseb_Ctra = prune_taxa(taxa_sums(CMRE9_Mouseb_Ctr) > 0, CMRE9_Mouseb_Ctr) #
+CMRE5_Mouseb_Ctr <- subset_samples(CMRE5_Mouseb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
+CMRE5_Mouseb_Ctra = prune_taxa(taxa_sums(CMRE5_Mouseb_Ctr) > 0, CMRE5_Mouseb_Ctr) #
 ##########Compute prevalence of each feature, store as data.frame
-prevdf = apply(X = otu_table(CMRE9_Mouseb_Ctra),
-               MARGIN = ifelse(taxa_are_rows(CMRE9_Mouseb_Ctra), yes = 1, no = 2),
+prevdf = apply(X = otu_table(CMRE5_Mouseb_Ctra),
+               MARGIN = ifelse(taxa_are_rows(CMRE5_Mouseb_Ctra), yes = 1, no = 2),
                FUN = function(x){sum(x > 0)})
 prevdf = data.frame(Prevalence = prevdf,
-                    TotalAbundance = taxa_sums(CMRE9_Mouseb_Ctra),
-                    tax_table(CMRE9_Mouseb_Ctra))
-prevalenceThreshold = 0.15 * nsamples(CMRE9_Mouseb_Ctra) #
+                    TotalAbundance = taxa_sums(CMRE5_Mouseb_Ctra),
+                    tax_table(CMRE5_Mouseb_Ctra))
+prevalenceThreshold = 0.15 * nsamples(CMRE5_Mouseb_Ctra) #
 Mouseb_Ctr_keepTaxa = rownames(prevdf)[(prevdf$Prevalence >= prevalenceThreshold)]
-CMRE9_Mouseb_Ctrb = prune_taxa(Mouseb_Ctr_keepTaxa, CMRE9_Mouseb_Ctra)
+CMRE5_Mouseb_Ctrb = prune_taxa(Mouseb_Ctr_keepTaxa, CMRE5_Mouseb_Ctra)
 
 ##########Add taxonomic classification to OTU ID
-CMRE9_Mouseb_Ctrc <- format_to_besthit1(CMRE9_Mouseb_Ctrb)# run this function instead (see end of this script page)
-CMRE9_Mouseb_Ctrc_otu <- t(otu_table(CMRE9_Mouseb_Ctrc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Mouseb_Ctrc_tax <- as.data.frame(tax_table(CMRE9_Mouseb_Ctrc)@.Data)#extract the taxonomy information
+CMRE5_Mouseb_Ctrc <- format_to_besthit1(CMRE5_Mouseb_Ctrb)# run this function instead (see end of this script page)
+CMRE5_Mouseb_Ctrc_otu <- t(otu_table(CMRE5_Mouseb_Ctrc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Mouseb_Ctrc_tax <- as.data.frame(tax_table(CMRE5_Mouseb_Ctrc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Mouseb_Ctrc_otu_net <- spiec.easi(CMRE9_Mouseb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
+CMRE5_Mouseb_Ctrc_otu_net <- spiec.easi(CMRE5_Mouseb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Mouseb_Ctrc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Mouseb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE9_Mouseb_Ctrc_otu_net))
-colnames(CMRE9_Mouseb_Ctrc_otu_net1) <- rownames(CMRE9_Mouseb_Ctrc_otu_net1) <- colnames(CMRE9_Mouseb_Ctrc_otu)
-Mouse.ig <- adj2igraph(getRefit(CMRE9_Mouseb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Mouseb_Ctrc)))
-vsize <- rowMeans(clr(CMRE9_Mouseb_Ctrc_otu, 1))+6
+CMRE5_Mouseb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Mouseb_Ctrc_otu_net))
+colnames(CMRE5_Mouseb_Ctrc_otu_net1) <- rownames(CMRE5_Mouseb_Ctrc_otu_net1) <- colnames(CMRE5_Mouseb_Ctrc_otu)
+Mouse.ig <- adj2igraph(getRefit(CMRE5_Mouseb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Mouseb_Ctrc)))
+vsize <- rowMeans(clr(CMRE5_Mouseb_Ctrc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Mouse.ig)
 
-otu.ids=colnames(CMRE9_Mouseb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Mouseb_Ctrc_otu_net)))
+otu.ids=colnames(CMRE5_Mouseb_Ctrc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Ctrc_otu_net)))
 
 edges=E(Mouse.ig)
 edge.colors=c()
@@ -101,7 +101,7 @@ factor_color <- sort(factor(Mouse.net %v% "hubscore", levels = c("low","high")))
 M_Ctr <- ggnet2(Mouse.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
-Mouse.ig= readRDS("CMRE9_Mouseb_Ctrc_Mouse_ig.RDS")
+Mouse.ig= readRDS("CMRE5_Mouseb_Ctrc_Mouse_ig.RDS")
 
 nt_all_deg <- igraph::degree(Mouse.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Mouse.ig, normalized = TRUE)
@@ -130,35 +130,35 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Mouse-As------------#############
 
-CMRE9_Mouseb_As <- subset_samples(CMRE9_Mouseb, Treatment == "As" & Timepoint %in%c("1", "7"))
-CMRE9_Mouseb_Asa = prune_taxa(taxa_sums(CMRE9_Mouseb_As) > 0, CMRE9_Mouseb_As) #remove these OTUs from class object
+CMRE5_Mouseb_As <- subset_samples(CMRE5_Mouseb, Treatment == "As" & Timepoint %in%c("1", "7"))
+CMRE5_Mouseb_Asa = prune_taxa(taxa_sums(CMRE5_Mouseb_As) > 0, CMRE5_Mouseb_As) #remove these OTUs from class object
 
-CMRE9_Mouseb_Asb = prune_taxa(Mouseb_Ctr_keepTaxa, CMRE9_Mouseb_Asa)
-CMRE9_Mouseb_Asc <- format_to_besthit1(CMRE9_Mouseb_Asb)# run this function instead (see end of this script page)
+CMRE5_Mouseb_Asb = prune_taxa(Mouseb_Ctr_keepTaxa, CMRE5_Mouseb_Asa)
+CMRE5_Mouseb_Asc <- format_to_besthit1(CMRE5_Mouseb_Asb)# run this function instead (see end of this script page)
 
-CMRE9_Mouseb_Asc_otu <- t(otu_table(CMRE9_Mouseb_Asc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Mouseb_Asc_tax <- as.data.frame(tax_table(CMRE9_Mouseb_Asc)@.Data)#extract the taxonomy information
+CMRE5_Mouseb_Asc_otu <- t(otu_table(CMRE5_Mouseb_Asc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Mouseb_Asc_tax <- as.data.frame(tax_table(CMRE5_Mouseb_Asc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Mouseb_Asc_otu_net <- spiec.easi(CMRE9_Mouseb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Mouseb_Asc_otu_net <- spiec.easi(CMRE5_Mouseb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Mouseb_Asc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Asc_otu_net)))
 
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Mouseb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE9_Mouseb_Asc_otu_net))
-colnames(CMRE9_Mouseb_Asc_otu_net1) <- rownames(CMRE9_Mouseb_Asc_otu_net1) <- colnames(CMRE9_Mouseb_Asc_otu)
+CMRE5_Mouseb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Mouseb_Asc_otu_net))
+colnames(CMRE5_Mouseb_Asc_otu_net1) <- rownames(CMRE5_Mouseb_Asc_otu_net1) <- colnames(CMRE5_Mouseb_Asc_otu)
 
-Mouse.ig <- adj2igraph(getRefit(CMRE9_Mouseb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Mouseb_Asc)))
-vsize <- rowMeans(clr(CMRE9_Mouseb_Asc_otu, 1))+6
+Mouse.ig <- adj2igraph(getRefit(CMRE5_Mouseb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Mouseb_Asc)))
+vsize <- rowMeans(clr(CMRE5_Mouseb_Asc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Mouse.ig)
 
-otu.ids=colnames(CMRE9_Mouseb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Mouseb_Asc_otu_net)))
+otu.ids=colnames(CMRE5_Mouseb_Asc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Asc_otu_net)))
 
 edges=E(Mouse.ig)
 edge.colors=c()
@@ -185,7 +185,7 @@ factor_color <- sort(factor(Mouse.net %v% "hubscore", levels = c("low","high")))
 M_As <- ggnet2(Mouse.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
-Mouse.ig= readRDS("CMRE9_Mouseb_Asc_Mouse_ig.RDS")
+Mouse.ig= readRDS("CMRE5_Mouseb_Asc_Mouse_ig.RDS")
 
 nt_all_deg <- igraph::degree(Mouse.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Mouse.ig, normalized = TRUE)
@@ -213,32 +213,32 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Mouse-Bx------------#############
 
-CMRE9_Mouseb_Bx <- subset_samples(CMRE9_Mouseb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
-CMRE9_Mouseb_Bxa = prune_taxa(taxa_sums(CMRE9_Mouseb_Bx) > 0, CMRE9_Mouseb_Bx) #
-CMRE9_Mouseb_Bxb = prune_taxa(Mouseb_Ctr_keepTaxa, CMRE9_Mouseb_Bxa)
+CMRE5_Mouseb_Bx <- subset_samples(CMRE5_Mouseb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
+CMRE5_Mouseb_Bxa = prune_taxa(taxa_sums(CMRE5_Mouseb_Bx) > 0, CMRE5_Mouseb_Bx) #
+CMRE5_Mouseb_Bxb = prune_taxa(Mouseb_Ctr_keepTaxa, CMRE5_Mouseb_Bxa)
 
-CMRE9_Mouseb_Bxc <- format_to_besthit1(CMRE9_Mouseb_Bxb)# 
-CMRE9_Mouseb_Bxc_otu <- t(otu_table(CMRE9_Mouseb_Bxc)@.Data) #
-CMRE9_Mouseb_Bxc_tax <- as.data.frame(tax_table(CMRE9_Mouseb_Bxc)@.Data)#
+CMRE5_Mouseb_Bxc <- format_to_besthit1(CMRE5_Mouseb_Bxb)# 
+CMRE5_Mouseb_Bxc_otu <- t(otu_table(CMRE5_Mouseb_Bxc)@.Data) #
+CMRE5_Mouseb_Bxc_tax <- as.data.frame(tax_table(CMRE5_Mouseb_Bxc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Mouseb_Bxc_otu_net <- spiec.easi(CMRE9_Mouseb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
+CMRE5_Mouseb_Bxc_otu_net <- spiec.easi(CMRE5_Mouseb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Mouseb_Bxc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting
-CMRE9_Mouseb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE9_Mouseb_Bxc_otu_net))
-colnames(CMRE9_Mouseb_Bxc_otu_net1) <- rownames(CMRE9_Mouseb_Bxc_otu_net1) <- colnames(CMRE9_Mouseb_Bxc_otu)  
-Mouse.ig <- adj2igraph(getRefit(CMRE9_Mouseb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Mouseb_Bxc)))
-vsize <- rowMeans(clr(CMRE9_Mouseb_Bxc_otu, 1))+6
+CMRE5_Mouseb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Mouseb_Bxc_otu_net))
+colnames(CMRE5_Mouseb_Bxc_otu_net1) <- rownames(CMRE5_Mouseb_Bxc_otu_net1) <- colnames(CMRE5_Mouseb_Bxc_otu)  
+Mouse.ig <- adj2igraph(getRefit(CMRE5_Mouseb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Mouseb_Bxc)))
+vsize <- rowMeans(clr(CMRE5_Mouseb_Bxc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Mouse.ig)
 
-otu.ids=colnames(CMRE9_Mouseb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Mouseb_Bxc_otu_net)))
+otu.ids=colnames(CMRE5_Mouseb_Bxc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Bxc_otu_net)))
 
 edges=E(Mouse.ig)
 edge.colors=c()
@@ -292,33 +292,33 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Mouse-Tb------------#############
 
-CMRE9_Mouseb_Tb <- subset_samples(CMRE9_Mouseb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
-CMRE9_Mouseb_Tba = prune_taxa(taxa_sums(CMRE9_Mouseb_Tb) > 0, CMRE9_Mouseb_Tb) #
+CMRE5_Mouseb_Tb <- subset_samples(CMRE5_Mouseb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
+CMRE5_Mouseb_Tba = prune_taxa(taxa_sums(CMRE5_Mouseb_Tb) > 0, CMRE5_Mouseb_Tb) #
 
-CMRE9_Mouseb_Tbb = prune_taxa(Mouseb_Ctr_keepTaxa, CMRE9_Mouseb_Tba)
-CMRE9_Mouseb_Tbc <- format_to_besthit1(CMRE9_Mouseb_Tbb)# 
+CMRE5_Mouseb_Tbb = prune_taxa(Mouseb_Ctr_keepTaxa, CMRE5_Mouseb_Tba)
+CMRE5_Mouseb_Tbc <- format_to_besthit1(CMRE5_Mouseb_Tbb)# 
 
-CMRE9_Mouseb_Tbc_otu <- t(otu_table(CMRE9_Mouseb_Tbc)@.Data) #
-CMRE9_Mouseb_Tbc_tax <- as.data.frame(tax_table(CMRE9_Mouseb_Tbc)@.Data)#
+CMRE5_Mouseb_Tbc_otu <- t(otu_table(CMRE5_Mouseb_Tbc)@.Data) #
+CMRE5_Mouseb_Tbc_tax <- as.data.frame(tax_table(CMRE5_Mouseb_Tbc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Mouseb_Tbc_otu_net <- spiec.easi(CMRE9_Mouseb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Mouseb_Tbc_otu_net <- spiec.easi(CMRE5_Mouseb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Mouseb_Tbc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Mouseb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE9_Mouseb_Tbc_otu_net))
-colnames(CMRE9_Mouseb_Tbc_otu_net1) <- rownames(CMRE9_Mouseb_Tbc_otu_net1) <- colnames(CMRE9_Mouseb_Tbc_otu)
-Mouse.ig <- adj2igraph(getRefit(CMRE9_Mouseb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Mouseb_Tbc)))
-vsize <- rowMeans(clr(CMRE9_Mouseb_Tbc_otu, 1))+6
+CMRE5_Mouseb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Mouseb_Tbc_otu_net))
+colnames(CMRE5_Mouseb_Tbc_otu_net1) <- rownames(CMRE5_Mouseb_Tbc_otu_net1) <- colnames(CMRE5_Mouseb_Tbc_otu)
+Mouse.ig <- adj2igraph(getRefit(CMRE5_Mouseb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Mouseb_Tbc)))
+vsize <- rowMeans(clr(CMRE5_Mouseb_Tbc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Mouse.ig)
 
-otu.ids=colnames(CMRE9_Mouseb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Mouseb_Tbc_otu_net)))
+otu.ids=colnames(CMRE5_Mouseb_Tbc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Tbc_otu_net)))
 
 edges=E(Mouse.ig)
 edge.colors=c()
@@ -415,7 +415,7 @@ Mouse_Tb_net.hs <- hub_score(Mouse.Tb.Mouse.ig)$vector
 Mouse_Tb_net.hs.sort <- sort(Mouse_Tb_net.hs, decreasing = TRUE)
 
 ##########power law testing Mouse-Ctr
-Mouse.ig= readRDS("CMRE9_Mouseb_Ctrc_Mouse_ig.RDS")
+Mouse.ig= readRDS("CMRE5_Mouseb_Ctrc_Mouse_ig.RDS")
 
 Mouse.net <- asNetwork(Mouse.ig)
 Mouse.ctr.spiec.deg <- degree(Mouse.net)
@@ -450,7 +450,7 @@ Mouse.compEP <- compare_distributions(Mouse.ctr.spiec.deg_E, Mouse.ctr.spiec.deg
 Mouse.compNP <- compare_distributions(Mouse.ctr.spiec.deg_N, Mouse.ctr.spiec.deg_P)
 
 ##########power law testing Mouse-As
-Mouse.ig= readRDS("CMRE9_Mouseb_Asc_Mouse_ig.RDS")
+Mouse.ig= readRDS("CMRE5_Mouseb_Asc_Mouse_ig.RDS")
 
 Mouse.net <- asNetwork(Mouse.ig)
 Mouse.As.spiec.deg <- degree(Mouse.net)
@@ -490,7 +490,7 @@ Mouse.compEP <- compare_distributions(Mouse.As.spiec.deg_E, Mouse.As.spiec.deg_P
 Mouse.compNP <- compare_distributions(Mouse.As.spiec.deg_N, Mouse.As.spiec.deg_P)
 
 ##########power law testing Mouse-Bx
-Mouse.ig= readRDS("CMRE9_Mouseb_Bxc_Mouse_ig.RDS")
+Mouse.ig= readRDS("CMRE5_Mouseb_Bxc_Mouse_ig.RDS")
 Mouse.net <- asNetwork(Mouse.ig)
 Mouse.Bx.spiec.deg <- degree(Mouse.net)
 
@@ -527,7 +527,7 @@ Mouse.compEP <- compare_distributions(Mouse.Bx.spiec.deg_E, Mouse.Bx.spiec.deg_P
 Mouse.compNP <- compare_distributions(Mouse.Bx.spiec.deg_N, Mouse.Bx.spiec.deg_P)
 
 ##########power law testing Mouse-Tb
-Mouse.ig= readRDS("CMRE9_Mouseb_Tbc_Mouse_ig.RDS")
+Mouse.ig= readRDS("CMRE5_Mouseb_Tbc_Mouse_ig.RDS")
 
 Mouse.net <- asNetwork(Mouse.ig)
 Mouse.Tb.spiec.deg <- degree(Mouse.net)
@@ -571,47 +571,47 @@ Mouse.compNP <- compare_distributions(Mouse.Tb.spiec.deg_N, Mouse.Tb.spiec.deg_P
 
 ######------------Soil------------############
 
-CMRE9_Soil <- subset_samples(CMRE9, Sampletype == "soil")
-CMRE9_Soila = prune_taxa(taxa_sums(CMRE9_Soil) > 0, CMRE9_Soil) 
-CMRE9_Soilb <- prune_taxa(taxa_sums(CMRE9_Soila) > 100, CMRE9_Soila)
+CMRE5_Soil <- subset_samples(CMRE5, Sampletype == "soil")
+CMRE5_Soila = prune_taxa(taxa_sums(CMRE5_Soil) > 0, CMRE5_Soil) 
+CMRE5_Soilb <- prune_taxa(taxa_sums(CMRE5_Soila) > 100, CMRE5_Soila)
 ##################################################
 ######------------Soil-Ctr------------############
-CMRE9_Soilb_Ctr <- subset_samples(CMRE9_Soilb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
-CMRE9_Soilb_Ctra = prune_taxa(taxa_sums(CMRE9_Soilb_Ctr) > 0, CMRE9_Soilb_Ctr) #
+CMRE5_Soilb_Ctr <- subset_samples(CMRE5_Soilb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
+CMRE5_Soilb_Ctra = prune_taxa(taxa_sums(CMRE5_Soilb_Ctr) > 0, CMRE5_Soilb_Ctr) #
 ##########Compute prevalence of each feature, store as data.frame
-prevdf = apply(X = otu_table(CMRE9_Soilb_Ctra),
-               MARGIN = ifelse(taxa_are_rows(CMRE9_Soilb_Ctra), yes = 1, no = 2),
+prevdf = apply(X = otu_table(CMRE5_Soilb_Ctra),
+               MARGIN = ifelse(taxa_are_rows(CMRE5_Soilb_Ctra), yes = 1, no = 2),
                FUN = function(x){sum(x > 0)})
 prevdf = data.frame(Prevalence = prevdf,
-                    TotalAbundance = taxa_sums(CMRE9_Soilb_Ctra),
-                    tax_table(CMRE9_Soilb_Ctra))
-prevalenceThreshold = 0.15 * nsamples(CMRE9_Soilb_Ctra) #
+                    TotalAbundance = taxa_sums(CMRE5_Soilb_Ctra),
+                    tax_table(CMRE5_Soilb_Ctra))
+prevalenceThreshold = 0.15 * nsamples(CMRE5_Soilb_Ctra) #
 Soilb_Ctr_keepTaxa = rownames(prevdf)[(prevdf$Prevalence >= prevalenceThreshold)]
-CMRE9_Soilb_Ctrb = prune_taxa(Soilb_Ctr_keepTaxa, CMRE9_Soilb_Ctra)
+CMRE5_Soilb_Ctrb = prune_taxa(Soilb_Ctr_keepTaxa, CMRE5_Soilb_Ctra)
 
 ##########Add taxonomic classification to OTU ID
-CMRE9_Soilb_Ctrc <- format_to_besthit1(CMRE9_Soilb_Ctrb)# run this function instead (see end of this script page)
-CMRE9_Soilb_Ctrc_otu <- t(otu_table(CMRE9_Soilb_Ctrc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Soilb_Ctrc_tax <- as.data.frame(tax_table(CMRE9_Soilb_Ctrc)@.Data)#extract the taxonomy information
+CMRE5_Soilb_Ctrc <- format_to_besthit1(CMRE5_Soilb_Ctrb)# run this function instead (see end of this script page)
+CMRE5_Soilb_Ctrc_otu <- t(otu_table(CMRE5_Soilb_Ctrc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Soilb_Ctrc_tax <- as.data.frame(tax_table(CMRE5_Soilb_Ctrc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Soilb_Ctrc_otu_net <- spiec.easi(CMRE9_Soilb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
+CMRE5_Soilb_Ctrc_otu_net <- spiec.easi(CMRE5_Soilb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Soilb_Ctrc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Soilb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE9_Soilb_Ctrc_otu_net))
-colnames(CMRE9_Soilb_Ctrc_otu_net1) <- rownames(CMRE9_Soilb_Ctrc_otu_net1) <- colnames(CMRE9_Soilb_Ctrc_otu)
-Soil.ig <- adj2igraph(getRefit(CMRE9_Soilb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Soilb_Ctrc)))
-vsize <- rowMeans(clr(CMRE9_Soilb_Ctrc_otu, 1))+6
+CMRE5_Soilb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Soilb_Ctrc_otu_net))
+colnames(CMRE5_Soilb_Ctrc_otu_net1) <- rownames(CMRE5_Soilb_Ctrc_otu_net1) <- colnames(CMRE5_Soilb_Ctrc_otu)
+Soil.ig <- adj2igraph(getRefit(CMRE5_Soilb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Soilb_Ctrc)))
+vsize <- rowMeans(clr(CMRE5_Soilb_Ctrc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Soil.ig)
 
-otu.ids=colnames(CMRE9_Soilb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Soilb_Ctrc_otu_net)))
+otu.ids=colnames(CMRE5_Soilb_Ctrc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Ctrc_otu_net)))
 
 edges=E(Soil.ig)
 edge.colors=c()
@@ -638,7 +638,7 @@ factor_color <- sort(factor(Soil.net %v% "hubscore", levels = c("low","high")))
 S_Ctr <- ggnet2(Soil.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
-Soil.ig= readRDS("CMRE9_Soilb_Ctrc_Soil_ig.RDS")
+Soil.ig= readRDS("CMRE5_Soilb_Ctrc_Soil_ig.RDS")
 
 nt_all_deg <- igraph::degree(Soil.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Soil.ig, normalized = TRUE)
@@ -667,34 +667,34 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Soil-As------------#############
 
-CMRE9_Soilb_As <- subset_samples(CMRE9_Soilb, Treatment == "As" & Timepoint %in%c("1", "7"))
-CMRE9_Soilb_Asa = prune_taxa(taxa_sums(CMRE9_Soilb_As) > 0, CMRE9_Soilb_As) #remove these OTUs from class object
+CMRE5_Soilb_As <- subset_samples(CMRE5_Soilb, Treatment == "As" & Timepoint %in%c("1", "7"))
+CMRE5_Soilb_Asa = prune_taxa(taxa_sums(CMRE5_Soilb_As) > 0, CMRE5_Soilb_As) #remove these OTUs from class object
 
-CMRE9_Soilb_Asb = prune_taxa(Soilb_Ctr_keepTaxa, CMRE9_Soilb_Asa)
-CMRE9_Soilb_Asc <- format_to_besthit1(CMRE9_Soilb_Asb)# run this function instead (see end of this script page)
+CMRE5_Soilb_Asb = prune_taxa(Soilb_Ctr_keepTaxa, CMRE5_Soilb_Asa)
+CMRE5_Soilb_Asc <- format_to_besthit1(CMRE5_Soilb_Asb)# run this function instead (see end of this script page)
 
-CMRE9_Soilb_Asc_otu <- t(otu_table(CMRE9_Soilb_Asc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Soilb_Asc_tax <- as.data.frame(tax_table(CMRE9_Soilb_Asc)@.Data)#extract the taxonomy information
+CMRE5_Soilb_Asc_otu <- t(otu_table(CMRE5_Soilb_Asc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Soilb_Asc_tax <- as.data.frame(tax_table(CMRE5_Soilb_Asc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Soilb_Asc_otu_net <- spiec.easi(CMRE9_Soilb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Soilb_Asc_otu_net <- spiec.easi(CMRE5_Soilb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Soilb_Asc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Asc_otu_net)))
 
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Soilb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE9_Soilb_Asc_otu_net))
-colnames(CMRE9_Soilb_Asc_otu_net1) <- rownames(CMRE9_Soilb_Asc_otu_net1) <- colnames(CMRE9_Soilb_Asc_otu)
-Soil.ig <- adj2igraph(getRefit(CMRE9_Soilb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Soilb_Asc)))
-vsize <- rowMeans(clr(CMRE9_Soilb_Asc_otu, 1))+6
+CMRE5_Soilb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Soilb_Asc_otu_net))
+colnames(CMRE5_Soilb_Asc_otu_net1) <- rownames(CMRE5_Soilb_Asc_otu_net1) <- colnames(CMRE5_Soilb_Asc_otu)
+Soil.ig <- adj2igraph(getRefit(CMRE5_Soilb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Soilb_Asc)))
+vsize <- rowMeans(clr(CMRE5_Soilb_Asc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Soil.ig)
 
-otu.ids=colnames(CMRE9_Soilb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Soilb_Asc_otu_net)))
+otu.ids=colnames(CMRE5_Soilb_Asc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Asc_otu_net)))
 
 edges=E(Soil.ig)
 edge.colors=c()
@@ -721,7 +721,7 @@ factor_color <- sort(factor(Soil.net %v% "hubscore", levels = c("low","high")))
 S_As <- ggnet2(Soil.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
-Soil.ig= readRDS("CMRE9_Soilb_Asc_Soil_ig.RDS")
+Soil.ig= readRDS("CMRE5_Soilb_Asc_Soil_ig.RDS")
 
 nt_all_deg <- igraph::degree(Soil.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Soil.ig, normalized = TRUE)
@@ -749,32 +749,32 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Soil-Bx------------#############
 
-CMRE9_Soilb_Bx <- subset_samples(CMRE9_Soilb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
-CMRE9_Soilb_Bxa = prune_taxa(taxa_sums(CMRE9_Soilb_Bx) > 0, CMRE9_Soilb_Bx) #
-CMRE9_Soilb_Bxb = prune_taxa(Soilb_Ctr_keepTaxa, CMRE9_Soilb_Bxa)
+CMRE5_Soilb_Bx <- subset_samples(CMRE5_Soilb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
+CMRE5_Soilb_Bxa = prune_taxa(taxa_sums(CMRE5_Soilb_Bx) > 0, CMRE5_Soilb_Bx) #
+CMRE5_Soilb_Bxb = prune_taxa(Soilb_Ctr_keepTaxa, CMRE5_Soilb_Bxa)
 
-CMRE9_Soilb_Bxc <- format_to_besthit1(CMRE9_Soilb_Bxb)# 
-CMRE9_Soilb_Bxc_otu <- t(otu_table(CMRE9_Soilb_Bxc)@.Data) #
-CMRE9_Soilb_Bxc_tax <- as.data.frame(tax_table(CMRE9_Soilb_Bxc)@.Data)#
+CMRE5_Soilb_Bxc <- format_to_besthit1(CMRE5_Soilb_Bxb)# 
+CMRE5_Soilb_Bxc_otu <- t(otu_table(CMRE5_Soilb_Bxc)@.Data) #
+CMRE5_Soilb_Bxc_tax <- as.data.frame(tax_table(CMRE5_Soilb_Bxc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Soilb_Bxc_otu_net <- spiec.easi(CMRE9_Soilb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
+CMRE5_Soilb_Bxc_otu_net <- spiec.easi(CMRE5_Soilb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Soilb_Bxc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Soilb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE9_Soilb_Bxc_otu_net))
-colnames(CMRE9_Soilb_Bxc_otu_net1) <- rownames(CMRE9_Soilb_Bxc_otu_net1) <- colnames(CMRE9_Soilb_Bxc_otu)
-Soil.ig <- adj2igraph(getRefit(CMRE9_Soilb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Soilb_Bxc)))
-vsize <- rowMeans(clr(CMRE9_Soilb_Bxc_otu, 1))+6
+CMRE5_Soilb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Soilb_Bxc_otu_net))
+colnames(CMRE5_Soilb_Bxc_otu_net1) <- rownames(CMRE5_Soilb_Bxc_otu_net1) <- colnames(CMRE5_Soilb_Bxc_otu)
+Soil.ig <- adj2igraph(getRefit(CMRE5_Soilb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Soilb_Bxc)))
+vsize <- rowMeans(clr(CMRE5_Soilb_Bxc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Soil.ig)
 
-otu.ids=colnames(CMRE9_Soilb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Soilb_Bxc_otu_net)))
+otu.ids=colnames(CMRE5_Soilb_Bxc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Bxc_otu_net)))
 
 edges=E(Soil.ig)
 edge.colors=c()
@@ -828,33 +828,33 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Soil-Tb------------#############
 
-CMRE9_Soilb_Tb <- subset_samples(CMRE9_Soilb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
-CMRE9_Soilb_Tba = prune_taxa(taxa_sums(CMRE9_Soilb_Tb) > 0, CMRE9_Soilb_Tb) #
+CMRE5_Soilb_Tb <- subset_samples(CMRE5_Soilb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
+CMRE5_Soilb_Tba = prune_taxa(taxa_sums(CMRE5_Soilb_Tb) > 0, CMRE5_Soilb_Tb) #
 
-CMRE9_Soilb_Tbb = prune_taxa(Soilb_Ctr_keepTaxa, CMRE9_Soilb_Tba)
-CMRE9_Soilb_Tbc <- format_to_besthit1(CMRE9_Soilb_Tbb)# 
+CMRE5_Soilb_Tbb = prune_taxa(Soilb_Ctr_keepTaxa, CMRE5_Soilb_Tba)
+CMRE5_Soilb_Tbc <- format_to_besthit1(CMRE5_Soilb_Tbb)# 
 
-CMRE9_Soilb_Tbc_otu <- t(otu_table(CMRE9_Soilb_Tbc)@.Data) #
-CMRE9_Soilb_Tbc_tax <- as.data.frame(tax_table(CMRE9_Soilb_Tbc)@.Data)#
+CMRE5_Soilb_Tbc_otu <- t(otu_table(CMRE5_Soilb_Tbc)@.Data) #
+CMRE5_Soilb_Tbc_tax <- as.data.frame(tax_table(CMRE5_Soilb_Tbc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Soilb_Tbc_otu_net <- spiec.easi(CMRE9_Soilb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Soilb_Tbc_otu_net <- spiec.easi(CMRE5_Soilb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Soilb_Tbc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Soilb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE9_Soilb_Tbc_otu_net))
-colnames(CMRE9_Soilb_Tbc_otu_net1) <- rownames(CMRE9_Soilb_Tbc_otu_net1) <- colnames(CMRE9_Soilb_Tbc_otu)
-Soil.ig <- adj2igraph(getRefit(CMRE9_Soilb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Soilb_Tbc)))
-vsize <- rowMeans(clr(CMRE9_Soilb_Tbc_otu, 1))+6
+CMRE5_Soilb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Soilb_Tbc_otu_net))
+colnames(CMRE5_Soilb_Tbc_otu_net1) <- rownames(CMRE5_Soilb_Tbc_otu_net1) <- colnames(CMRE5_Soilb_Tbc_otu)
+Soil.ig <- adj2igraph(getRefit(CMRE5_Soilb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Soilb_Tbc)))
+vsize <- rowMeans(clr(CMRE5_Soilb_Tbc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Soil.ig)
 
-otu.ids=colnames(CMRE9_Soilb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Soilb_Tbc_otu_net)))
+otu.ids=colnames(CMRE5_Soilb_Tbc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Tbc_otu_net)))
 
 edges=E(Soil.ig)
 edge.colors=c()
@@ -951,7 +951,7 @@ Soil_Tb_net.hs <- hub_score(Soil.Tb.Soil.ig)$vector
 Soil_Tb_net.hs.sort <- sort(Soil_Tb_net.hs, decreasing = TRUE)
 
 ##########power law testing Soil-Ctr
-Soil.ig= readRDS("CMRE9_Soilb_Ctrc_Soil_ig.RDS")
+Soil.ig= readRDS("CMRE5_Soilb_Ctrc_Soil_ig.RDS")
 
 Soil.net <- asNetwork(Soil.ig)
 Soil.ctr.spiec.deg <- degree(Soil.net)
@@ -988,7 +988,7 @@ Soil.compNP <- compare_distributions(Soil.ctr.spiec.deg_N, Soil.ctr.spiec.deg_P)
 
 
 ##########power law testing Soil-As
-Soil.ig= readRDS("CMRE9_Soilb_Asc_Soil_ig.RDS")
+Soil.ig= readRDS("CMRE5_Soilb_Asc_Soil_ig.RDS")
 
 Soil.net <- asNetwork(Soil.ig)
 Soil.As.spiec.deg <- degree(Soil.net)
@@ -1028,7 +1028,7 @@ Soil.compEP <- compare_distributions(Soil.As.spiec.deg_E, Soil.As.spiec.deg_P)
 Soil.compNP <- compare_distributions(Soil.As.spiec.deg_N, Soil.As.spiec.deg_P)
 
 ##########power law testing Soil-Bx
-Soil.ig= readRDS("CMRE9_Soilb_Bxc_Soil_ig.RDS")
+Soil.ig= readRDS("CMRE5_Soilb_Bxc_Soil_ig.RDS")
 Soil.net <- asNetwork(Soil.ig)
 Soil.Bx.spiec.deg <- degree(Soil.net)
 
@@ -1065,7 +1065,7 @@ Soil.compEP <- compare_distributions(Soil.Bx.spiec.deg_E, Soil.Bx.spiec.deg_P)
 Soil.compNP <- compare_distributions(Soil.Bx.spiec.deg_N, Soil.Bx.spiec.deg_P)
 
 ##########power law testing Soil-Tb
-Soil.ig= readRDS("CMRE9_Soilb_Tbc_Soil_ig.RDS")
+Soil.ig= readRDS("CMRE5_Soilb_Tbc_Soil_ig.RDS")
 
 Soil.net <- asNetwork(Soil.ig)
 Soil.Tb.spiec.deg <- degree(Soil.net)
@@ -1108,47 +1108,47 @@ Soil.compNP <- compare_distributions(Soil.Tb.spiec.deg_N, Soil.Tb.spiec.deg_P)
 
 ######------------Root------------############
 
-CMRE9_Root <- subset_samples(CMRE9, Sampletype == "roots")
-CMRE9_Roota = prune_taxa(taxa_sums(CMRE9_Root) > 0, CMRE9_Root) 
-CMRE9_Rootb <- prune_taxa(taxa_sums(CMRE9_Roota) > 100, CMRE9_Roota)
+CMRE5_Root <- subset_samples(CMRE5, Sampletype == "roots")
+CMRE5_Roota = prune_taxa(taxa_sums(CMRE5_Root) > 0, CMRE5_Root) 
+CMRE5_Rootb <- prune_taxa(taxa_sums(CMRE5_Roota) > 100, CMRE5_Roota)
 ##################################################
 ######------------Root-Ctr------------############
-CMRE9_Rootb_Ctr <- subset_samples(CMRE9_Rootb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
-CMRE9_Rootb_Ctra = prune_taxa(taxa_sums(CMRE9_Rootb_Ctr) > 0, CMRE9_Rootb_Ctr) #
+CMRE5_Rootb_Ctr <- subset_samples(CMRE5_Rootb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
+CMRE5_Rootb_Ctra = prune_taxa(taxa_sums(CMRE5_Rootb_Ctr) > 0, CMRE5_Rootb_Ctr) #
 ##########Compute prevalence of each feature, store as data.frame
-prevdf = apply(X = otu_table(CMRE9_Rootb_Ctra),
-               MARGIN = ifelse(taxa_are_rows(CMRE9_Rootb_Ctra), yes = 1, no = 2),
+prevdf = apply(X = otu_table(CMRE5_Rootb_Ctra),
+               MARGIN = ifelse(taxa_are_rows(CMRE5_Rootb_Ctra), yes = 1, no = 2),
                FUN = function(x){sum(x > 0)})
 prevdf = data.frame(Prevalence = prevdf,
-                    TotalAbundance = taxa_sums(CMRE9_Rootb_Ctra),
-                    tax_table(CMRE9_Rootb_Ctra))
-prevalenceThreshold = 0.15 * nsamples(CMRE9_Rootb_Ctra) #
+                    TotalAbundance = taxa_sums(CMRE5_Rootb_Ctra),
+                    tax_table(CMRE5_Rootb_Ctra))
+prevalenceThreshold = 0.15 * nsamples(CMRE5_Rootb_Ctra) #
 Rootb_Ctr_keepTaxa = rownames(prevdf)[(prevdf$Prevalence >= prevalenceThreshold)]
-CMRE9_Rootb_Ctrb = prune_taxa(Rootb_Ctr_keepTaxa, CMRE9_Rootb_Ctra)
+CMRE5_Rootb_Ctrb = prune_taxa(Rootb_Ctr_keepTaxa, CMRE5_Rootb_Ctra)
 
 ##########Add taxonomic classification to OTU ID
-CMRE9_Rootb_Ctrc <- format_to_besthit1(CMRE9_Rootb_Ctrb)# run this function instead (see end of this script page)
-CMRE9_Rootb_Ctrc_otu <- t(otu_table(CMRE9_Rootb_Ctrc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Rootb_Ctrc_tax <- as.data.frame(tax_table(CMRE9_Rootb_Ctrc)@.Data)#extract the taxonomy information
+CMRE5_Rootb_Ctrc <- format_to_besthit1(CMRE5_Rootb_Ctrb)# run this function instead (see end of this script page)
+CMRE5_Rootb_Ctrc_otu <- t(otu_table(CMRE5_Rootb_Ctrc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Rootb_Ctrc_tax <- as.data.frame(tax_table(CMRE5_Rootb_Ctrc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Rootb_Ctrc_otu_net <- spiec.easi(CMRE9_Rootb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
+CMRE5_Rootb_Ctrc_otu_net <- spiec.easi(CMRE5_Rootb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Rootb_Ctrc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Rootb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE9_Rootb_Ctrc_otu_net))
-colnames(CMRE9_Rootb_Ctrc_otu_net1) <- rownames(CMRE9_Rootb_Ctrc_otu_net1) <- colnames(CMRE9_Rootb_Ctrc_otu)
-Root.ig <- adj2igraph(getRefit(CMRE9_Rootb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Rootb_Ctrc)))
-vsize <- rowMeans(clr(CMRE9_Rootb_Ctrc_otu, 1))+6
+CMRE5_Rootb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Rootb_Ctrc_otu_net))
+colnames(CMRE5_Rootb_Ctrc_otu_net1) <- rownames(CMRE5_Rootb_Ctrc_otu_net1) <- colnames(CMRE5_Rootb_Ctrc_otu)
+Root.ig <- adj2igraph(getRefit(CMRE5_Rootb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Rootb_Ctrc)))
+vsize <- rowMeans(clr(CMRE5_Rootb_Ctrc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Root.ig)
 
-otu.ids=colnames(CMRE9_Rootb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Rootb_Ctrc_otu_net)))
+otu.ids=colnames(CMRE5_Rootb_Ctrc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Ctrc_otu_net)))
 
 edges=E(Root.ig)
 edge.colors=c()
@@ -1175,7 +1175,7 @@ factor_color <- sort(factor(Root.net %v% "hubscore", levels = c("low","high")))
 R_Ctr <- ggnet2(Root.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
-Root.ig= readRDS("CMRE9_Rootb_Ctrc_Root_ig.RDS")
+Root.ig= readRDS("CMRE5_Rootb_Ctrc_Root_ig.RDS")
 
 nt_all_deg <- igraph::degree(Root.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Root.ig, normalized = TRUE)
@@ -1204,34 +1204,34 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Root-As------------#############
 
-CMRE9_Rootb_As <- subset_samples(CMRE9_Rootb, Treatment == "As" & Timepoint %in%c("1", "7"))
-CMRE9_Rootb_Asa = prune_taxa(taxa_sums(CMRE9_Rootb_As) > 0, CMRE9_Rootb_As) #remove these OTUs from class object
+CMRE5_Rootb_As <- subset_samples(CMRE5_Rootb, Treatment == "As" & Timepoint %in%c("1", "7"))
+CMRE5_Rootb_Asa = prune_taxa(taxa_sums(CMRE5_Rootb_As) > 0, CMRE5_Rootb_As) #remove these OTUs from class object
 
-CMRE9_Rootb_Asb = prune_taxa(Rootb_Ctr_keepTaxa, CMRE9_Rootb_Asa)
-CMRE9_Rootb_Asc <- format_to_besthit1(CMRE9_Rootb_Asb)# run this function instead (see end of this script page)
+CMRE5_Rootb_Asb = prune_taxa(Rootb_Ctr_keepTaxa, CMRE5_Rootb_Asa)
+CMRE5_Rootb_Asc <- format_to_besthit1(CMRE5_Rootb_Asb)# run this function instead (see end of this script page)
 
-CMRE9_Rootb_Asc_otu <- t(otu_table(CMRE9_Rootb_Asc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Rootb_Asc_tax <- as.data.frame(tax_table(CMRE9_Rootb_Asc)@.Data)#extract the taxonomy information
+CMRE5_Rootb_Asc_otu <- t(otu_table(CMRE5_Rootb_Asc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Rootb_Asc_tax <- as.data.frame(tax_table(CMRE5_Rootb_Asc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Rootb_Asc_otu_net <- spiec.easi(CMRE9_Rootb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Rootb_Asc_otu_net <- spiec.easi(CMRE5_Rootb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Rootb_Asc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Asc_otu_net)))
 
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Rootb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE9_Rootb_Asc_otu_net))
-colnames(CMRE9_Rootb_Asc_otu_net1) <- rownames(CMRE9_Rootb_Asc_otu_net1) <- colnames(CMRE9_Rootb_Asc_otu)
-Root.ig <- adj2igraph(getRefit(CMRE9_Rootb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Rootb_Asc)))
-vsize <- rowMeans(clr(CMRE9_Rootb_Asc_otu, 1))+6
+CMRE5_Rootb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Rootb_Asc_otu_net))
+colnames(CMRE5_Rootb_Asc_otu_net1) <- rownames(CMRE5_Rootb_Asc_otu_net1) <- colnames(CMRE5_Rootb_Asc_otu)
+Root.ig <- adj2igraph(getRefit(CMRE5_Rootb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Rootb_Asc)))
+vsize <- rowMeans(clr(CMRE5_Rootb_Asc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Root.ig)
 
-otu.ids=colnames(CMRE9_Rootb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Rootb_Asc_otu_net)))
+otu.ids=colnames(CMRE5_Rootb_Asc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Asc_otu_net)))
 
 edges=E(Root.ig)
 edge.colors=c()
@@ -1259,7 +1259,7 @@ R_As <- ggnet2(Root.net, label = FALSE,  edge.color = "color", edge.size=0.5 , n
 
 ##########Calculate network parameters
 
-Root.ig= readRDS("CMRE9_Rootb_Asc_Root_ig.RDS")
+Root.ig= readRDS("CMRE5_Rootb_Asc_Root_ig.RDS")
 
 nt_all_deg <- igraph::degree(Root.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Root.ig, normalized = TRUE)
@@ -1287,32 +1287,32 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Root-Bx------------#############
 
-CMRE9_Rootb_Bx <- subset_samples(CMRE9_Rootb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
-CMRE9_Rootb_Bxa = prune_taxa(taxa_sums(CMRE9_Rootb_Bx) > 0, CMRE9_Rootb_Bx) #
-CMRE9_Rootb_Bxb = prune_taxa(Rootb_Ctr_keepTaxa, CMRE9_Rootb_Bxa)
+CMRE5_Rootb_Bx <- subset_samples(CMRE5_Rootb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
+CMRE5_Rootb_Bxa = prune_taxa(taxa_sums(CMRE5_Rootb_Bx) > 0, CMRE5_Rootb_Bx) #
+CMRE5_Rootb_Bxb = prune_taxa(Rootb_Ctr_keepTaxa, CMRE5_Rootb_Bxa)
 
-CMRE9_Rootb_Bxc <- format_to_besthit1(CMRE9_Rootb_Bxb)# 
-CMRE9_Rootb_Bxc_otu <- t(otu_table(CMRE9_Rootb_Bxc)@.Data) #
-CMRE9_Rootb_Bxc_tax <- as.data.frame(tax_table(CMRE9_Rootb_Bxc)@.Data)#
+CMRE5_Rootb_Bxc <- format_to_besthit1(CMRE5_Rootb_Bxb)# 
+CMRE5_Rootb_Bxc_otu <- t(otu_table(CMRE5_Rootb_Bxc)@.Data) #
+CMRE5_Rootb_Bxc_tax <- as.data.frame(tax_table(CMRE5_Rootb_Bxc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Rootb_Bxc_otu_net <- spiec.easi(CMRE9_Rootb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
+CMRE5_Rootb_Bxc_otu_net <- spiec.easi(CMRE5_Rootb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Rootb_Bxc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Rootb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE9_Rootb_Bxc_otu_net))
-colnames(CMRE9_Rootb_Bxc_otu_net1) <- rownames(CMRE9_Rootb_Bxc_otu_net1) <- colnames(CMRE9_Rootb_Bxc_otu)
-Root.ig <- adj2igraph(getRefit(CMRE9_Rootb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Rootb_Bxc)))
-vsize <- rowMeans(clr(CMRE9_Rootb_Bxc_otu, 1))+6
+CMRE5_Rootb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Rootb_Bxc_otu_net))
+colnames(CMRE5_Rootb_Bxc_otu_net1) <- rownames(CMRE5_Rootb_Bxc_otu_net1) <- colnames(CMRE5_Rootb_Bxc_otu)
+Root.ig <- adj2igraph(getRefit(CMRE5_Rootb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Rootb_Bxc)))
+vsize <- rowMeans(clr(CMRE5_Rootb_Bxc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Root.ig)
 
-otu.ids=colnames(CMRE9_Rootb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Rootb_Bxc_otu_net)))
+otu.ids=colnames(CMRE5_Rootb_Bxc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Bxc_otu_net)))
 
 edges=E(Root.ig)
 edge.colors=c()
@@ -1366,33 +1366,33 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Root-Tb------------#############
 
-CMRE9_Rootb_Tb <- subset_samples(CMRE9_Rootb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
-CMRE9_Rootb_Tba = prune_taxa(taxa_sums(CMRE9_Rootb_Tb) > 0, CMRE9_Rootb_Tb) #
+CMRE5_Rootb_Tb <- subset_samples(CMRE5_Rootb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
+CMRE5_Rootb_Tba = prune_taxa(taxa_sums(CMRE5_Rootb_Tb) > 0, CMRE5_Rootb_Tb) #
 
-CMRE9_Rootb_Tbb = prune_taxa(Rootb_Ctr_keepTaxa, CMRE9_Rootb_Tba)
-CMRE9_Rootb_Tbc <- format_to_besthit1(CMRE9_Rootb_Tbb)# 
+CMRE5_Rootb_Tbb = prune_taxa(Rootb_Ctr_keepTaxa, CMRE5_Rootb_Tba)
+CMRE5_Rootb_Tbc <- format_to_besthit1(CMRE5_Rootb_Tbb)# 
 
-CMRE9_Rootb_Tbc_otu <- t(otu_table(CMRE9_Rootb_Tbc)@.Data) #
-CMRE9_Rootb_Tbc_tax <- as.data.frame(tax_table(CMRE9_Rootb_Tbc)@.Data)#
+CMRE5_Rootb_Tbc_otu <- t(otu_table(CMRE5_Rootb_Tbc)@.Data) #
+CMRE5_Rootb_Tbc_tax <- as.data.frame(tax_table(CMRE5_Rootb_Tbc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Rootb_Tbc_otu_net <- spiec.easi(CMRE9_Rootb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Rootb_Tbc_otu_net <- spiec.easi(CMRE5_Rootb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Rootb_Tbc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Rootb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE9_Rootb_Tbc_otu_net))
-colnames(CMRE9_Rootb_Tbc_otu_net1) <- rownames(CMRE9_Rootb_Tbc_otu_net1) <- colnames(CMRE9_Rootb_Tbc_otu)
-Root.ig <- adj2igraph(getRefit(CMRE9_Rootb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Rootb_Tbc)))
-vsize <- rowMeans(clr(CMRE9_Rootb_Tbc_otu, 1))+6
+CMRE5_Rootb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Rootb_Tbc_otu_net))
+colnames(CMRE5_Rootb_Tbc_otu_net1) <- rownames(CMRE5_Rootb_Tbc_otu_net1) <- colnames(CMRE5_Rootb_Tbc_otu)
+Root.ig <- adj2igraph(getRefit(CMRE5_Rootb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Rootb_Tbc)))
+vsize <- rowMeans(clr(CMRE5_Rootb_Tbc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Root.ig)
 
-otu.ids=colnames(CMRE9_Rootb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Rootb_Tbc_otu_net)))
+otu.ids=colnames(CMRE5_Rootb_Tbc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Tbc_otu_net)))
 
 edges=E(Root.ig)
 edge.colors=c()
@@ -1489,7 +1489,7 @@ Root_Tb_net.hs <- hub_score(Root.Tb.Root.ig)$vector
 Root_Tb_net.hs.sort <- sort(Root_Tb_net.hs, decreasing = TRUE)
 
 ##########power law testing Root-Ctr
-Root.ig= readRDS("CMRE9_Rootb_Ctrc_Root_ig.RDS")
+Root.ig= readRDS("CMRE5_Rootb_Ctrc_Root_ig.RDS")
 
 Root.net <- asNetwork(Root.ig)
 Root.ctr.spiec.deg <- degree(Root.net)
@@ -1524,7 +1524,7 @@ Root.compEP <- compare_distributions(Root.ctr.spiec.deg_E, Root.ctr.spiec.deg_P)
 Root.compNP <- compare_distributions(Root.ctr.spiec.deg_N, Root.ctr.spiec.deg_P)
 
 ##########power law testing Root-As
-Root.ig= readRDS("CMRE9_Rootb_Asc_Root_ig.RDS")
+Root.ig= readRDS("CMRE5_Rootb_Asc_Root_ig.RDS")
 
 Root.net <- asNetwork(Root.ig)
 Root.As.spiec.deg <- degree(Root.net)
@@ -1564,7 +1564,7 @@ Root.compEP <- compare_distributions(Root.As.spiec.deg_E, Root.As.spiec.deg_P)
 Root.compNP <- compare_distributions(Root.As.spiec.deg_N, Root.As.spiec.deg_P)
 
 ##########power law testing Root-Bx
-Root.ig= readRDS("CMRE9_Rootb_Bxc_Root_ig.RDS")
+Root.ig= readRDS("CMRE5_Rootb_Bxc_Root_ig.RDS")
 Root.net <- asNetwork(Root.ig)
 Root.Bx.spiec.deg <- degree(Root.net)
 
@@ -1601,7 +1601,7 @@ Root.compEP <- compare_distributions(Root.Bx.spiec.deg_E, Root.Bx.spiec.deg_P)
 Root.compNP <- compare_distributions(Root.Bx.spiec.deg_N, Root.Bx.spiec.deg_P)
 
 ##########power law testing Root-Tb
-Root.ig= readRDS("CMRE9_Rootb_Tbc_Root_ig.RDS")
+Root.ig= readRDS("CMRE5_Rootb_Tbc_Root_ig.RDS")
 
 Root.net <- asNetwork(Root.ig)
 Root.Tb.spiec.deg <- degree(Root.net)
@@ -1644,47 +1644,47 @@ Root.compNP <- compare_distributions(Root.Tb.spiec.deg_N, Root.Tb.spiec.deg_P)
 
 ######------------Water------------############
 
-CMRE9_Water <- subset_samples(CMRE9, Sampletype == "Water")
-CMRE9_Watera = prune_taxa(taxa_sums(CMRE9_Water) > 0, CMRE9_Water) 
-CMRE9_Waterb <- prune_taxa(taxa_sums(CMRE9_Watera) > 100, CMRE9_Watera)
+CMRE5_Water <- subset_samples(CMRE5, Sampletype == "Water")
+CMRE5_Watera = prune_taxa(taxa_sums(CMRE5_Water) > 0, CMRE5_Water) 
+CMRE5_Waterb <- prune_taxa(taxa_sums(CMRE5_Watera) > 100, CMRE5_Watera)
 ##################################################
 ######------------Water-Ctr------------############
-CMRE9_Waterb_Ctr <- subset_samples(CMRE9_Waterb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
-CMRE9_Waterb_Ctra = prune_taxa(taxa_sums(CMRE9_Waterb_Ctr) > 0, CMRE9_Waterb_Ctr) #
+CMRE5_Waterb_Ctr <- subset_samples(CMRE5_Waterb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
+CMRE5_Waterb_Ctra = prune_taxa(taxa_sums(CMRE5_Waterb_Ctr) > 0, CMRE5_Waterb_Ctr) #
 ##########Compute prevalence of each feature, store as data.frame
-prevdf = apply(X = otu_table(CMRE9_Waterb_Ctra),
-               MARGIN = ifelse(taxa_are_rows(CMRE9_Waterb_Ctra), yes = 1, no = 2),
+prevdf = apply(X = otu_table(CMRE5_Waterb_Ctra),
+               MARGIN = ifelse(taxa_are_rows(CMRE5_Waterb_Ctra), yes = 1, no = 2),
                FUN = function(x){sum(x > 0)})
 prevdf = data.frame(Prevalence = prevdf,
-                    TotalAbundance = taxa_sums(CMRE9_Waterb_Ctra),
-                    tax_table(CMRE9_Waterb_Ctra))
-prevalenceThreshold = 0.15 * nsamples(CMRE9_Waterb_Ctra) #
+                    TotalAbundance = taxa_sums(CMRE5_Waterb_Ctra),
+                    tax_table(CMRE5_Waterb_Ctra))
+prevalenceThreshold = 0.15 * nsamples(CMRE5_Waterb_Ctra) #
 Waterb_Ctr_keepTaxa = rownames(prevdf)[(prevdf$Prevalence >= prevalenceThreshold)]
-CMRE9_Waterb_Ctrb = prune_taxa(Waterb_Ctr_keepTaxa, CMRE9_Waterb_Ctra)
+CMRE5_Waterb_Ctrb = prune_taxa(Waterb_Ctr_keepTaxa, CMRE5_Waterb_Ctra)
 
 ##########Add taxonomic classification to OTU ID
-CMRE9_Waterb_Ctrc <- format_to_besthit1(CMRE9_Waterb_Ctrb)# run this function instead (see end of this script page)
-CMRE9_Waterb_Ctrc_otu <- t(otu_table(CMRE9_Waterb_Ctrc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Waterb_Ctrc_tax <- as.data.frame(tax_table(CMRE9_Waterb_Ctrc)@.Data)#extract the taxonomy information
+CMRE5_Waterb_Ctrc <- format_to_besthit1(CMRE5_Waterb_Ctrb)# run this function instead (see end of this script page)
+CMRE5_Waterb_Ctrc_otu <- t(otu_table(CMRE5_Waterb_Ctrc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Waterb_Ctrc_tax <- as.data.frame(tax_table(CMRE5_Waterb_Ctrc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Waterb_Ctrc_otu_net <- spiec.easi(CMRE9_Waterb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
+CMRE5_Waterb_Ctrc_otu_net <- spiec.easi(CMRE5_Waterb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Waterb_Ctrc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Waterb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE9_Waterb_Ctrc_otu_net))
-colnames(CMRE9_Waterb_Ctrc_otu_net1) <- rownames(CMRE9_Waterb_Ctrc_otu_net1) <- colnames(CMRE9_Waterb_Ctrc_otu)
-Water.ig <- adj2igraph(getRefit(CMRE9_Waterb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Waterb_Ctrc)))
-vsize <- rowMeans(clr(CMRE9_Waterb_Ctrc_otu, 1))+6
+CMRE5_Waterb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Waterb_Ctrc_otu_net))
+colnames(CMRE5_Waterb_Ctrc_otu_net1) <- rownames(CMRE5_Waterb_Ctrc_otu_net1) <- colnames(CMRE5_Waterb_Ctrc_otu)
+Water.ig <- adj2igraph(getRefit(CMRE5_Waterb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Waterb_Ctrc)))
+vsize <- rowMeans(clr(CMRE5_Waterb_Ctrc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Water.ig)
 
-otu.ids=colnames(CMRE9_Waterb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Waterb_Ctrc_otu_net)))
+otu.ids=colnames(CMRE5_Waterb_Ctrc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Ctrc_otu_net)))
 
 edges=E(Water.ig)
 edge.colors=c()
@@ -1711,7 +1711,7 @@ factor_color <- sort(factor(Water.net %v% "hubscore", levels = c("low","high")))
 W_Ctr <- ggnet2(Water.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
-Water.ig= readRDS("CMRE9_Waterb_Ctrc_Water_ig.RDS")
+Water.ig= readRDS("CMRE5_Waterb_Ctrc_Water_ig.RDS")
 
 nt_all_deg <- igraph::degree(Water.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Water.ig, normalized = TRUE)
@@ -1740,34 +1740,34 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Water-As------------#############
 
-CMRE9_Waterb_As <- subset_samples(CMRE9_Waterb, Treatment == "As" & Timepoint %in%c("1", "7"))
-CMRE9_Waterb_Asa = prune_taxa(taxa_sums(CMRE9_Waterb_As) > 0, CMRE9_Waterb_As) #remove these OTUs from class object
+CMRE5_Waterb_As <- subset_samples(CMRE5_Waterb, Treatment == "As" & Timepoint %in%c("1", "7"))
+CMRE5_Waterb_Asa = prune_taxa(taxa_sums(CMRE5_Waterb_As) > 0, CMRE5_Waterb_As) #remove these OTUs from class object
 
-CMRE9_Waterb_Asb = prune_taxa(Waterb_Ctr_keepTaxa, CMRE9_Waterb_Asa)
-CMRE9_Waterb_Asc <- format_to_besthit1(CMRE9_Waterb_Asb)# run this function instead (see end of this script page)
+CMRE5_Waterb_Asb = prune_taxa(Waterb_Ctr_keepTaxa, CMRE5_Waterb_Asa)
+CMRE5_Waterb_Asc <- format_to_besthit1(CMRE5_Waterb_Asb)# run this function instead (see end of this script page)
 
-CMRE9_Waterb_Asc_otu <- t(otu_table(CMRE9_Waterb_Asc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Waterb_Asc_tax <- as.data.frame(tax_table(CMRE9_Waterb_Asc)@.Data)#extract the taxonomy information
+CMRE5_Waterb_Asc_otu <- t(otu_table(CMRE5_Waterb_Asc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Waterb_Asc_tax <- as.data.frame(tax_table(CMRE5_Waterb_Asc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Waterb_Asc_otu_net <- spiec.easi(CMRE9_Waterb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Waterb_Asc_otu_net <- spiec.easi(CMRE5_Waterb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Waterb_Asc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Asc_otu_net)))
 
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Waterb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE9_Waterb_Asc_otu_net))
-colnames(CMRE9_Waterb_Asc_otu_net1) <- rownames(CMRE9_Waterb_Asc_otu_net1) <- colnames(CMRE9_Waterb_Asc_otu)
-Water.ig <- adj2igraph(getRefit(CMRE9_Waterb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Waterb_Asc)))
-vsize <- rowMeans(clr(CMRE9_Waterb_Asc_otu, 1))+6
+CMRE5_Waterb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Waterb_Asc_otu_net))
+colnames(CMRE5_Waterb_Asc_otu_net1) <- rownames(CMRE5_Waterb_Asc_otu_net1) <- colnames(CMRE5_Waterb_Asc_otu)
+Water.ig <- adj2igraph(getRefit(CMRE5_Waterb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Waterb_Asc)))
+vsize <- rowMeans(clr(CMRE5_Waterb_Asc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Water.ig)
 
-otu.ids=colnames(CMRE9_Waterb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Waterb_Asc_otu_net)))
+otu.ids=colnames(CMRE5_Waterb_Asc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Asc_otu_net)))
 
 edges=E(Water.ig)
 edge.colors=c()
@@ -1795,7 +1795,7 @@ W_As <- ggnet2(Water.net, label = FALSE,  edge.color = "color", edge.size=0.5 , 
 
 ##########Calculate network parameters
 
-Water.ig= readRDS("CMRE9_Waterb_Asc_Water_ig.RDS")
+Water.ig= readRDS("CMRE5_Waterb_Asc_Water_ig.RDS")
 
 nt_all_deg <- igraph::degree(Water.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Water.ig, normalized = TRUE)
@@ -1823,32 +1823,32 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Water-Bx------------#############
 
-CMRE9_Waterb_Bx <- subset_samples(CMRE9_Waterb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
-CMRE9_Waterb_Bxa = prune_taxa(taxa_sums(CMRE9_Waterb_Bx) > 0, CMRE9_Waterb_Bx) #
-CMRE9_Waterb_Bxb = prune_taxa(Waterb_Ctr_keepTaxa, CMRE9_Waterb_Bxa)
+CMRE5_Waterb_Bx <- subset_samples(CMRE5_Waterb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
+CMRE5_Waterb_Bxa = prune_taxa(taxa_sums(CMRE5_Waterb_Bx) > 0, CMRE5_Waterb_Bx) #
+CMRE5_Waterb_Bxb = prune_taxa(Waterb_Ctr_keepTaxa, CMRE5_Waterb_Bxa)
 
-CMRE9_Waterb_Bxc <- format_to_besthit1(CMRE9_Waterb_Bxb)# 
-CMRE9_Waterb_Bxc_otu <- t(otu_table(CMRE9_Waterb_Bxc)@.Data) #
-CMRE9_Waterb_Bxc_tax <- as.data.frame(tax_table(CMRE9_Waterb_Bxc)@.Data)#
+CMRE5_Waterb_Bxc <- format_to_besthit1(CMRE5_Waterb_Bxb)# 
+CMRE5_Waterb_Bxc_otu <- t(otu_table(CMRE5_Waterb_Bxc)@.Data) #
+CMRE5_Waterb_Bxc_tax <- as.data.frame(tax_table(CMRE5_Waterb_Bxc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Waterb_Bxc_otu_net <- spiec.easi(CMRE9_Waterb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
+CMRE5_Waterb_Bxc_otu_net <- spiec.easi(CMRE5_Waterb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Waterb_Bxc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Waterb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE9_Waterb_Bxc_otu_net))
-colnames(CMRE9_Waterb_Bxc_otu_net1) <- rownames(CMRE9_Waterb_Bxc_otu_net1) <- colnames(CMRE9_Waterb_Bxc_otu)
-Water.ig <- adj2igraph(getRefit(CMRE9_Waterb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Waterb_Bxc)))
-vsize <- rowMeans(clr(CMRE9_Waterb_Bxc_otu, 1))+6
+CMRE5_Waterb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Waterb_Bxc_otu_net))
+colnames(CMRE5_Waterb_Bxc_otu_net1) <- rownames(CMRE5_Waterb_Bxc_otu_net1) <- colnames(CMRE5_Waterb_Bxc_otu)
+Water.ig <- adj2igraph(getRefit(CMRE5_Waterb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Waterb_Bxc)))
+vsize <- rowMeans(clr(CMRE5_Waterb_Bxc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Water.ig)
 
-otu.ids=colnames(CMRE9_Waterb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Waterb_Bxc_otu_net)))
+otu.ids=colnames(CMRE5_Waterb_Bxc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Bxc_otu_net)))
 
 edges=E(Water.ig)
 edge.colors=c()
@@ -1902,33 +1902,33 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Water-Tb------------#############
 
-CMRE9_Waterb_Tb <- subset_samples(CMRE9_Waterb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
-CMRE9_Waterb_Tba = prune_taxa(taxa_sums(CMRE9_Waterb_Tb) > 0, CMRE9_Waterb_Tb) #
+CMRE5_Waterb_Tb <- subset_samples(CMRE5_Waterb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
+CMRE5_Waterb_Tba = prune_taxa(taxa_sums(CMRE5_Waterb_Tb) > 0, CMRE5_Waterb_Tb) #
 
-CMRE9_Waterb_Tbb = prune_taxa(Waterb_Ctr_keepTaxa, CMRE9_Waterb_Tba)
-CMRE9_Waterb_Tbc <- format_to_besthit1(CMRE9_Waterb_Tbb)# 
+CMRE5_Waterb_Tbb = prune_taxa(Waterb_Ctr_keepTaxa, CMRE5_Waterb_Tba)
+CMRE5_Waterb_Tbc <- format_to_besthit1(CMRE5_Waterb_Tbb)# 
 
-CMRE9_Waterb_Tbc_otu <- t(otu_table(CMRE9_Waterb_Tbc)@.Data) #
-CMRE9_Waterb_Tbc_tax <- as.data.frame(tax_table(CMRE9_Waterb_Tbc)@.Data)#
+CMRE5_Waterb_Tbc_otu <- t(otu_table(CMRE5_Waterb_Tbc)@.Data) #
+CMRE5_Waterb_Tbc_tax <- as.data.frame(tax_table(CMRE5_Waterb_Tbc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Waterb_Tbc_otu_net <- spiec.easi(CMRE9_Waterb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Waterb_Tbc_otu_net <- spiec.easi(CMRE5_Waterb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Waterb_Tbc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Waterb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE9_Waterb_Tbc_otu_net))
-colnames(CMRE9_Waterb_Tbc_otu_net1) <- rownames(CMRE9_Waterb_Tbc_otu_net1) <- colnames(CMRE9_Waterb_Tbc_otu)
-Water.ig <- adj2igraph(getRefit(CMRE9_Waterb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Waterb_Tbc)))
-vsize <- rowMeans(clr(CMRE9_Waterb_Tbc_otu, 1))+6
+CMRE5_Waterb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Waterb_Tbc_otu_net))
+colnames(CMRE5_Waterb_Tbc_otu_net1) <- rownames(CMRE5_Waterb_Tbc_otu_net1) <- colnames(CMRE5_Waterb_Tbc_otu)
+Water.ig <- adj2igraph(getRefit(CMRE5_Waterb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Waterb_Tbc)))
+vsize <- rowMeans(clr(CMRE5_Waterb_Tbc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Water.ig)
 
-otu.ids=colnames(CMRE9_Waterb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Waterb_Tbc_otu_net)))
+otu.ids=colnames(CMRE5_Waterb_Tbc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Tbc_otu_net)))
 
 edges=E(Water.ig)
 edge.colors=c()
@@ -2025,7 +2025,7 @@ Water_Tb_net.hs <- hub_score(Water.Tb.Water.ig)$vector
 Water_Tb_net.hs.sort <- sort(Water_Tb_net.hs, decreasing = TRUE)
 
 ##########power law testing Water-Ctr
-Water.ig= readRDS("CMRE9_Waterb_Ctrc_Water_ig.RDS")
+Water.ig= readRDS("CMRE5_Waterb_Ctrc_Water_ig.RDS")
 
 Water.net <- asNetwork(Water.ig)
 Water.ctr.spiec.deg <- degree(Water.net)
@@ -2060,7 +2060,7 @@ Water.compEP <- compare_distributions(Water.ctr.spiec.deg_E, Water.ctr.spiec.deg
 Water.compNP <- compare_distributions(Water.ctr.spiec.deg_N, Water.ctr.spiec.deg_P)
 
 ##########power law testing Water-As
-Water.ig= readRDS("CMRE9_Waterb_Asc_Water_ig.RDS")
+Water.ig= readRDS("CMRE5_Waterb_Asc_Water_ig.RDS")
 
 Water.net <- asNetwork(Water.ig)
 Water.As.spiec.deg <- degree(Water.net)
@@ -2100,7 +2100,7 @@ Water.compEP <- compare_distributions(Water.As.spiec.deg_E, Water.As.spiec.deg_P
 Water.compNP <- compare_distributions(Water.As.spiec.deg_N, Water.As.spiec.deg_P)
 
 ##########power law testing Water-Bx
-Water.ig= readRDS("CMRE9_Waterb_Bxc_Water_ig.RDS")
+Water.ig= readRDS("CMRE5_Waterb_Bxc_Water_ig.RDS")
 Water.net <- asNetwork(Water.ig)
 Water.Bx.spiec.deg <- degree(Water.net)
 
@@ -2137,7 +2137,7 @@ Water.compEP <- compare_distributions(Water.Bx.spiec.deg_E, Water.Bx.spiec.deg_P
 Water.compNP <- compare_distributions(Water.Bx.spiec.deg_N, Water.Bx.spiec.deg_P)
 
 ##########power law testing Water-Tb
-Water.ig= readRDS("CMRE9_Waterb_Tbc_Water_ig.RDS")
+Water.ig= readRDS("CMRE5_Waterb_Tbc_Water_ig.RDS")
 
 Water.net <- asNetwork(Water.ig)
 Water.Tb.spiec.deg <- degree(Water.net)
@@ -2181,47 +2181,47 @@ Water.compNP <- compare_distributions(Water.Tb.spiec.deg_N, Water.Tb.spiec.deg_P
 
 ######------------Sediment------------############
 
-CMRE9_Sediment <- subset_samples(CMRE9, Sampletype == "sedi")
-CMRE9_Sedimenta = prune_taxa(taxa_sums(CMRE9_Sediment) > 0, CMRE9_Sediment) 
-CMRE9_Sedimentb <- prune_taxa(taxa_sums(CMRE9_Sedimenta) > 100, CMRE9_Sedimenta)
+CMRE5_Sediment <- subset_samples(CMRE5, Sampletype == "sedi")
+CMRE5_Sedimenta = prune_taxa(taxa_sums(CMRE5_Sediment) > 0, CMRE5_Sediment) 
+CMRE5_Sedimentb <- prune_taxa(taxa_sums(CMRE5_Sedimenta) > 100, CMRE5_Sedimenta)
 ##################################################
 ######------------Sediment-Ctr------------############
-CMRE9_Sedimentb_Ctr <- subset_samples(CMRE9_Sedimentb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
-CMRE9_Sedimentb_Ctra = prune_taxa(taxa_sums(CMRE9_Sedimentb_Ctr) > 0, CMRE9_Sedimentb_Ctr) #
+CMRE5_Sedimentb_Ctr <- subset_samples(CMRE5_Sedimentb, Treatment == "Ctr" & Timepoint %in%c("1", "7"))
+CMRE5_Sedimentb_Ctra = prune_taxa(taxa_sums(CMRE5_Sedimentb_Ctr) > 0, CMRE5_Sedimentb_Ctr) #
 ##########Compute prevalence of each feature, store as data.frame
-prevdf = apply(X = otu_table(CMRE9_Sedimentb_Ctra),
-               MARGIN = ifelse(taxa_are_rows(CMRE9_Sedimentb_Ctra), yes = 1, no = 2),
+prevdf = apply(X = otu_table(CMRE5_Sedimentb_Ctra),
+               MARGIN = ifelse(taxa_are_rows(CMRE5_Sedimentb_Ctra), yes = 1, no = 2),
                FUN = function(x){sum(x > 0)})
 prevdf = data.frame(Prevalence = prevdf,
-                    TotalAbundance = taxa_sums(CMRE9_Sedimentb_Ctra),
-                    tax_table(CMRE9_Sedimentb_Ctra))
-prevalenceThreshold = 0.15 * nsamples(CMRE9_Sedimentb_Ctra) #
+                    TotalAbundance = taxa_sums(CMRE5_Sedimentb_Ctra),
+                    tax_table(CMRE5_Sedimentb_Ctra))
+prevalenceThreshold = 0.15 * nsamples(CMRE5_Sedimentb_Ctra) #
 Sedimentb_Ctr_keepTaxa = rownames(prevdf)[(prevdf$Prevalence >= prevalenceThreshold)]
-CMRE9_Sedimentb_Ctrb = prune_taxa(Sedimentb_Ctr_keepTaxa, CMRE9_Sedimentb_Ctra)
+CMRE5_Sedimentb_Ctrb = prune_taxa(Sedimentb_Ctr_keepTaxa, CMRE5_Sedimentb_Ctra)
 
 ##########Add taxonomic classification to OTU ID
-CMRE9_Sedimentb_Ctrc <- format_to_besthit1(CMRE9_Sedimentb_Ctrb)# run this function instead (see end of this script page)
-CMRE9_Sedimentb_Ctrc_otu <- t(otu_table(CMRE9_Sedimentb_Ctrc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Sedimentb_Ctrc_tax <- as.data.frame(tax_table(CMRE9_Sedimentb_Ctrc)@.Data)#extract the taxonomy information
+CMRE5_Sedimentb_Ctrc <- format_to_besthit1(CMRE5_Sedimentb_Ctrb)# run this function instead (see end of this script page)
+CMRE5_Sedimentb_Ctrc_otu <- t(otu_table(CMRE5_Sedimentb_Ctrc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Sedimentb_Ctrc_tax <- as.data.frame(tax_table(CMRE5_Sedimentb_Ctrc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Sedimentb_Ctrc_otu_net <- spiec.easi(CMRE9_Sedimentb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
+CMRE5_Sedimentb_Ctrc_otu_net <- spiec.easi(CMRE5_Sedimentb_Ctrc_otu, method='mb', lambda.min.ratio=1e-3, nlambda=50, pulsar.params=list(rep.num=99)) # increaseing permutations can decrease the number of edges (removes unstable edges)
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Sedimentb_Ctrc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Sedimentb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE9_Sedimentb_Ctrc_otu_net))
-colnames(CMRE9_Sedimentb_Ctrc_otu_net1) <- rownames(CMRE9_Sedimentb_Ctrc_otu_net1) <- colnames(CMRE9_Sedimentb_Ctrc_otu)
-Sediment.ig <- adj2igraph(getRefit(CMRE9_Sedimentb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Sedimentb_Ctrc)))
-vsize <- rowMeans(clr(CMRE9_Sedimentb_Ctrc_otu, 1))+6
+CMRE5_Sedimentb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Sedimentb_Ctrc_otu_net))
+colnames(CMRE5_Sedimentb_Ctrc_otu_net1) <- rownames(CMRE5_Sedimentb_Ctrc_otu_net1) <- colnames(CMRE5_Sedimentb_Ctrc_otu)
+Sediment.ig <- adj2igraph(getRefit(CMRE5_Sedimentb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Sedimentb_Ctrc)))
+vsize <- rowMeans(clr(CMRE5_Sedimentb_Ctrc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Sediment.ig)
 
-otu.ids=colnames(CMRE9_Sedimentb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Sedimentb_Ctrc_otu_net)))
+otu.ids=colnames(CMRE5_Sedimentb_Ctrc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Ctrc_otu_net)))
 
 edges=E(Sediment.ig)
 edge.colors=c()
@@ -2248,7 +2248,7 @@ factor_color <- sort(factor(Sediment.net %v% "hubscore", levels = c("low","high"
 Se_Ctr <- ggnet2(Sediment.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
-Sediment.ig= readRDS("CMRE9_Sedimentb_Ctrc_Sediment_ig.RDS")
+Sediment.ig= readRDS("CMRE5_Sedimentb_Ctrc_Sediment_ig.RDS")
 
 nt_all_deg <- igraph::degree(Sediment.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Sediment.ig, normalized = TRUE)
@@ -2277,34 +2277,34 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Sediment-As------------#############
 
-CMRE9_Sedimentb_As <- subset_samples(CMRE9_Sedimentb, Treatment == "As" & Timepoint %in%c("1", "7"))
-CMRE9_Sedimentb_Asa = prune_taxa(taxa_sums(CMRE9_Sedimentb_As) > 0, CMRE9_Sedimentb_As) #remove these OTUs from class object
+CMRE5_Sedimentb_As <- subset_samples(CMRE5_Sedimentb, Treatment == "As" & Timepoint %in%c("1", "7"))
+CMRE5_Sedimentb_Asa = prune_taxa(taxa_sums(CMRE5_Sedimentb_As) > 0, CMRE5_Sedimentb_As) #remove these OTUs from class object
 
-CMRE9_Sedimentb_Asb = prune_taxa(Sedimentb_Ctr_keepTaxa, CMRE9_Sedimentb_Asa)
-CMRE9_Sedimentb_Asc <- format_to_besthit1(CMRE9_Sedimentb_Asb)# run this function instead (see end of this script page)
+CMRE5_Sedimentb_Asb = prune_taxa(Sedimentb_Ctr_keepTaxa, CMRE5_Sedimentb_Asa)
+CMRE5_Sedimentb_Asc <- format_to_besthit1(CMRE5_Sedimentb_Asb)# run this function instead (see end of this script page)
 
-CMRE9_Sedimentb_Asc_otu <- t(otu_table(CMRE9_Sedimentb_Asc)@.Data) #extract the otu table from phyloseq object
-CMRE9_Sedimentb_Asc_tax <- as.data.frame(tax_table(CMRE9_Sedimentb_Asc)@.Data)#extract the taxonomy information
+CMRE5_Sedimentb_Asc_otu <- t(otu_table(CMRE5_Sedimentb_Asc)@.Data) #extract the otu table from phyloseq object
+CMRE5_Sedimentb_Asc_tax <- as.data.frame(tax_table(CMRE5_Sedimentb_Asc)@.Data)#extract the taxonomy information
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Sedimentb_Asc_otu_net <- spiec.easi(CMRE9_Sedimentb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Sedimentb_Asc_otu_net <- spiec.easi(CMRE5_Sedimentb_Asc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Sedimentb_Asc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Asc_otu_net)))
 
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Sedimentb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE9_Sedimentb_Asc_otu_net))
-colnames(CMRE9_Sedimentb_Asc_otu_net1) <- rownames(CMRE9_Sedimentb_Asc_otu_net1) <- colnames(CMRE9_Sedimentb_Asc_otu)
-Sediment.ig <- adj2igraph(getRefit(CMRE9_Sedimentb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Sedimentb_Asc)))
-vsize <- rowMeans(clr(CMRE9_Sedimentb_Asc_otu, 1))+6
+CMRE5_Sedimentb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Sedimentb_Asc_otu_net))
+colnames(CMRE5_Sedimentb_Asc_otu_net1) <- rownames(CMRE5_Sedimentb_Asc_otu_net1) <- colnames(CMRE5_Sedimentb_Asc_otu)
+Sediment.ig <- adj2igraph(getRefit(CMRE5_Sedimentb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Sedimentb_Asc)))
+vsize <- rowMeans(clr(CMRE5_Sedimentb_Asc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Sediment.ig)
 
-otu.ids=colnames(CMRE9_Sedimentb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Sedimentb_Asc_otu_net)))
+otu.ids=colnames(CMRE5_Sedimentb_Asc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Asc_otu_net)))
 
 edges=E(Sediment.ig)
 edge.colors=c()
@@ -2332,7 +2332,7 @@ Se_As <- ggnet2(Sediment.net, label = FALSE,  edge.color = "color", edge.size=0.
 
 ##########Calculate network parameters
 
-Sediment.ig= readRDS("CMRE9_Sedimentb_Asc_Sediment_ig.RDS")
+Sediment.ig= readRDS("CMRE5_Sedimentb_Asc_Sediment_ig.RDS")
 
 nt_all_deg <- igraph::degree(Sediment.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Sediment.ig, normalized = TRUE)
@@ -2360,32 +2360,32 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Sediment-Bx------------#############
 
-CMRE9_Sedimentb_Bx <- subset_samples(CMRE9_Sedimentb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
-CMRE9_Sedimentb_Bxa = prune_taxa(taxa_sums(CMRE9_Sedimentb_Bx) > 0, CMRE9_Sedimentb_Bx) #
-CMRE9_Sedimentb_Bxb = prune_taxa(Sedimentb_Ctr_keepTaxa, CMRE9_Sedimentb_Bxa)
+CMRE5_Sedimentb_Bx <- subset_samples(CMRE5_Sedimentb, Treatment == "Bx" & Timepoint %in%c("1", "7"))
+CMRE5_Sedimentb_Bxa = prune_taxa(taxa_sums(CMRE5_Sedimentb_Bx) > 0, CMRE5_Sedimentb_Bx) #
+CMRE5_Sedimentb_Bxb = prune_taxa(Sedimentb_Ctr_keepTaxa, CMRE5_Sedimentb_Bxa)
 
-CMRE9_Sedimentb_Bxc <- format_to_besthit1(CMRE9_Sedimentb_Bxb)# 
-CMRE9_Sedimentb_Bxc_otu <- t(otu_table(CMRE9_Sedimentb_Bxc)@.Data) #
-CMRE9_Sedimentb_Bxc_tax <- as.data.frame(tax_table(CMRE9_Sedimentb_Bxc)@.Data)#
+CMRE5_Sedimentb_Bxc <- format_to_besthit1(CMRE5_Sedimentb_Bxb)# 
+CMRE5_Sedimentb_Bxc_otu <- t(otu_table(CMRE5_Sedimentb_Bxc)@.Data) #
+CMRE5_Sedimentb_Bxc_tax <- as.data.frame(tax_table(CMRE5_Sedimentb_Bxc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Sedimentb_Bxc_otu_net <- spiec.easi(CMRE9_Sedimentb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
+CMRE5_Sedimentb_Bxc_otu_net <- spiec.easi(CMRE5_Sedimentb_Bxc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) # 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Sedimentb_Bxc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Sedimentb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE9_Sedimentb_Bxc_otu_net))
-colnames(CMRE9_Sedimentb_Bxc_otu_net1) <- rownames(CMRE9_Sedimentb_Bxc_otu_net1) <- colnames(CMRE9_Sedimentb_Bxc_otu)
-Sediment.ig <- adj2igraph(getRefit(CMRE9_Sedimentb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Sedimentb_Bxc)))
-vsize <- rowMeans(clr(CMRE9_Sedimentb_Bxc_otu, 1))+6
+CMRE5_Sedimentb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Sedimentb_Bxc_otu_net))
+colnames(CMRE5_Sedimentb_Bxc_otu_net1) <- rownames(CMRE5_Sedimentb_Bxc_otu_net1) <- colnames(CMRE5_Sedimentb_Bxc_otu)
+Sediment.ig <- adj2igraph(getRefit(CMRE5_Sedimentb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Sedimentb_Bxc)))
+vsize <- rowMeans(clr(CMRE5_Sedimentb_Bxc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Sediment.ig)
 
-otu.ids=colnames(CMRE9_Sedimentb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Sedimentb_Bxc_otu_net)))
+otu.ids=colnames(CMRE5_Sedimentb_Bxc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Bxc_otu_net)))
 
 edges=E(Sediment.ig)
 edge.colors=c()
@@ -2439,33 +2439,33 @@ notill_node_characterstics<-cbind(nt_boot_degree,nt_boot_betweenness,nt_boot_clo
 ##################################################
 ######------------Sediment-Tb------------#############
 
-CMRE9_Sedimentb_Tb <- subset_samples(CMRE9_Sedimentb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
-CMRE9_Sedimentb_Tba = prune_taxa(taxa_sums(CMRE9_Sedimentb_Tb) > 0, CMRE9_Sedimentb_Tb) #
+CMRE5_Sedimentb_Tb <- subset_samples(CMRE5_Sedimentb, Treatment == "Tb" & Timepoint %in%c("1", "7"))
+CMRE5_Sedimentb_Tba = prune_taxa(taxa_sums(CMRE5_Sedimentb_Tb) > 0, CMRE5_Sedimentb_Tb) #
 
-CMRE9_Sedimentb_Tbb = prune_taxa(Sedimentb_Ctr_keepTaxa, CMRE9_Sedimentb_Tba)
-CMRE9_Sedimentb_Tbc <- format_to_besthit1(CMRE9_Sedimentb_Tbb)# 
+CMRE5_Sedimentb_Tbb = prune_taxa(Sedimentb_Ctr_keepTaxa, CMRE5_Sedimentb_Tba)
+CMRE5_Sedimentb_Tbc <- format_to_besthit1(CMRE5_Sedimentb_Tbb)# 
 
-CMRE9_Sedimentb_Tbc_otu <- t(otu_table(CMRE9_Sedimentb_Tbc)@.Data) #
-CMRE9_Sedimentb_Tbc_tax <- as.data.frame(tax_table(CMRE9_Sedimentb_Tbc)@.Data)#
+CMRE5_Sedimentb_Tbc_otu <- t(otu_table(CMRE5_Sedimentb_Tbc)@.Data) #
+CMRE5_Sedimentb_Tbc_tax <- as.data.frame(tax_table(CMRE5_Sedimentb_Tbc)@.Data)#
 
 ##########SPIEC-EASI network reconstruction
 set.seed(101)
-CMRE9_Sedimentb_Tbc_otu_net <- spiec.easi(CMRE9_Sedimentb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
+CMRE5_Sedimentb_Tbc_otu_net <- spiec.easi(CMRE5_Sedimentb_Tbc_otu, method='mb', lambda.min.ratio=1e-1, nlambda=50, pulsar.params=list(rep.num=99)) 
 
 ##########Network properties
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Sedimentb_Tbc_otu_net)))
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
 ##########Prepare data for plotting  
-CMRE9_Sedimentb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE9_Sedimentb_Tbc_otu_net))
-colnames(CMRE9_Sedimentb_Tbc_otu_net1) <- rownames(CMRE9_Sedimentb_Tbc_otu_net1) <- colnames(CMRE9_Sedimentb_Tbc_otu)
-Sediment.ig <- adj2igraph(getRefit(CMRE9_Sedimentb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE9_Sedimentb_Tbc)))
-vsize <- rowMeans(clr(CMRE9_Sedimentb_Tbc_otu, 1))+6
+CMRE5_Sedimentb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Sedimentb_Tbc_otu_net))
+colnames(CMRE5_Sedimentb_Tbc_otu_net1) <- rownames(CMRE5_Sedimentb_Tbc_otu_net1) <- colnames(CMRE5_Sedimentb_Tbc_otu)
+Sediment.ig <- adj2igraph(getRefit(CMRE5_Sedimentb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Sedimentb_Tbc)))
+vsize <- rowMeans(clr(CMRE5_Sedimentb_Tbc_otu, 1))+6
 am.coord <- layout.fruchterman.reingold(Sediment.ig)
 
-otu.ids=colnames(CMRE9_Sedimentb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE9_Sedimentb_Tbc_otu_net)))
+otu.ids=colnames(CMRE5_Sedimentb_Tbc_otu_net1)
+betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Tbc_otu_net)))
 
 edges=E(Sediment.ig)
 edge.colors=c()
@@ -2562,7 +2562,7 @@ Sediment_Tb_net.hs <- hub_score(Sediment.Tb.Sediment.ig)$vector
 Sediment_Tb_net.hs.sort <- sort(Sediment_Tb_net.hs, decreasing = TRUE)
 
 ##########power law testing Sediment-Ctr
-Sediment.ig= readRDS("CMRE9_Sedimentb_Ctrc_Sediment_ig.RDS")
+Sediment.ig= readRDS("CMRE5_Sedimentb_Ctrc_Sediment_ig.RDS")
 
 Sediment.net <- asNetwork(Sediment.ig)
 Sediment.ctr.spiec.deg <- degree(Sediment.net)
@@ -2597,7 +2597,7 @@ Sediment.compEP <- compare_distributions(Sediment.ctr.spiec.deg_E, Sediment.ctr.
 Sediment.compNP <- compare_distributions(Sediment.ctr.spiec.deg_N, Sediment.ctr.spiec.deg_P)
 
 ##########power law testing Sediment-As
-Sediment.ig= readRDS("CMRE9_Sedimentb_Asc_Sediment_ig.RDS")
+Sediment.ig= readRDS("CMRE5_Sedimentb_Asc_Sediment_ig.RDS")
 
 Sediment.net <- asNetwork(Sediment.ig)
 Sediment.As.spiec.deg <- degree(Sediment.net)
@@ -2637,7 +2637,7 @@ Sediment.compEP <- compare_distributions(Sediment.As.spiec.deg_E, Sediment.As.sp
 Sediment.compNP <- compare_distributions(Sediment.As.spiec.deg_N, Sediment.As.spiec.deg_P)
 
 ##########power law testing Sediment-Bx
-Sediment.ig= readRDS("CMRE9_Sedimentb_Bxc_Sediment_ig.RDS")
+Sediment.ig= readRDS("CMRE5_Sedimentb_Bxc_Sediment_ig.RDS")
 Sediment.net <- asNetwork(Sediment.ig)
 Sediment.Bx.spiec.deg <- degree(Sediment.net)
 
@@ -2674,7 +2674,7 @@ Sediment.compEP <- compare_distributions(Sediment.Bx.spiec.deg_E, Sediment.Bx.sp
 Sediment.compNP <- compare_distributions(Sediment.Bx.spiec.deg_N, Sediment.Bx.spiec.deg_P)
 
 ##########power law testing Sediment-Tb
-Sediment.ig= readRDS("CMRE9_Sedimentb_Tbc_Sediment_ig.RDS")
+Sediment.ig= readRDS("CMRE5_Sedimentb_Tbc_Sediment_ig.RDS")
 
 Sediment.net <- asNetwork(Sediment.ig)
 Sediment.Tb.spiec.deg <- degree(Sediment.net)
