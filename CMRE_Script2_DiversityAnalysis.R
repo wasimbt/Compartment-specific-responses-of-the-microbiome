@@ -164,15 +164,6 @@ CMRE5_r8100_cap <- ordinate(physeq = CMRE5_r8100_mouse1_t,
                             formula = ~ Treatment)
 anova(CMRE5_r8100_cap)
 
-###########----CAP plot
-CMRE5_r8100_plot_bray_cap_mouse = plot_ordination(CMRE5_r8100_mouse1_t, CMRE5_r8100_cap, color="Treatment")
-orddata <- CMRE5_r8100_plot_bray_cap_mouse$data
-centroids <- aggregate(cbind(CAP1,CAP2)~Treatment,data=orddata,mean)
-gg <- merge(orddata,centroids,by="Treatment",suffixes=c("",".centroid"))
-gg$Treatment<- factor(gg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-CMRE5_r8100_plot_bray_cap_mouse = ggplot(gg, aes(x=CAP1, y=CAP2, color=Treatment)) + theme_set(theme_bw()) + theme(axis.title.x = element_text(size=15), axis.title.y = element_text(size=15), axis.text.x = element_text(size=15), axis.text.y = element_text(size=15)) + geom_point(size=2.00) + geom_point(data=centroid, mapping= aes(x=CAP1, y=CAP2, size=0.50)) + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73", "#D55E00")) + theme(plot.title = element_text(size=20, hjust = 0.5))  + scale_shape_discrete(solid=T)  + theme(plot.title = element_text(size=15, hjust = 0.5))  + geom_segment(aes(x=CAP1.centroid, y=CAP2.centroid, xend=CAP1, yend=CAP2, color=Treatment), alpha=0.4) + theme(legend.position = "none")
-
 ###########----dispersion using betadisper (PERMDISP)# Bray-Curtis
 CMRE5_r8100_t_disp <- as(sample_data(CMRE5_r8100_mouse1_t), "data.frame")
 groups <- CMRE5_r8100_t_disp[["Treatment"]]
@@ -190,15 +181,6 @@ CMRE5_r8100_cap <- ordinate(physeq = CMRE5_r8100_Water1_t,
                             distance = CMRE5_r8100_Water1_t_br,
                             formula = ~ Treatment)
 anova(CMRE5_r8100_cap)
-
-###########----CAP plot
-CMRE5_r8100_plot_bray_cap_Water = plot_ordination(CMRE5_r8100_Water1_t, CMRE5_r8100_cap, color="Treatment")
-orddata <- CMRE5_r8100_plot_bray_cap_Water$data
-centroids <- aggregate(cbind(CAP1,CAP2)~Treatment,data=orddata,mean)
-gg <- merge(orddata,centroids,by="Treatment",suffixes=c("",".centroid"))
-gg$Treatment<- factor(gg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-CMRE5_r8100_plot_bray_cap_Water = ggplot(gg, aes(x=CAP1, y=CAP2, color=Treatment)) + theme_set(theme_bw()) + theme(axis.title.x = element_text(size=15), axis.title.y = element_text(size=15), axis.text.x = element_text(size=15), axis.text.y = element_text(size=15)) + geom_point(size=2.00) + geom_point(data=centroid, mapping= aes(x=CAP1, y=CAP2, size=0.50)) + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73", "#D55E00")) + theme(plot.title = element_text(size=20, hjust = 0.5))  + scale_shape_discrete(solid=T)  + theme(plot.title = element_text(size=15, hjust = 0.5))  + geom_segment(aes(x=CAP1.centroid, y=CAP2.centroid, xend=CAP1, yend=CAP2, color=Treatment), alpha=0.4) + theme(legend.position = "none")
 
 ###########----dispersion using betadisper (PERMDISP)# Bray-Curtis
 CMRE5_r8100_t_disp <- as(sample_data(CMRE5_r8100_Water1_t), "data.frame")
@@ -219,15 +201,6 @@ CMRE5_r8100_cap <- ordinate(physeq = CMRE5_r8100_Sediment1_t,
                             formula = ~ Treatment)
 anova(CMRE5_r8100_cap)
 
-###########----CAP plot
-CMRE5_r8100_plot_bray_cap_Sediment = plot_ordination(CMRE5_r8100_Sediment1_t, CMRE5_r8100_cap, color="Treatment")
-orddata <- CMRE5_r8100_plot_bray_cap_Sediment$data
-centroids <- aggregate(cbind(CAP1,CAP2)~Treatment,data=orddata,mean)
-gg <- merge(orddata,centroids,by="Treatment",suffixes=c("",".centroid"))
-gg$Treatment<- factor(gg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-CMRE5_r8100_plot_bray_cap_Sediment = ggplot(gg, aes(x=CAP1, y=CAP2, color=Treatment)) + theme_set(theme_bw()) + theme(axis.title.x = element_text(size=15), axis.title.y = element_text(size=15), axis.text.x = element_text(size=15), axis.text.y = element_text(size=15)) + geom_point(size=2.00) + geom_point(data=centroid, mapping= aes(x=CAP1, y=CAP2, size=0.50)) + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73", "#D55E00")) + theme(plot.title = element_text(size=20, hjust = 0.5))  + scale_shape_discrete(solid=T)  + theme(plot.title = element_text(size=15, hjust = 0.5))  + geom_segment(aes(x=CAP1.centroid, y=CAP2.centroid, xend=CAP1, yend=CAP2, color=Treatment), alpha=0.4) + theme(legend.position = "none")
-
 ###########----dispersion using betadisper (PERMDISP)# Bray-Curtis
 CMRE5_r8100_t_disp <- as(sample_data(CMRE5_r8100_Sediment1_t), "data.frame")
 groups <- CMRE5_r8100_t_disp[["Treatment"]]
@@ -246,15 +219,6 @@ CMRE5_r8100_cap <- ordinate(physeq = CMRE5_r8100_Soil1_t,
                             distance = CMRE5_r8100_Soil1_t_br,
                             formula = ~ Treatment)
 anova(CMRE5_r8100_cap)
-
-###########----CAP plot
-CMRE5_r8100_plot_bray_cap_Soil = plot_ordination(CMRE5_r8100_Soil1_t, CMRE5_r8100_cap, color="Treatment")
-orddata <- CMRE5_r8100_plot_bray_cap_Soil$data
-centroids <- aggregate(cbind(CAP1,CAP2)~Treatment,data=orddata,mean)
-gg <- merge(orddata,centroids,by="Treatment",suffixes=c("",".centroid"))
-gg$Treatment<- factor(gg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-CMRE5_r8100_plot_bray_cap_Soil = ggplot(gg, aes(x=CAP1, y=CAP2, color=Treatment)) + theme_set(theme_bw()) + theme(axis.title.x = element_text(size=15), axis.title.y = element_text(size=15), axis.text.x = element_text(size=15), axis.text.y = element_text(size=15)) + geom_point(size=2.00) + geom_point(data=centroid, mapping= aes(x=CAP1, y=CAP2, size=0.50)) + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73", "#D55E00")) + theme(plot.title = element_text(size=20, hjust = 0.5))  + scale_shape_discrete(solid=T)  + theme(plot.title = element_text(size=15, hjust = 0.5))  + geom_segment(aes(x=CAP1.centroid, y=CAP2.centroid, xend=CAP1, yend=CAP2, color=Treatment), alpha=0.4) + theme(legend.position = "none")
 
 ###########----dispersion using betadisper (PERMDISP)# Bray-Curtis
 CMRE5_r8100_t_disp <- as(sample_data(CMRE5_r8100_Soil1_t), "data.frame")
@@ -275,24 +239,9 @@ CMRE5_r8100_cap <- ordinate(physeq = CMRE5_r8100_Root1_t,
                             formula = ~ Treatment)
 anova(CMRE5_r8100_cap)
 
-###########----CAP plot
-CMRE5_r8100_plot_bray_cap_Root = plot_ordination(CMRE5_r8100_Root1_t, CMRE5_r8100_cap, color="Treatment")
-orddata <- CMRE5_r8100_plot_bray_cap_Root$data
-centroids <- aggregate(cbind(CAP1,CAP2)~Treatment,data=orddata,mean)
-gg <- merge(orddata,centroids,by="Treatment",suffixes=c("",".centroid"))
-gg$Treatment<- factor(gg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-CMRE5_r8100_plot_bray_cap_Root = ggplot(gg, aes(x=CAP1, y=CAP2, color=Treatment)) + theme_set(theme_bw()) + theme(axis.title.x = element_text(size=15), axis.title.y = element_text(size=15), axis.text.x = element_text(size=15), axis.text.y = element_text(size=15)) + geom_point(size=2.00) + geom_point(data=centroid, mapping= aes(x=CAP1, y=CAP2, size=0.50)) + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73", "#D55E00")) + theme(plot.title = element_text(size=20, hjust = 0.5))  + scale_shape_discrete(solid=T)  + theme(plot.title = element_text(size=15, hjust = 0.5))  + geom_segment(aes(x=CAP1.centroid, y=CAP2.centroid, xend=CAP1, yend=CAP2, color=Treatment), alpha=0.4) + theme(legend.position = "none")
-
 ###########----dispersion using betadisper (PERMDISP)# Bray-Curtis
 CMRE5_r8100_t_disp <- as(sample_data(CMRE5_r8100_Root1_t), "data.frame")
 groups <- CMRE5_r8100_t_disp[["Treatment"]]
 mod1 <- betadisper(CMRE5_r8100_Root1_t_br, groups)
 
-
-###############---Now make combined figure for all beta cap compartments-------##############
-A <- ggarrange(CMRE5_r8100_plot_bray_cap_Water, CMRE5_r8100_plot_bray_cap_Sediment, ncol = 3) 
-B <- ggarrange(CMRE5_r8100_plot_bray_cap_Soil, CMRE5_r8100_plot_bray_cap_Root, CMRE5_r8100_plot_bray_cap_mouse, ncol = 3)
-ggarrange (A, B, ncol = 1)
-
-########################################################################################################################
+#######################################################################################################################
