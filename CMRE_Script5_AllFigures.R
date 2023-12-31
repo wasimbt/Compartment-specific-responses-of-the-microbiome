@@ -1,3 +1,5 @@
+#Copyright (c) 2023 University of Bern, Bern, Switzerland. 
+#Author: Wasimuddin, Klaus Schlaeppi, Alban Ramette
 
 # library(phyloseq); packageVersion("dada2") # 
 # [1] ‘1.24.0’
