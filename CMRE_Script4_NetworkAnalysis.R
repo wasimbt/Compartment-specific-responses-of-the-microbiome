@@ -66,40 +66,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Mouseb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Mouseb_Ctrc_otu_net))
-colnames(CMRE5_Mouseb_Ctrc_otu_net1) <- rownames(CMRE5_Mouseb_Ctrc_otu_net1) <- colnames(CMRE5_Mouseb_Ctrc_otu)
-Mouse.ig <- adj2igraph(getRefit(CMRE5_Mouseb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Mouseb_Ctrc)))
-vsize <- rowMeans(clr(CMRE5_Mouseb_Ctrc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Mouse.ig)
-
-otu.ids=colnames(CMRE5_Mouseb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Ctrc_otu_net)))
-
-edges=E(Mouse.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Mouse.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Mouse.ig)$color=edge.colors
-Mouse.net <- asNetwork(Mouse.Ctr.Mouse.ig)
-
-net.hs <- hub_score(Mouse.Ctr.Mouse.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Mouse.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Mouse.net %v% "hubscore", levels = c("low","high"))) 
-
-M_Ctr <- ggnet2(Mouse.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 Mouse.ig= readRDS("CMRE5_Mouseb_Ctrc_Mouse_ig.RDS")
 
@@ -149,41 +115,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Asc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Mouseb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Mouseb_Asc_otu_net))
-colnames(CMRE5_Mouseb_Asc_otu_net1) <- rownames(CMRE5_Mouseb_Asc_otu_net1) <- colnames(CMRE5_Mouseb_Asc_otu)
-
-Mouse.ig <- adj2igraph(getRefit(CMRE5_Mouseb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Mouseb_Asc)))
-vsize <- rowMeans(clr(CMRE5_Mouseb_Asc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Mouse.ig)
-
-otu.ids=colnames(CMRE5_Mouseb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Asc_otu_net)))
-
-edges=E(Mouse.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Mouse.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Mouse.ig)$color=edge.colors
-Mouse.net <- asNetwork(Mouse.As.Mouse.ig)
-
-net.hs <- hub_score(Mouse.As.Mouse.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Mouse.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Mouse.net %v% "hubscore", levels = c("low","high"))) 
-
-M_As <- ggnet2(Mouse.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 Mouse.ig= readRDS("CMRE5_Mouseb_Asc_Mouse_ig.RDS")
 
@@ -230,40 +161,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting
-CMRE5_Mouseb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Mouseb_Bxc_otu_net))
-colnames(CMRE5_Mouseb_Bxc_otu_net1) <- rownames(CMRE5_Mouseb_Bxc_otu_net1) <- colnames(CMRE5_Mouseb_Bxc_otu)  
-Mouse.ig <- adj2igraph(getRefit(CMRE5_Mouseb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Mouseb_Bxc)))
-vsize <- rowMeans(clr(CMRE5_Mouseb_Bxc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Mouse.ig)
-
-otu.ids=colnames(CMRE5_Mouseb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Bxc_otu_net)))
-
-edges=E(Mouse.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Mouse.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Mouse.ig)$color=edge.colors
-Mouse.net <- asNetwork(Mouse.Bx.Mouse.ig)
-
-net.hs <- hub_score(Mouse.Bx.Mouse.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Mouse.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Mouse.net %v% "hubscore", levels = c("low","high"))) 
-
-M_Bx <- ggnet2(Mouse.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Mouse.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Mouse.ig, normalized = TRUE)
@@ -309,40 +206,6 @@ CMRE5_Mouseb_Tbc_otu_net <- spiec.easi(CMRE5_Mouseb_Tbc_otu, method='mb', lambda
 betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
-
-##########Prepare data for plotting  
-CMRE5_Mouseb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Mouseb_Tbc_otu_net))
-colnames(CMRE5_Mouseb_Tbc_otu_net1) <- rownames(CMRE5_Mouseb_Tbc_otu_net1) <- colnames(CMRE5_Mouseb_Tbc_otu)
-Mouse.ig <- adj2igraph(getRefit(CMRE5_Mouseb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Mouseb_Tbc)))
-vsize <- rowMeans(clr(CMRE5_Mouseb_Tbc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Mouse.ig)
-
-otu.ids=colnames(CMRE5_Mouseb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Mouseb_Tbc_otu_net)))
-
-edges=E(Mouse.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Mouse.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Mouse.ig)$color=edge.colors
-Mouse.net <- asNetwork(Mouse.Tb.Mouse.ig)
-
-net.hs <- hub_score(Mouse.Tb.Mouse.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Mouse.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Mouse.net %v% "hubscore", levels = c("low","high"))) 
-
-M_Tb <- ggnet2(Mouse.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Mouse.ig, mode="all")
@@ -603,40 +466,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Soilb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Soilb_Ctrc_otu_net))
-colnames(CMRE5_Soilb_Ctrc_otu_net1) <- rownames(CMRE5_Soilb_Ctrc_otu_net1) <- colnames(CMRE5_Soilb_Ctrc_otu)
-Soil.ig <- adj2igraph(getRefit(CMRE5_Soilb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Soilb_Ctrc)))
-vsize <- rowMeans(clr(CMRE5_Soilb_Ctrc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Soil.ig)
-
-otu.ids=colnames(CMRE5_Soilb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Ctrc_otu_net)))
-
-edges=E(Soil.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Soil.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Soil.ig)$color=edge.colors
-Soil.net <- asNetwork(Soil.Ctr.Soil.ig)
-
-net.hs <- hub_score(Soil.Ctr.Soil.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Soil.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Soil.net %v% "hubscore", levels = c("low","high"))) 
-
-S_Ctr <- ggnet2(Soil.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 Soil.ig= readRDS("CMRE5_Soilb_Ctrc_Soil_ig.RDS")
 
@@ -686,40 +515,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Asc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Soilb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Soilb_Asc_otu_net))
-colnames(CMRE5_Soilb_Asc_otu_net1) <- rownames(CMRE5_Soilb_Asc_otu_net1) <- colnames(CMRE5_Soilb_Asc_otu)
-Soil.ig <- adj2igraph(getRefit(CMRE5_Soilb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Soilb_Asc)))
-vsize <- rowMeans(clr(CMRE5_Soilb_Asc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Soil.ig)
-
-otu.ids=colnames(CMRE5_Soilb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Asc_otu_net)))
-
-edges=E(Soil.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Soil.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Soil.ig)$color=edge.colors
-Soil.net <- asNetwork(Soil.As.Soil.ig)
-
-net.hs <- hub_score(Soil.As.Soil.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Soil.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Soil.net %v% "hubscore", levels = c("low","high"))) 
-
-S_As <- ggnet2(Soil.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 Soil.ig= readRDS("CMRE5_Soilb_Asc_Soil_ig.RDS")
 
@@ -766,40 +561,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Soilb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Soilb_Bxc_otu_net))
-colnames(CMRE5_Soilb_Bxc_otu_net1) <- rownames(CMRE5_Soilb_Bxc_otu_net1) <- colnames(CMRE5_Soilb_Bxc_otu)
-Soil.ig <- adj2igraph(getRefit(CMRE5_Soilb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Soilb_Bxc)))
-vsize <- rowMeans(clr(CMRE5_Soilb_Bxc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Soil.ig)
-
-otu.ids=colnames(CMRE5_Soilb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Bxc_otu_net)))
-
-edges=E(Soil.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Soil.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Soil.ig)$color=edge.colors
-Soil.net <- asNetwork(Soil.Bx.Soil.ig)
-
-net.hs <- hub_score(Soil.Bx.Soil.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Soil.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Soil.net %v% "hubscore", levels = c("low","high"))) 
-
-S_Bx <- ggnet2(Soil.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Soil.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Soil.ig, normalized = TRUE)
@@ -845,40 +606,6 @@ CMRE5_Soilb_Tbc_otu_net <- spiec.easi(CMRE5_Soilb_Tbc_otu, method='mb', lambda.m
 betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
-
-##########Prepare data for plotting  
-CMRE5_Soilb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Soilb_Tbc_otu_net))
-colnames(CMRE5_Soilb_Tbc_otu_net1) <- rownames(CMRE5_Soilb_Tbc_otu_net1) <- colnames(CMRE5_Soilb_Tbc_otu)
-Soil.ig <- adj2igraph(getRefit(CMRE5_Soilb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Soilb_Tbc)))
-vsize <- rowMeans(clr(CMRE5_Soilb_Tbc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Soil.ig)
-
-otu.ids=colnames(CMRE5_Soilb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Soilb_Tbc_otu_net)))
-
-edges=E(Soil.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Soil.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Soil.ig)$color=edge.colors
-Soil.net <- asNetwork(Soil.Tb.Soil.ig)
-
-net.hs <- hub_score(Soil.Tb.Soil.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Soil.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Soil.net %v% "hubscore", levels = c("low","high"))) 
-
-S_Tb <- ggnet2(Soil.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Soil.ig, mode="all")
@@ -1140,40 +867,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Rootb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Rootb_Ctrc_otu_net))
-colnames(CMRE5_Rootb_Ctrc_otu_net1) <- rownames(CMRE5_Rootb_Ctrc_otu_net1) <- colnames(CMRE5_Rootb_Ctrc_otu)
-Root.ig <- adj2igraph(getRefit(CMRE5_Rootb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Rootb_Ctrc)))
-vsize <- rowMeans(clr(CMRE5_Rootb_Ctrc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Root.ig)
-
-otu.ids=colnames(CMRE5_Rootb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Ctrc_otu_net)))
-
-edges=E(Root.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Root.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Root.ig)$color=edge.colors
-Root.net <- asNetwork(Root.Ctr.Root.ig)
-
-net.hs <- hub_score(Root.Ctr.Root.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Root.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Root.net %v% "hubscore", levels = c("low","high"))) 
-
-R_Ctr <- ggnet2(Root.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 Root.ig= readRDS("CMRE5_Rootb_Ctrc_Root_ig.RDS")
 
@@ -1223,40 +916,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Asc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Rootb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Rootb_Asc_otu_net))
-colnames(CMRE5_Rootb_Asc_otu_net1) <- rownames(CMRE5_Rootb_Asc_otu_net1) <- colnames(CMRE5_Rootb_Asc_otu)
-Root.ig <- adj2igraph(getRefit(CMRE5_Rootb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Rootb_Asc)))
-vsize <- rowMeans(clr(CMRE5_Rootb_Asc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Root.ig)
-
-otu.ids=colnames(CMRE5_Rootb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Asc_otu_net)))
-
-edges=E(Root.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Root.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Root.ig)$color=edge.colors
-Root.net <- asNetwork(Root.As.Root.ig)
-
-net.hs <- hub_score(Root.As.Root.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Root.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Root.net %v% "hubscore", levels = c("low","high"))) 
-
-R_As <- ggnet2(Root.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 
 Root.ig= readRDS("CMRE5_Rootb_Asc_Root_ig.RDS")
@@ -1304,40 +963,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Rootb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Rootb_Bxc_otu_net))
-colnames(CMRE5_Rootb_Bxc_otu_net1) <- rownames(CMRE5_Rootb_Bxc_otu_net1) <- colnames(CMRE5_Rootb_Bxc_otu)
-Root.ig <- adj2igraph(getRefit(CMRE5_Rootb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Rootb_Bxc)))
-vsize <- rowMeans(clr(CMRE5_Rootb_Bxc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Root.ig)
-
-otu.ids=colnames(CMRE5_Rootb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Bxc_otu_net)))
-
-edges=E(Root.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Root.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Root.ig)$color=edge.colors
-Root.net <- asNetwork(Root.Bx.Root.ig)
-
-net.hs <- hub_score(Root.Bx.Root.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Root.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Root.net %v% "hubscore", levels = c("low","high"))) 
-
-R_Bx <- ggnet2(Root.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Root.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Root.ig, normalized = TRUE)
@@ -1383,40 +1008,6 @@ CMRE5_Rootb_Tbc_otu_net <- spiec.easi(CMRE5_Rootb_Tbc_otu, method='mb', lambda.m
 betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
-
-##########Prepare data for plotting  
-CMRE5_Rootb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Rootb_Tbc_otu_net))
-colnames(CMRE5_Rootb_Tbc_otu_net1) <- rownames(CMRE5_Rootb_Tbc_otu_net1) <- colnames(CMRE5_Rootb_Tbc_otu)
-Root.ig <- adj2igraph(getRefit(CMRE5_Rootb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Rootb_Tbc)))
-vsize <- rowMeans(clr(CMRE5_Rootb_Tbc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Root.ig)
-
-otu.ids=colnames(CMRE5_Rootb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Rootb_Tbc_otu_net)))
-
-edges=E(Root.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Root.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Root.ig)$color=edge.colors
-Root.net <- asNetwork(Root.Tb.Root.ig)
-
-net.hs <- hub_score(Root.Tb.Root.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Root.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Root.net %v% "hubscore", levels = c("low","high"))) 
-
-R_Tb <- ggnet2(Root.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Root.ig, mode="all")
@@ -1676,40 +1267,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Waterb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Waterb_Ctrc_otu_net))
-colnames(CMRE5_Waterb_Ctrc_otu_net1) <- rownames(CMRE5_Waterb_Ctrc_otu_net1) <- colnames(CMRE5_Waterb_Ctrc_otu)
-Water.ig <- adj2igraph(getRefit(CMRE5_Waterb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Waterb_Ctrc)))
-vsize <- rowMeans(clr(CMRE5_Waterb_Ctrc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Water.ig)
-
-otu.ids=colnames(CMRE5_Waterb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Ctrc_otu_net)))
-
-edges=E(Water.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Water.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Water.ig)$color=edge.colors
-Water.net <- asNetwork(Water.Ctr.Water.ig)
-
-net.hs <- hub_score(Water.Ctr.Water.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Water.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Water.net %v% "hubscore", levels = c("low","high"))) 
-
-W_Ctr <- ggnet2(Water.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 Water.ig= readRDS("CMRE5_Waterb_Ctrc_Water_ig.RDS")
 
@@ -1759,40 +1316,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Asc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Waterb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Waterb_Asc_otu_net))
-colnames(CMRE5_Waterb_Asc_otu_net1) <- rownames(CMRE5_Waterb_Asc_otu_net1) <- colnames(CMRE5_Waterb_Asc_otu)
-Water.ig <- adj2igraph(getRefit(CMRE5_Waterb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Waterb_Asc)))
-vsize <- rowMeans(clr(CMRE5_Waterb_Asc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Water.ig)
-
-otu.ids=colnames(CMRE5_Waterb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Asc_otu_net)))
-
-edges=E(Water.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Water.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Water.ig)$color=edge.colors
-Water.net <- asNetwork(Water.As.Water.ig)
-
-net.hs <- hub_score(Water.As.Water.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Water.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Water.net %v% "hubscore", levels = c("low","high"))) 
-
-W_As <- ggnet2(Water.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 
 Water.ig= readRDS("CMRE5_Waterb_Asc_Water_ig.RDS")
@@ -1803,6 +1326,7 @@ nt_all_closeness <- igraph::closeness(Water.ig, normalized = TRUE)#not working
 nt_all_transitivity <- igraph::transitivity(Water.ig, "local", vids = V(Water.ig))
 names(nt_all_transitivity)<- V(Water.ig)$name
 nt_all_transitivity[is.na(nt_all_transitivity)] <- 0
+
 ## Bootstrapping degree
 set.seed(8046)
 nt_boot_degree = replicate(10000, sample(nt_all_deg, 1, replace=TRUE))
@@ -1839,40 +1363,6 @@ CMRE5_Waterb_Bxc_otu_net <- spiec.easi(CMRE5_Waterb_Bxc_otu, method='mb', lambda
 betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
-
-##########Prepare data for plotting  
-CMRE5_Waterb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Waterb_Bxc_otu_net))
-colnames(CMRE5_Waterb_Bxc_otu_net1) <- rownames(CMRE5_Waterb_Bxc_otu_net1) <- colnames(CMRE5_Waterb_Bxc_otu)
-Water.ig <- adj2igraph(getRefit(CMRE5_Waterb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Waterb_Bxc)))
-vsize <- rowMeans(clr(CMRE5_Waterb_Bxc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Water.ig)
-
-otu.ids=colnames(CMRE5_Waterb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Bxc_otu_net)))
-
-edges=E(Water.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Water.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Water.ig)$color=edge.colors
-Water.net <- asNetwork(Water.Bx.Water.ig)
-
-net.hs <- hub_score(Water.Bx.Water.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Water.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Water.net %v% "hubscore", levels = c("low","high"))) 
-
-W_Bx <- ggnet2(Water.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Water.ig, mode="all")
@@ -1919,40 +1409,6 @@ CMRE5_Waterb_Tbc_otu_net <- spiec.easi(CMRE5_Waterb_Tbc_otu, method='mb', lambda
 betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
-
-##########Prepare data for plotting  
-CMRE5_Waterb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Waterb_Tbc_otu_net))
-colnames(CMRE5_Waterb_Tbc_otu_net1) <- rownames(CMRE5_Waterb_Tbc_otu_net1) <- colnames(CMRE5_Waterb_Tbc_otu)
-Water.ig <- adj2igraph(getRefit(CMRE5_Waterb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Waterb_Tbc)))
-vsize <- rowMeans(clr(CMRE5_Waterb_Tbc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Water.ig)
-
-otu.ids=colnames(CMRE5_Waterb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Waterb_Tbc_otu_net)))
-
-edges=E(Water.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Water.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Water.ig)$color=edge.colors
-Water.net <- asNetwork(Water.Tb.Water.ig)
-
-net.hs <- hub_score(Water.Tb.Water.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Water.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Water.net %v% "hubscore", levels = c("low","high"))) 
-
-W_Tb <- ggnet2(Water.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Water.ig, mode="all")
@@ -2213,40 +1669,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Ctrc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Sedimentb_Ctrc_otu_net1 <- symBeta(getOptBeta(CMRE5_Sedimentb_Ctrc_otu_net))
-colnames(CMRE5_Sedimentb_Ctrc_otu_net1) <- rownames(CMRE5_Sedimentb_Ctrc_otu_net1) <- colnames(CMRE5_Sedimentb_Ctrc_otu)
-Sediment.ig <- adj2igraph(getRefit(CMRE5_Sedimentb_Ctrc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Sedimentb_Ctrc)))
-vsize <- rowMeans(clr(CMRE5_Sedimentb_Ctrc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Sediment.ig)
-
-otu.ids=colnames(CMRE5_Sedimentb_Ctrc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Ctrc_otu_net)))
-
-edges=E(Sediment.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Sediment.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Sediment.ig)$color=edge.colors
-Sediment.net <- asNetwork(Sediment.Ctr.Sediment.ig)
-
-net.hs <- hub_score(Sediment.Ctr.Sediment.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Sediment.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Sediment.net %v% "hubscore", levels = c("low","high"))) 
-
-Se_Ctr <- ggnet2(Sediment.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 Sediment.ig= readRDS("CMRE5_Sedimentb_Ctrc_Sediment_ig.RDS")
 
@@ -2296,40 +1718,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Asc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Sedimentb_Asc_otu_net1 <- symBeta(getOptBeta(CMRE5_Sedimentb_Asc_otu_net))
-colnames(CMRE5_Sedimentb_Asc_otu_net1) <- rownames(CMRE5_Sedimentb_Asc_otu_net1) <- colnames(CMRE5_Sedimentb_Asc_otu)
-Sediment.ig <- adj2igraph(getRefit(CMRE5_Sedimentb_Asc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Sedimentb_Asc)))
-vsize <- rowMeans(clr(CMRE5_Sedimentb_Asc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Sediment.ig)
-
-otu.ids=colnames(CMRE5_Sedimentb_Asc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Asc_otu_net)))
-
-edges=E(Sediment.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Sediment.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Sediment.ig)$color=edge.colors
-Sediment.net <- asNetwork(Sediment.As.Sediment.ig)
-
-net.hs <- hub_score(Sediment.As.Sediment.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Sediment.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Sediment.net %v% "hubscore", levels = c("low","high"))) 
-
-Se_As <- ggnet2(Sediment.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 
 Sediment.ig= readRDS("CMRE5_Sedimentb_Asc_Sediment_ig.RDS")
@@ -2377,40 +1765,6 @@ betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Bxc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
 
-##########Prepare data for plotting  
-CMRE5_Sedimentb_Bxc_otu_net1 <- symBeta(getOptBeta(CMRE5_Sedimentb_Bxc_otu_net))
-colnames(CMRE5_Sedimentb_Bxc_otu_net1) <- rownames(CMRE5_Sedimentb_Bxc_otu_net1) <- colnames(CMRE5_Sedimentb_Bxc_otu)
-Sediment.ig <- adj2igraph(getRefit(CMRE5_Sedimentb_Bxc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Sedimentb_Bxc)))
-vsize <- rowMeans(clr(CMRE5_Sedimentb_Bxc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Sediment.ig)
-
-otu.ids=colnames(CMRE5_Sedimentb_Bxc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Bxc_otu_net)))
-
-edges=E(Sediment.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Sediment.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Sediment.ig)$color=edge.colors
-Sediment.net <- asNetwork(Sediment.Bx.Sediment.ig)
-
-net.hs <- hub_score(Sediment.Bx.Sediment.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Sediment.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Sediment.net %v% "hubscore", levels = c("low","high"))) 
-
-Se_Bx <- ggnet2(Sediment.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
-
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Sediment.ig, mode="all")
 nt_all_betweenness <- igraph::betweenness(Sediment.ig, normalized = TRUE)
@@ -2456,40 +1810,6 @@ CMRE5_Sedimentb_Tbc_otu_net <- spiec.easi(CMRE5_Sedimentb_Tbc_otu, method='mb', 
 betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Tbc_otu_net)))
 positive=length(betaMat[betaMat>0])/2 
 negative=length(betaMat[betaMat<0])/2 
-
-##########Prepare data for plotting  
-CMRE5_Sedimentb_Tbc_otu_net1 <- symBeta(getOptBeta(CMRE5_Sedimentb_Tbc_otu_net))
-colnames(CMRE5_Sedimentb_Tbc_otu_net1) <- rownames(CMRE5_Sedimentb_Tbc_otu_net1) <- colnames(CMRE5_Sedimentb_Tbc_otu)
-Sediment.ig <- adj2igraph(getRefit(CMRE5_Sedimentb_Tbc_otu_net),  rmEmptyNodes=T, vertex.attr=list(name=taxa_names(CMRE5_Sedimentb_Tbc)))
-vsize <- rowMeans(clr(CMRE5_Sedimentb_Tbc_otu, 1))+6
-am.coord <- layout.fruchterman.reingold(Sediment.ig)
-
-otu.ids=colnames(CMRE5_Sedimentb_Tbc_otu_net1)
-betaMat=as.matrix(symBeta(getOptBeta(CMRE5_Sedimentb_Tbc_otu_net)))
-
-edges=E(Sediment.ig)
-edge.colors=c()
-for(e.index in 1:length(edges)){
-  adj.nodes=ends(Sediment.ig,edges[e.index])
-  xindex=which(otu.ids==adj.nodes[1])
-  yindex=which(otu.ids==adj.nodes[2])
-  beta=betaMat[xindex,yindex]
-  if(beta>0){
-    edge.colors=append(edge.colors,"dodgerblue")
-  }else if(beta<0){
-    edge.colors=append(edge.colors,"lightsalmon")
-  }
-}
-
-E(Sediment.ig)$color=edge.colors
-Sediment.net <- asNetwork(Sediment.Tb.Sediment.ig)
-
-net.hs <- hub_score(Sediment.Tb.Sediment.ig, weights=NA)$vector # 
-net.hs1 <- ifelse(net.hs < 0.7, "low", "high") # 
-Sediment.net %v% "hubscore" = ifelse(net.hs <0.7,"low","high") # 
-factor_color <- sort(factor(Sediment.net %v% "hubscore", levels = c("low","high"))) 
-
-Se_Tb <- ggnet2(Sediment.net, label = FALSE,  edge.color = "color", edge.size=0.5 , node.color = factor_color, palette = c("low" = "gray60", "high" = "dodgerblue4"), size= factor_color, size.palette = c("low" = 5, "high" = 15)) + guides(color = FALSE, size = FALSE) + theme(panel.border = element_rect(colour = "gray50", fill=NA, size=1))
 
 ##########Calculate network parameters
 nt_all_deg <- igraph::degree(Sediment.ig, mode="all")
@@ -2711,183 +2031,4 @@ Sediment.compNE <- compare_distributions(Sediment.Tb.spiec.deg_N, Sediment.Tb.sp
 Sediment.compEP <- compare_distributions(Sediment.Tb.spiec.deg_E, Sediment.Tb.spiec.deg_P)
 Sediment.compNP <- compare_distributions(Sediment.Tb.spiec.deg_N, Sediment.Tb.spiec.deg_P)
 
-
 ###################################################################
-######------------Combined network plot------------################
-
-combine_plot1 <- ggarrange(W_Ctr, Se_Ctr, S_Ctr, R_Ctr, M_Ctr, W_As, Se_As, S_As, R_As,  M_As,  W_Bx, Se_bx, S_Bx, R_Bx, M_Bx, W_Tb, Se_Tb, S_Tb, R_Tb, M_Tb, ncol = 5, nrow = 4)
-
-###################################################################
-######------------Degree distribution plot------------############# 
-
-############## Mouse Degree distributions ######################
-
-Mouse.Ctr.feces.ig= readRDS("Mouse.Ctr.feces.ig.RDS")
-Mouse.As.feces.ig= readRDS("Mouse.As.feces.ig.RDS")
-Mouse.Bx.feces.ig= readRDS("Mouse.Bx.feces.ig.RDS")
-Mouse.Tb.feces.ig= readRDS("Mouse.Tb.feces.ig.RDS")
-
-Mouse.Ctr_all_deg <- as.data.frame(igraph::degree(Mouse.Ctr.feces.ig, mode="all")) # one can also extract other values of network by using such
-Mouse.As_all_deg <- as.data.frame(igraph::degree(Mouse.As.feces.ig, mode="all"))
-Mouse.Bx_all_deg <- as.data.frame(igraph::degree(Mouse.Bx.feces.ig, mode="all"))
-Mouse.Tb_all_deg <- as.data.frame(igraph::degree(Mouse.Tb.feces.ig, mode="all"))
-
-names(Mouse.Ctr_all_deg)[1]<-paste("Degree")
-names(Mouse.As_all_deg)[1]<-paste("Degree")
-names(Mouse.Bx_all_deg)[1]<-paste("Degree")
-names(Mouse.Tb_all_deg)[1]<-paste("Degree")
-
-Mouse.Ctr_all_deg$Treatment <- rep("Ctr",nrow(Mouse.Ctr_all_deg))
-Mouse.As_all_deg$Treatment <- rep("As",nrow(Mouse.As_all_deg))
-Mouse.Bx_all_deg$Treatment <- rep("Bx",nrow(Mouse.Bx_all_deg))
-Mouse.Tb_all_deg$Treatment <- rep("Tb",nrow(Mouse.Tb_all_deg))
-
-Mouse.Ctr_all_deg <- dplyr::as_tibble(Mouse.Ctr_all_deg, rownames = "ASV_ID")
-Mouse.As_all_deg <- dplyr::as_tibble(Mouse.As_all_deg, rownames = "ASV_ID")
-Mouse.Bx_all_deg <- dplyr::as_tibble(Mouse.Bx_all_deg, rownames = "ASV_ID")
-Mouse.Tb_all_deg <- dplyr::as_tibble(Mouse.Tb_all_deg, rownames = "ASV_ID")
-
-Mouse_all_deg <- rbind(Mouse.Ctr_all_deg, Mouse.As_all_deg, Mouse.Bx_all_deg, Mouse.Tb_all_deg)
-
-Mouse_all_deg$Treatment<- factor(Mouse_all_deg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-Mouse_p1 <- ggplot(Mouse_all_deg, aes(x=Treatment,  y= Degree), colour = Treatment)  + geom_jitter(size=2.0, width = 0.25, aes(colour = Treatment)) + theme_set(theme_bw()) + theme(panel.border = element_rect(colour = "black", size=1), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(size=34, face="bold"), axis.text.y = element_text(size=24, face="bold"))  + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73",  "#D55E00")) + theme(legend.position = "none")  
-
-############## Root Degree distributions ######################
-
-Root.Ctr.Root.ig= readRDS("Root.Ctr.Root.ig.RDS")
-Root.As.Root.ig= readRDS("Root.As.Root.ig.RDS")
-Root.Bx.Root.ig= readRDS("Root.Bx.Root.ig.RDS")
-Root.Tb.Root.ig= readRDS("Root.Tb.Root.ig.RDS")
-
-Root.Ctr_all_deg <- as.data.frame(igraph::degree(Root.Ctr.Root.ig, mode="all")) # one can also extract other values of network by using such
-Root.As_all_deg <- as.data.frame(igraph::degree(Root.As.Root.ig, mode="all"))
-Root.Bx_all_deg <- as.data.frame(igraph::degree(Root.Bx.Root.ig, mode="all"))
-Root.Tb_all_deg <- as.data.frame(igraph::degree(Root.Tb.Root.ig, mode="all"))
-
-names(Root.Ctr_all_deg)[1]<-paste("Degree")
-names(Root.As_all_deg)[1]<-paste("Degree")
-names(Root.Bx_all_deg)[1]<-paste("Degree")
-names(Root.Tb_all_deg)[1]<-paste("Degree")
-
-Root.Ctr_all_deg$Treatment <- rep("Ctr",nrow(Root.Ctr_all_deg))
-Root.As_all_deg$Treatment <- rep("As",nrow(Root.As_all_deg))
-Root.Bx_all_deg$Treatment <- rep("Bx",nrow(Root.Bx_all_deg))
-Root.Tb_all_deg$Treatment <- rep("Tb",nrow(Root.Tb_all_deg))
-
-Root.Ctr_all_deg <- dplyr::as_tibble(Root.Ctr_all_deg, rownames = "ASV_ID")
-Root.As_all_deg <- dplyr::as_tibble(Root.As_all_deg, rownames = "ASV_ID")
-Root.Bx_all_deg <- dplyr::as_tibble(Root.Bx_all_deg, rownames = "ASV_ID")
-Root.Tb_all_deg <- dplyr::as_tibble(Root.Tb_all_deg, rownames = "ASV_ID")
-
-Root_all_deg <- rbind(Root.Ctr_all_deg, Root.As_all_deg, Root.Bx_all_deg, Root.Tb_all_deg)
-
-Root_all_deg$Treatment<- factor(Root_all_deg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-Root_p1 <- ggplot(Root_all_deg, aes(x=Treatment,  y= Degree), colour = Treatment)  + geom_jitter(size=2.0, width = 0.25, aes(colour = Treatment)) + theme_set(theme_bw()) + theme(panel.border = element_rect(colour = "black", size=1), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(size=34, face="bold"), axis.text.y = element_text(size=24, face="bold"))  + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73",  "#D55E00")) + theme(legend.position = "none")
-
-############## Soil Degree distributions ######################
-
-Soil.Ctr.Soil.ig= readRDS("Soil.Ctr.Soil.ig.RDS")
-Soil.As.Soil.ig= readRDS("Soil.As.Soil.ig.RDS")
-Soil.Bx.Soil.ig= readRDS("Soil.Bx.Soil.ig.RDS")
-Soil.Tb.Soil.ig= readRDS("Soil.Tb.Soil.ig.RDS")
-
-Soil.Ctr_all_deg <- as.data.frame(igraph::degree(Soil.Ctr.Soil.ig, mode="all")) # one can also extract other values of network by using such
-Soil.As_all_deg <- as.data.frame(igraph::degree(Soil.As.Soil.ig, mode="all"))
-Soil.Bx_all_deg <- as.data.frame(igraph::degree(Soil.Bx.Soil.ig, mode="all"))
-Soil.Tb_all_deg <- as.data.frame(igraph::degree(Soil.Tb.Soil.ig, mode="all"))
-
-names(Soil.Ctr_all_deg)[1]<-paste("Degree")
-names(Soil.As_all_deg)[1]<-paste("Degree")
-names(Soil.Bx_all_deg)[1]<-paste("Degree")
-names(Soil.Tb_all_deg)[1]<-paste("Degree")
-
-Soil.Ctr_all_deg$Treatment <- rep("Ctr",nrow(Soil.Ctr_all_deg))
-Soil.As_all_deg$Treatment <- rep("As",nrow(Soil.As_all_deg))
-Soil.Bx_all_deg$Treatment <- rep("Bx",nrow(Soil.Bx_all_deg))
-Soil.Tb_all_deg$Treatment <- rep("Tb",nrow(Soil.Tb_all_deg))
-
-Soil.Ctr_all_deg <- dplyr::as_tibble(Soil.Ctr_all_deg, rownames = "ASV_ID")
-Soil.As_all_deg <- dplyr::as_tibble(Soil.As_all_deg, rownames = "ASV_ID")
-Soil.Bx_all_deg <- dplyr::as_tibble(Soil.Bx_all_deg, rownames = "ASV_ID")
-Soil.Tb_all_deg <- dplyr::as_tibble(Soil.Tb_all_deg, rownames = "ASV_ID")
-
-Soil_all_deg <- rbind(Soil.Ctr_all_deg, Soil.As_all_deg, Soil.Bx_all_deg, Soil.Tb_all_deg)
-Soil_all_deg$Treatment<- factor(Soil_all_deg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-Soil_p1 <- ggplot(Soil_all_deg, aes(x=Treatment,  y= Degree), colour = Treatment)  + geom_jitter(size=2.0, width = 0.25, aes(colour = Treatment)) + theme_set(theme_bw())+ theme(panel.border = element_rect(colour = "black", size=1), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(size=34, face="bold"), axis.text.y = element_text(size=24, face="bold"))  + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73",  "#D55E00")) + theme(legend.position = "none") + scale_y_continuous(breaks = seq(0, 70, by=10), limits=c(0,70))
-
-############## Water Degree distributions ######################
-
-Water.Ctr.Water.ig= readRDS("Water.Ctr.Water.ig.RDS")
-Water.As.Water.ig= readRDS("Water.As.Water.ig.RDS")
-Water.Bx.Water.ig= readRDS("Water.Bx.Water.ig.RDS")
-Water.Tb.Water.ig= readRDS("Water.Tb.Water.ig.RDS")
-
-Water.Ctr_all_deg <- as.data.frame(igraph::degree(Water.Ctr.Water.ig, mode="all")) # one can also extract other values of network by using such
-Water.As_all_deg <- as.data.frame(igraph::degree(Water.As.Water.ig, mode="all"))
-Water.Bx_all_deg <- as.data.frame(igraph::degree(Water.Bx.Water.ig, mode="all"))
-Water.Tb_all_deg <- as.data.frame(igraph::degree(Water.Tb.Water.ig, mode="all"))
-
-names(Water.Ctr_all_deg)[1]<-paste("Degree")
-names(Water.As_all_deg)[1]<-paste("Degree")
-names(Water.Bx_all_deg)[1]<-paste("Degree")
-names(Water.Tb_all_deg)[1]<-paste("Degree")
-
-Water.Ctr_all_deg$Treatment <- rep("Ctr",nrow(Water.Ctr_all_deg))
-Water.As_all_deg$Treatment <- rep("As",nrow(Water.As_all_deg))
-Water.Bx_all_deg$Treatment <- rep("Bx",nrow(Water.Bx_all_deg))
-Water.Tb_all_deg$Treatment <- rep("Tb",nrow(Water.Tb_all_deg))
-
-Water.Ctr_all_deg <- dplyr::as_tibble(Water.Ctr_all_deg, rownames = "ASV_ID")
-Water.As_all_deg <- dplyr::as_tibble(Water.As_all_deg, rownames = "ASV_ID")
-Water.Bx_all_deg <- dplyr::as_tibble(Water.Bx_all_deg, rownames = "ASV_ID")
-Water.Tb_all_deg <- dplyr::as_tibble(Water.Tb_all_deg, rownames = "ASV_ID")
-
-Water_all_deg <- rbind(Water.Ctr_all_deg, Water.As_all_deg, Water.Bx_all_deg, Water.Tb_all_deg)
-Water_all_deg$Treatment<- factor(Water_all_deg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-Water_p1 <- ggplot(Water_all_deg, aes(x=Treatment,  y= Degree), colour = Treatment)  + geom_jitter(size=2.0, width = 0.25, aes(colour = Treatment)) + theme_set(theme_bw()) + theme(panel.border = element_rect(colour = "black",  size=1), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(size=34, face="bold"), axis.text.y = element_text(size=24, face="bold"))  + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73",  "#D55E00")) + theme(legend.position = "none") + scale_y_continuous(breaks = seq(0, 35, by=10), limits=c(0,35))
-
-#############################################################################################
-
-############## Sediment Degree distributions ######################
-
-Sediment.Ctr.Sediment.ig= readRDS("Sediment.Ctr.Sediment.ig.RDS")
-Sediment.As.Sediment.ig= readRDS("Sediment.As.Sediment.ig.RDS")
-Sediment.Bx.Sediment.ig= readRDS("Sediment.Bx.Sediment.ig.RDS")
-Sediment.Tb.Sediment.ig= readRDS("Sediment.Tb.Sediment.ig.RDS")
-
-Sediment.Ctr_all_deg <- as.data.frame(igraph::degree(Sediment.Ctr.Sediment.ig, mode="all")) # one can also extract other values of network by using such
-Sediment.As_all_deg <- as.data.frame(igraph::degree(Sediment.As.Sediment.ig, mode="all"))
-Sediment.Bx_all_deg <- as.data.frame(igraph::degree(Sediment.Bx.Sediment.ig, mode="all"))
-Sediment.Tb_all_deg <- as.data.frame(igraph::degree(Sediment.Tb.Sediment.ig, mode="all"))
-
-names(Sediment.Ctr_all_deg)[1]<-paste("Degree")
-names(Sediment.As_all_deg)[1]<-paste("Degree")
-names(Sediment.Bx_all_deg)[1]<-paste("Degree")
-names(Sediment.Tb_all_deg)[1]<-paste("Degree")
-
-Sediment.Ctr_all_deg$Treatment <- rep("Ctr",nrow(Sediment.Ctr_all_deg))
-Sediment.As_all_deg$Treatment <- rep("As",nrow(Sediment.As_all_deg))
-Sediment.Bx_all_deg$Treatment <- rep("Bx",nrow(Sediment.Bx_all_deg))
-Sediment.Tb_all_deg$Treatment <- rep("Tb",nrow(Sediment.Tb_all_deg))
-
-Sediment.Ctr_all_deg <- dplyr::as_tibble(Sediment.Ctr_all_deg, rownames = "ASV_ID")
-Sediment.As_all_deg <- dplyr::as_tibble(Sediment.As_all_deg, rownames = "ASV_ID")
-Sediment.Bx_all_deg <- dplyr::as_tibble(Sediment.Bx_all_deg, rownames = "ASV_ID")
-Sediment.Tb_all_deg <- dplyr::as_tibble(Sediment.Tb_all_deg, rownames = "ASV_ID")
-
-Sediment_all_deg <- rbind(Sediment.Ctr_all_deg, Sediment.As_all_deg, Sediment.Bx_all_deg, Sediment.Tb_all_deg)
-Sediment_all_deg$Treatment<- factor(Sediment_all_deg$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-Sediment_p1 <- ggplot(Sediment_all_deg, aes(x=Treatment,  y= Degree), colour = Treatment)  + geom_jitter(size=2.0, width = 0.25, aes(colour = Treatment)) + theme_set(theme_bw()) + theme(panel.border = element_rect(colour = "black", size=1), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(size=34, face="bold"), axis.text.y = element_text(size=24, face="bold"))  + theme(legend.text=element_text(size=12), legend.title=element_text(size=14))  + scale_color_manual(values=c("gray50", "#E69F00", "#009E73",  "#D55E00")) + theme(legend.position = "none")
-
-#############################################################################################
-
-######combined degree distribution plot ####################
-
-combine_degree_plot1 <- ggarrange(W_Ctr, Se_Ctr, S_Ctr, R_Ctr, M_Ctr, W_As, Se_As, S_As, R_As,  M_As,  W_Bx, Se_bx, S_Bx, R_Bx, M_Bx, W_Tb, Se_Tb, S_Tb, R_Tb, M_Tb, Water_p1, Sediment_p1, Soil_p1, Root_p1, Mouse_p1, ncol = 5, nrow = 5)
-
-################################################################################################################################################################
