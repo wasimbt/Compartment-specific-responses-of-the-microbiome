@@ -28,139 +28,53 @@ CMRE5_High = prune_samples(sample_sums(CMRE5)>=8100, CMRE5)
 CMRE5_High_p = prune_taxa(taxa_sums(CMRE5_High) > 0, CMRE5_High) # Remove taxa with 0 counts
 sample_data(CMRE5_High_p)$Treatment<- factor(sample_data(CMRE5_High_p)$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
 
-##########################---Mouse Diff Abundance Analysis-----#################
-
-#####Subset dataset for mouse
-
-CMRE5_High_p_mouse <- subset_samples(CMRE5_High_p, Sampletype%in%c("feces"))
-CMRE5_High_mouse = prune_taxa(taxa_sums(CMRE5_High_p_mouse) > 0, CMRE5_High_p_mouse) #Remove taxa with 0 counts
-
-#########################-------- Mouse Ctr-AS --------##########################
-
-CMRE5_High_mouse_CtrAs <- subset_samples(CMRE5_High_mouse, Treatment %in%c("Ctr", "As"))
-CMRE5_High_mouse_CtrAs1 = prune_taxa(taxa_sums(CMRE5_High_mouse_CtrAs) > 0, CMRE5_High_mouse_CtrAs) #Remove taxa with 0 counts
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Mouse_CtrAs1 = phyloseq_to_deseq2(CMRE5_High_mouse_CtrAs1, ~ Treatment) #
-diagdds_Mouse_CtrAs2 = DESeq(diagdds_Mouse_CtrAs1, test="Wald", fitType="parametric") 
-res = results(diagdds_Mouse_CtrAs2, cooksCutoff = FALSE)
-CMRE5_High_mouse_CtrAs1_res = res[order(res$padj, na.last=NA), ]
-
-##########################-------- Mouse Ctr-Bx --------##########################
-
-CMRE5_High_mouse_CtrBx <- subset_samples(CMRE5_High_mouse, Treatment %in%c("Ctr", "Bx"))
-CMRE5_High_mouse_CtrBx1 = prune_taxa(taxa_sums(CMRE5_High_mouse_CtrBx) > 0, CMRE5_High_mouse_CtrBx) #Remove taxa with 0 counts
-
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Mouse_CtrBx1 = phyloseq_to_deseq2(CMRE5_High_mouse_CtrBx1, ~ Treatment) #
-diagdds_Mouse_CtrBx2 = DESeq(diagdds_Mouse_CtrBx1, test="Wald", fitType="parametric") ##
-res = results(diagdds_Mouse_CtrBx2, cooksCutoff = FALSE)
-CMRE5_High_mouse_CtrBx1_res = res[order(res$padj, na.last=NA), ]
-
-##########################-------- Mouse Ctr-Tb --------##########################
-
-CMRE5_High_mouse_CtrTb <- subset_samples(CMRE5_High_mouse, Treatment %in%c("Ctr", "Tb"))
-CMRE5_High_mouse_CtrTb1 = prune_taxa(taxa_sums(CMRE5_High_mouse_CtrTb) > 0, CMRE5_High_mouse_CtrTb) #Remove taxa with 0 counts
-
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Mouse_CtrTb1 = phyloseq_to_deseq2(CMRE5_High_mouse_CtrTb1, ~ Treatment) #
-diagdds_Mouse_CtrTb2 = DESeq(diagdds_Mouse_CtrTb1, test="Wald", fitType="parametric") ##
-res = results(diagdds_Mouse_CtrTb2, cooksCutoff = FALSE)
-CMRE5_High_mouse_CtrTb2_res = res[order(res$padj, na.last=NA), ]
 
 ###############################################################################################
 
-##########################---Root Diff Abundance Analysis-----#################
-
-#####Subset dataset for Root
-
-CMRE5_High_p_Root <- subset_samples(CMRE5_High_p, Sampletype%in%c("roots"))
-CMRE5_High_Root = prune_taxa(taxa_sums(CMRE5_High_p_Root) > 0, CMRE5_High_p_Root) #Remove taxa with 0 counts
-sample_data(CMRE5_High_Root)$Treatment <- factor(sample_data(CMRE5_High_Root)$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-##########################-------- Root Ctr-AS --------##########################
-
-CMRE5_High_Root_CtrAs <- subset_samples(CMRE5_High_Root, Treatment %in%c("Ctr", "As"))
-CMRE5_High_Root_CtrAs1 = prune_taxa(taxa_sums(CMRE5_High_Root_CtrAs) > 0, CMRE5_High_Root_CtrAs) #Remove taxa with 0 counts
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Root_CtrAs1 = phyloseq_to_deseq2(CMRE5_High_Root_CtrAs1, ~ Treatment) #
-diagdds_Root_CtrAs2 = DESeq(diagdds_Root_CtrAs1, test="Wald", fitType="parametric") ##
-res = results(diagdds_Root_CtrAs2, cooksCutoff = FALSE)
-CMRE5_High_Root_CtrAs2_res = res[order(res$padj, na.last=NA), ]
-
-##########################-------- Root Ctr-Bx --------##########################
-
-CMRE5_High_Root_CtrBx <- subset_samples(CMRE5_High_Root, Treatment %in%c("Ctr", "Bx"))
-CMRE5_High_Root_CtrBx1 = prune_taxa(taxa_sums(CMRE5_High_Root_CtrBx) > 0, CMRE5_High_Root_CtrBx) #Remove taxa with 0 counts
-
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Root_CtrBx1 = phyloseq_to_deseq2(CMRE5_High_Root_CtrBx1, ~ Treatment) #
-diagdds_Root_CtrBx2 = DESeq(diagdds_Root_CtrBx1, test="Wald", fitType="parametric") ##
-res = results(diagdds_Root_CtrBx2, cooksCutoff = FALSE)
-CMRE5_High_Root_CtrBx2_res = res[order(res$padj, na.last=NA), ]
-
-##########################-------- Root Ctr-Tb --------##########################
-
-CMRE5_High_Root_CtrTb <- subset_samples(CMRE5_High_Root, Treatment %in%c("Ctr", "Tb"))
-CMRE5_High_Root_CtrTb1 = prune_taxa(taxa_sums(CMRE5_High_Root_CtrTb) > 0, CMRE5_High_Root_CtrTb) #Remove taxa with 0 counts
-
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Root_CtrTb1 = phyloseq_to_deseq2(CMRE5_High_Root_CtrTb1, ~ Treatment) #
-diagdds_Root_CtrTb2 = DESeq(diagdds_Root_CtrTb1, test="Wald", fitType="parametric") ##
-res = results(diagdds_Root_CtrTb2, cooksCutoff = FALSE)
-CMRE5_High_Root_CtrTb2_res = res[order(res$padj, na.last=NA), ]
-
-###############################################################################################
-
-##########################---Soil Diff Abundance Analysis-----#################
-
-#####Subset dataset for Soil
-
-CMRE5_High_p_Soil <- subset_samples(CMRE5_High_p, Sampletype%in%c("soil"))
-CMRE5_High_Soil = prune_taxa(taxa_sums(CMRE5_High_p_Soil) > 0, CMRE5_High_p_Soil) #Remove taxa with 0 counts
-sample_data(CMRE5_High_Soil)$Treatment<- factor(sample_data(CMRE5_High_Soil)$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-##########################-------- Soil Ctr-AS --------##########################
-
-CMRE5_High_Soil_CtrAs <- subset_samples(CMRE5_High_Soil, Treatment %in%c("Ctr", "As"))
-CMRE5_High_Soil_CtrAs1 = prune_taxa(taxa_sums(CMRE5_High_Soil_CtrAs) > 0, CMRE5_High_Soil_CtrAs) #Remove taxa with 0 counts
-
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Soil_CtrAs1 = phyloseq_to_deseq2(CMRE5_High_Soil_CtrAs1, ~ Treatment) #
-diagdds_Soil_CtrAs2 = DESeq(diagdds_Soil_CtrAs1, test="Wald", fitType="parametric") ## 
-res = results(diagdds_Soil_CtrAs2, cooksCutoff = FALSE)
-CMRE5_High_Soil_CtrAs2_res = res[order(res$padj, na.last=NA), ]
-
-##########################-------- Soil Ctr-Bx --------##########################
-
-CMRE5_High_Soil_CtrBx <- subset_samples(CMRE5_High_Soil, Treatment %in%c("Ctr", "Bx"))
-CMRE5_High_Soil_CtrBx1 = prune_taxa(taxa_sums(CMRE5_High_Soil_CtrBx) > 0, CMRE5_High_Soil_CtrBx) #Remove taxa with 0 counts
-
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Soil_CtrBx1 = phyloseq_to_deseq2(CMRE5_High_Soil_CtrBx1, ~ Treatment) #
-diagdds_Soil_CtrBx2 = DESeq(diagdds_Soil_CtrBx1, test="Wald", fitType="parametric") ##
-res = results(diagdds_Soil_CtrBx2, cooksCutoff = FALSE)
-CMRE5_High_Soil_CtrBx2_res = res[order(res$padj, na.last=NA), ]
-
-##########################-------- Soil Ctr-Tb --------##########################
-
-CMRE5_High_Soil_CtrTb <- subset_samples(CMRE5_High_Soil, Treatment %in%c("Ctr", "Tb"))
-CMRE5_High_Soil_CtrTb1 = prune_taxa(taxa_sums(CMRE5_High_Soil_CtrTb) > 0, CMRE5_High_Soil_CtrTb) #Remove taxa with 0 counts
-
-###########################-----Perform the DeSEQ2 analysis--------####################
-
-diagdds_Soil_CtrTb1 = phyloseq_to_deseq2(CMRE5_High_Soil_CtrTb1, ~ Treatment) #
-diagdds_Soil_CtrTb2 = DESeq(diagdds_Soil_CtrTb1, test="Wald", fitType="parametric") ##
-res = results(diagdds_Soil_CtrTb2, cooksCutoff = FALSE)
-CMRE5_High_Soil_CtrTb2_res = res[order(res$padj, na.last=NA), ]
-
+ ##########################---Water Diff Abundance Analysis-----#################
+ 
+ #####Subset dataset for Water
+ 
+ CMRE5_High_p_Water <- subset_samples(CMRE5_High_p, Sampletype%in%c("water"))
+ CMRE5_High_Water = prune_taxa(taxa_sums(CMRE5_High_p_Water) > 0, CMRE5_High_p_Water) #Remove taxa with 0 counts
+ sample_data(CMRE5_High_Water)$Treatment <- factor(sample_data(CMRE5_High_Water)$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
+ 
+ ##########################-------- Water Ctr-AS --------##########################
+ 
+ CMRE5_High_Water_CtrAs <- subset_samples(CMRE5_High_Water, Treatment %in%c("Ctr", "As"))
+ CMRE5_High_Water_CtrAs1 = prune_taxa(taxa_sums(CMRE5_High_Water_CtrAs) > 0, CMRE5_High_Water_CtrAs) #Remove taxa with 0 counts
+ 
+ ###########################-----Perform the DeSEQ2 analysis--------####################
+ 
+ diagdds_Water_CtrAs1 = phyloseq_to_deseq2(CMRE5_High_Water_CtrAs1, ~ Treatment) #
+ diagdds_Water_CtrAs2 = DESeq(diagdds_Water_CtrAs1, test="Wald", fitType="parametric") ## 
+ res = results(diagdds_Water_CtrAs2, cooksCutoff = FALSE)
+ CMRE5_High_Water_CtrAs2_res = res[order(res$padj, na.last=NA), ]
+ 
+ ##########################-------- Water Ctr-Bx --------##########################
+ 
+ CMRE5_High_Water_CtrBx <- subset_samples(CMRE5_High_Water, Treatment %in%c("Ctr", "Bx"))
+ CMRE5_High_Water_CtrBx1 = prune_taxa(taxa_sums(CMRE5_High_Water_CtrBx) > 0, CMRE5_High_Water_CtrBx) #Remove taxa with 0 counts
+ 
+ ###########################-----Perform the DeSEQ2 analysis--------####################
+ 
+ diagdds_Water_CtrBx1 = phyloseq_to_deseq2(CMRE5_High_Water_CtrBx1, ~ Treatment) #
+ diagdds_Water_CtrBx2 = DESeq(diagdds_Water_CtrBx1, test="Wald", fitType="parametric") ##
+ res = results(diagdds_Water_CtrBx2, cooksCutoff = FALSE)
+ CMRE5_High_Water_CtrBx2_res = res[order(res$padj, na.last=NA), ]
+ 
+##########################-------- Water Ctr-Tb --------##########################
+ 
+ CMRE5_High_Water_CtrTb <- subset_samples(CMRE5_High_Water, Treatment %in%c("Ctr", "Tb"))
+ CMRE5_High_Water_CtrTb1 = prune_taxa(taxa_sums(CMRE5_High_Water_CtrTb) > 0, CMRE5_High_Water_CtrTb) #Remove taxa with 0 counts
+ 
+ ###########################-----Perform the DeSEQ2 analysis--------####################
+ 
+ diagdds_Water_CtrTb1 = phyloseq_to_deseq2(CMRE5_High_Water_CtrTb1, ~ Treatment) #
+ diagdds_Water_CtrTb2 = DESeq(diagdds_Water_CtrTb1, test="Wald", fitType="parametric") ##
+ res = results(diagdds_Water_CtrTb2, cooksCutoff = FALSE)
+ CMRE5_High_Water_CtrTb2_res = res[order(res$padj, na.last=NA), ]
+ 
 ###############################################################################################
 
 ##########################---Sediment Diff Abundance Analysis-----#################
@@ -208,50 +122,136 @@ CMRE5_High_Soil_CtrTb2_res = res[order(res$padj, na.last=NA), ]
  CMRE5_High_Sediment_CtrTb2_res = res[order(res$padj, na.last=NA), ]
 
  ###############################################################################################
- 
- ##########################---Water Diff Abundance Analysis-----#################
- 
- #####Subset dataset for Water
- 
- CMRE5_High_p_Water <- subset_samples(CMRE5_High_p, Sampletype%in%c("water"))
- CMRE5_High_Water = prune_taxa(taxa_sums(CMRE5_High_p_Water) > 0, CMRE5_High_p_Water) #Remove taxa with 0 counts
- sample_data(CMRE5_High_Water)$Treatment <- factor(sample_data(CMRE5_High_Water)$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
- 
- ##########################-------- Water Ctr-AS --------##########################
- 
- CMRE5_High_Water_CtrAs <- subset_samples(CMRE5_High_Water, Treatment %in%c("Ctr", "As"))
- CMRE5_High_Water_CtrAs1 = prune_taxa(taxa_sums(CMRE5_High_Water_CtrAs) > 0, CMRE5_High_Water_CtrAs) #Remove taxa with 0 counts
- 
- ###########################-----Perform the DeSEQ2 analysis--------####################
- 
- diagdds_Water_CtrAs1 = phyloseq_to_deseq2(CMRE5_High_Water_CtrAs1, ~ Treatment) #
- diagdds_Water_CtrAs2 = DESeq(diagdds_Water_CtrAs1, test="Wald", fitType="parametric") ## 
- res = results(diagdds_Water_CtrAs2, cooksCutoff = FALSE)
- CMRE5_High_Water_CtrAs2_res = res[order(res$padj, na.last=NA), ]
- 
- ##########################-------- Water Ctr-Bx --------##########################
- 
- CMRE5_High_Water_CtrBx <- subset_samples(CMRE5_High_Water, Treatment %in%c("Ctr", "Bx"))
- CMRE5_High_Water_CtrBx1 = prune_taxa(taxa_sums(CMRE5_High_Water_CtrBx) > 0, CMRE5_High_Water_CtrBx) #Remove taxa with 0 counts
- 
- ###########################-----Perform the DeSEQ2 analysis--------####################
- 
- diagdds_Water_CtrBx1 = phyloseq_to_deseq2(CMRE5_High_Water_CtrBx1, ~ Treatment) #
- diagdds_Water_CtrBx2 = DESeq(diagdds_Water_CtrBx1, test="Wald", fitType="parametric") ##
- res = results(diagdds_Water_CtrBx2, cooksCutoff = FALSE)
- CMRE5_High_Water_CtrBx2_res = res[order(res$padj, na.last=NA), ]
- 
-##########################-------- Water Ctr-Tb --------##########################
- 
- CMRE5_High_Water_CtrTb <- subset_samples(CMRE5_High_Water, Treatment %in%c("Ctr", "Tb"))
- CMRE5_High_Water_CtrTb1 = prune_taxa(taxa_sums(CMRE5_High_Water_CtrTb) > 0, CMRE5_High_Water_CtrTb) #Remove taxa with 0 counts
- 
- ###########################-----Perform the DeSEQ2 analysis--------####################
- 
- diagdds_Water_CtrTb1 = phyloseq_to_deseq2(CMRE5_High_Water_CtrTb1, ~ Treatment) #
- diagdds_Water_CtrTb2 = DESeq(diagdds_Water_CtrTb1, test="Wald", fitType="parametric") ##
- res = results(diagdds_Water_CtrTb2, cooksCutoff = FALSE)
- CMRE5_High_Water_CtrTb2_res = res[order(res$padj, na.last=NA), ]
- 
+
+##########################---Soil Diff Abundance Analysis-----#################
+
+#####Subset dataset for Soil
+
+CMRE5_High_p_Soil <- subset_samples(CMRE5_High_p, Sampletype%in%c("soil"))
+CMRE5_High_Soil = prune_taxa(taxa_sums(CMRE5_High_p_Soil) > 0, CMRE5_High_p_Soil) #Remove taxa with 0 counts
+sample_data(CMRE5_High_Soil)$Treatment<- factor(sample_data(CMRE5_High_Soil)$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
+
+##########################-------- Soil Ctr-AS --------##########################
+
+CMRE5_High_Soil_CtrAs <- subset_samples(CMRE5_High_Soil, Treatment %in%c("Ctr", "As"))
+CMRE5_High_Soil_CtrAs1 = prune_taxa(taxa_sums(CMRE5_High_Soil_CtrAs) > 0, CMRE5_High_Soil_CtrAs) #Remove taxa with 0 counts
+
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Soil_CtrAs1 = phyloseq_to_deseq2(CMRE5_High_Soil_CtrAs1, ~ Treatment) #
+diagdds_Soil_CtrAs2 = DESeq(diagdds_Soil_CtrAs1, test="Wald", fitType="parametric") ## 
+res = results(diagdds_Soil_CtrAs2, cooksCutoff = FALSE)
+CMRE5_High_Soil_CtrAs2_res = res[order(res$padj, na.last=NA), ]
+
+##########################-------- Soil Ctr-Bx --------##########################
+
+CMRE5_High_Soil_CtrBx <- subset_samples(CMRE5_High_Soil, Treatment %in%c("Ctr", "Bx"))
+CMRE5_High_Soil_CtrBx1 = prune_taxa(taxa_sums(CMRE5_High_Soil_CtrBx) > 0, CMRE5_High_Soil_CtrBx) #Remove taxa with 0 counts
+
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Soil_CtrBx1 = phyloseq_to_deseq2(CMRE5_High_Soil_CtrBx1, ~ Treatment) #
+diagdds_Soil_CtrBx2 = DESeq(diagdds_Soil_CtrBx1, test="Wald", fitType="parametric") ##
+res = results(diagdds_Soil_CtrBx2, cooksCutoff = FALSE)
+CMRE5_High_Soil_CtrBx2_res = res[order(res$padj, na.last=NA), ]
+
+##########################-------- Soil Ctr-Tb --------##########################
+
+CMRE5_High_Soil_CtrTb <- subset_samples(CMRE5_High_Soil, Treatment %in%c("Ctr", "Tb"))
+CMRE5_High_Soil_CtrTb1 = prune_taxa(taxa_sums(CMRE5_High_Soil_CtrTb) > 0, CMRE5_High_Soil_CtrTb) #Remove taxa with 0 counts
+
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Soil_CtrTb1 = phyloseq_to_deseq2(CMRE5_High_Soil_CtrTb1, ~ Treatment) #
+diagdds_Soil_CtrTb2 = DESeq(diagdds_Soil_CtrTb1, test="Wald", fitType="parametric") ##
+res = results(diagdds_Soil_CtrTb2, cooksCutoff = FALSE)
+CMRE5_High_Soil_CtrTb2_res = res[order(res$padj, na.last=NA), ]
+
 ###############################################################################################
- 
+
+##########################---Root Diff Abundance Analysis-----#################
+
+#####Subset dataset for Root
+
+CMRE5_High_p_Root <- subset_samples(CMRE5_High_p, Sampletype%in%c("roots"))
+CMRE5_High_Root = prune_taxa(taxa_sums(CMRE5_High_p_Root) > 0, CMRE5_High_p_Root) #Remove taxa with 0 counts
+sample_data(CMRE5_High_Root)$Treatment <- factor(sample_data(CMRE5_High_Root)$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
+
+##########################-------- Root Ctr-AS --------##########################
+
+CMRE5_High_Root_CtrAs <- subset_samples(CMRE5_High_Root, Treatment %in%c("Ctr", "As"))
+CMRE5_High_Root_CtrAs1 = prune_taxa(taxa_sums(CMRE5_High_Root_CtrAs) > 0, CMRE5_High_Root_CtrAs) #Remove taxa with 0 counts
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Root_CtrAs1 = phyloseq_to_deseq2(CMRE5_High_Root_CtrAs1, ~ Treatment) #
+diagdds_Root_CtrAs2 = DESeq(diagdds_Root_CtrAs1, test="Wald", fitType="parametric") ##
+res = results(diagdds_Root_CtrAs2, cooksCutoff = FALSE)
+CMRE5_High_Root_CtrAs2_res = res[order(res$padj, na.last=NA), ]
+
+##########################-------- Root Ctr-Bx --------##########################
+
+CMRE5_High_Root_CtrBx <- subset_samples(CMRE5_High_Root, Treatment %in%c("Ctr", "Bx"))
+CMRE5_High_Root_CtrBx1 = prune_taxa(taxa_sums(CMRE5_High_Root_CtrBx) > 0, CMRE5_High_Root_CtrBx) #Remove taxa with 0 counts
+
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Root_CtrBx1 = phyloseq_to_deseq2(CMRE5_High_Root_CtrBx1, ~ Treatment) #
+diagdds_Root_CtrBx2 = DESeq(diagdds_Root_CtrBx1, test="Wald", fitType="parametric") ##
+res = results(diagdds_Root_CtrBx2, cooksCutoff = FALSE)
+CMRE5_High_Root_CtrBx2_res = res[order(res$padj, na.last=NA), ]
+
+##########################-------- Root Ctr-Tb --------##########################
+
+CMRE5_High_Root_CtrTb <- subset_samples(CMRE5_High_Root, Treatment %in%c("Ctr", "Tb"))
+CMRE5_High_Root_CtrTb1 = prune_taxa(taxa_sums(CMRE5_High_Root_CtrTb) > 0, CMRE5_High_Root_CtrTb) #Remove taxa with 0 counts
+
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Root_CtrTb1 = phyloseq_to_deseq2(CMRE5_High_Root_CtrTb1, ~ Treatment) #
+diagdds_Root_CtrTb2 = DESeq(diagdds_Root_CtrTb1, test="Wald", fitType="parametric") ##
+res = results(diagdds_Root_CtrTb2, cooksCutoff = FALSE)
+CMRE5_High_Root_CtrTb2_res = res[order(res$padj, na.last=NA), ]
+
+##########################---Mouse Diff Abundance Analysis-----#################
+
+#####Subset dataset for mouse
+
+CMRE5_High_p_mouse <- subset_samples(CMRE5_High_p, Sampletype%in%c("feces"))
+CMRE5_High_mouse = prune_taxa(taxa_sums(CMRE5_High_p_mouse) > 0, CMRE5_High_p_mouse) #Remove taxa with 0 counts
+
+#########################-------- Mouse Ctr-AS --------##########################
+
+CMRE5_High_mouse_CtrAs <- subset_samples(CMRE5_High_mouse, Treatment %in%c("Ctr", "As"))
+CMRE5_High_mouse_CtrAs1 = prune_taxa(taxa_sums(CMRE5_High_mouse_CtrAs) > 0, CMRE5_High_mouse_CtrAs) #Remove taxa with 0 counts
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Mouse_CtrAs1 = phyloseq_to_deseq2(CMRE5_High_mouse_CtrAs1, ~ Treatment) #
+diagdds_Mouse_CtrAs2 = DESeq(diagdds_Mouse_CtrAs1, test="Wald", fitType="parametric") 
+res = results(diagdds_Mouse_CtrAs2, cooksCutoff = FALSE)
+CMRE5_High_mouse_CtrAs1_res = res[order(res$padj, na.last=NA), ]
+
+##########################-------- Mouse Ctr-Bx --------##########################
+
+CMRE5_High_mouse_CtrBx <- subset_samples(CMRE5_High_mouse, Treatment %in%c("Ctr", "Bx"))
+CMRE5_High_mouse_CtrBx1 = prune_taxa(taxa_sums(CMRE5_High_mouse_CtrBx) > 0, CMRE5_High_mouse_CtrBx) #Remove taxa with 0 counts
+
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Mouse_CtrBx1 = phyloseq_to_deseq2(CMRE5_High_mouse_CtrBx1, ~ Treatment) #
+diagdds_Mouse_CtrBx2 = DESeq(diagdds_Mouse_CtrBx1, test="Wald", fitType="parametric") ##
+res = results(diagdds_Mouse_CtrBx2, cooksCutoff = FALSE)
+CMRE5_High_mouse_CtrBx1_res = res[order(res$padj, na.last=NA), ]
+
+##########################-------- Mouse Ctr-Tb --------##########################
+
+CMRE5_High_mouse_CtrTb <- subset_samples(CMRE5_High_mouse, Treatment %in%c("Ctr", "Tb"))
+CMRE5_High_mouse_CtrTb1 = prune_taxa(taxa_sums(CMRE5_High_mouse_CtrTb) > 0, CMRE5_High_mouse_CtrTb) #Remove taxa with 0 counts
+
+###########################-----Perform the DeSEQ2 analysis--------####################
+
+diagdds_Mouse_CtrTb1 = phyloseq_to_deseq2(CMRE5_High_mouse_CtrTb1, ~ Treatment) #
+diagdds_Mouse_CtrTb2 = DESeq(diagdds_Mouse_CtrTb1, test="Wald", fitType="parametric") ##
+res = results(diagdds_Mouse_CtrTb2, cooksCutoff = FALSE)
+CMRE5_High_mouse_CtrTb2_res = res[order(res$padj, na.last=NA), ]
+
+###############################################################################################
