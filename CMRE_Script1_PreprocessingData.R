@@ -75,15 +75,15 @@ seqtab12345 <- mergeSequenceTables(L1_seqtab1, L2_seqtab1, L3_seqtab1, L4_seqtab
 seqtab12345.nochim <- removeBimeraDenovo(seqtab12345, method="consensus", multithread=TRUE, verbose=TRUE)
 
 #######################--Remove too far length sequences
-seqtab1234.nochim1 <- seqtab1234.nochim[,nchar(colnames(seqtab1234.nochim)) %in% seq(220,273)] 
+seqtab12345.nochim1 <- seqtab12345.nochim[,nchar(colnames(seqtab12345.nochim)) %in% seq(220,273)] 
 
 ################################################################--------Assign taxonomy
 set.seed(100) # Initialize random number generator for reproducibility
-CMRE1_taxa <- AssignTaxonomy(seqtab1234.nochim1, "silva_nr_v132_train_set.fa.gz", multithread=TRUE)
+CMRE1_taxa <- AssignTaxonomy(seqtab12345.nochim1, "silva_nr_v132_train_set.fa.gz", multithread=TRUE)
 CMRE2_taxa <- addSpecies(CMRE1_taxa, "silva_species_Assignment_v132.fa.gz", verbose=TRUE)
 
 ################################################################--------Merge the objects created with mapping file
-CMRE1_object <- phyloseq(otu_table(seqtab1234.nochim1, taxa_are_rows=FALSE), sample_data(CMRE1234_metadata), tax_table(CMRE2_taxa))
+CMRE1_object <- phyloseq(otu_table(seqtab12345.nochim1, taxa_are_rows=FALSE), sample_data(CMRE12345_metadata), tax_table(CMRE2_taxa))
 
 ################################################################--------Change the sequence header to AsVs number for identity
 n_seqs <- seq(ntaxa(CMRE1_object))
