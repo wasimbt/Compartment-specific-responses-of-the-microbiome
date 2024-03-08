@@ -14,13 +14,15 @@
 # library("data.table"); packageVersion("data.table")
 # ## [1] ‘1.11.6’
 
+#setwd("path/to/directory")### set the working directory
+
 #######################--Remove primers etc.
 ## cutadapt 2.5 with Python 3.7.3
 
 cutadapt -g ^GTGYCAGCMGCCGCGGTAA --minimum-length 150 --discard-untrimmed -G ^GGACTACNVGGGTWTCTAAT --minimum-length 150 
 --discard-untrimmed -e 0.2 -n 2 -o Path/to/L5_FLD0002_S2_L001_R1_001.fastq.gz -p path/to/L5_FLD0002_S2_L001_R2_001.fastq.gz -j 24
 
-#setwd("path/to/directory")### set the working directory
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # DADA2 pipeline
 #######################--Put filtered (after CUTADAPT) reads into separate sub-directories for analysis
