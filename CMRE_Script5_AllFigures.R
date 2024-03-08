@@ -570,7 +570,9 @@ Fig2A_data <- CMRE9_alpha_r8100 %>%
   select(Treatment,Sampletype,Observed,
          Concentration,Lib)
 
-Fig2A_data_Obs_means <- Fig2A_data %>% 
+Fig2A_data_CTR <- Fig2A_data %>% filter(Treatment=="Ctr")
+
+Fig2A_data_Obs_means <- Fig2A_data_CTR %>% 
   group_by(Sampletype) %>% 
   summarise(MeanObserved=mean(Observed),
             QuantDobserved=quantile(Observed,probs = 0.95))
@@ -721,7 +723,9 @@ Fig2A_data <- CMRE5_alpha_r8100 %>%
   select(Treatment,Sampletype,Shannon,
          Concentration,Lib)
 
-Fig2A_data_Obs_means <- Fig2A_data %>% 
+Fig2A_data_CTR <- Fig2A_data %>% filter(Treatment=="Ctr")
+
+Fig2A_data_Obs_means <- Fig2A_data_CTR %>% 
   group_by(Sampletype) %>% 
   summarise(MeanShannon=mean(Shannon),
             QuantDShannon=quantile(Shannon,probs = 0.95))
@@ -849,7 +853,7 @@ plot_Fig2B <- plot_Fig2B_prep +
   geom_segment(aes(x=13,xend=15+0.8,
                    y=MeanShannon[13],
                    yend=MeanShannon[13])) +
-  theme_bw() +theme(panel.grid.minor = element_blank()) + theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=14, face = "bold"), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold"))  + theme(legend.position = "none") + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
+  theme_bw() +theme(panel.grid.minor = element_blank()) + theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=14, face = "bold"), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold")) + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
 
 
 plot_Fig2B
@@ -859,7 +863,7 @@ require(patchwork)
 plot_Fig2A + plot_Fig2B
 
 ggplot2::ggsave("Fig.2_Suppl_Shannon.tiff", 
-                width = 9.80, height = 6.30, dpi=300)
+                width = 10.80, height = 6.30, dpi=300)
 
 
 ######################################################################################################
