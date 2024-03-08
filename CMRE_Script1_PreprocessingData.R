@@ -15,6 +15,10 @@
 # ## [1] ‘1.11.6’
 
 
+## cutadapt 2.5 with Python 3.7.3
+# Command line parameters: -g ^GTGYCAGCMGCCGCGGTAA --minimum-length 150 --discard-untrimmed -G ^GGACTACNVGGGTWTCTAAT --minimum-length 150 
+# --discard-untrimmed -e 0.2 -n 2 -o Path/to/L5_FLD0002_S2_L001_R1_001.fastq.gz -p path/to/L5_FLD0002_S2_L001_R2_001.fastq.gz -j 24
+
 #setwd("path/to/directory")### set the working directory
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # DADA2 pipeline
