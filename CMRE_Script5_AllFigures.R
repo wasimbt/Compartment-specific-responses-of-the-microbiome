@@ -2024,6 +2024,261 @@ Figure_4 <- ggarrange(W_Ctr, Se_Ctr, S_Ctr, R_Ctr, M_Ctr, W_As, Se_As, S_As, R_A
 
 ##############################################################################################################################
 
+##############################################################################################################################
+
+##########################################------Supplementary Figure 4---------###############################################
+
+###################subset dataset- first based on sample type than based on treatment 
+
+CMRE9_r8100_t  = readRDS("CMRE9_r8100_t.RDS")
+
+CMRE9_r8100_t_feces <- subset_samples(CMRE9_r8100_t, Sampletype%in%c("feces"))
+CMRE9_r8100_t_roots <- subset_samples(CMRE9_r8100_t, Sampletype%in%c("roots"))
+CMRE9_r8100_t_soil <- subset_samples(CMRE9_r8100_t, Sampletype%in%c("soil"))
+CMRE9_r8100_t_water <- subset_samples(CMRE9_r8100_t, Sampletype%in%c("water"))
+CMRE9_r8100_t_sedi <- subset_samples(CMRE9_r8100_t, Sampletype%in%c("sedi"))
+
+###############################--------- Bray-Curtis------------------####################
+
+#######--For mouse -----#######
+
+CMRE9_r8100_t_feces_As <- subset_samples(CMRE9_r8100_t_feces, Treatment%in%c("As"))
+CMRE9_r8100_t_feces_Bx <- subset_samples(CMRE9_r8100_t_feces, Treatment%in%c("Bx"))
+CMRE9_r8100_t_feces_Tb <- subset_samples(CMRE9_r8100_t_feces, Treatment%in%c("Tb"))
+CMRE9_r8100_t_feces_Ctr <- subset_samples(CMRE9_r8100_t_feces, Treatment%in%c("Ctr"))
+
+CMRE9_r8100_t_feces_As_br <- distance(CMRE9_r8100_t_feces_As, method = "bray") #bray-curtis 
+CMRE9_r8100_t_feces_Bx_br <- distance(CMRE9_r8100_t_feces_Bx, method = "bray")
+CMRE9_r8100_t_feces_Tb_br <- distance(CMRE9_r8100_t_feces_Tb, method = "bray")
+CMRE9_r8100_t_feces_Ctr_br <- distance(CMRE9_r8100_t_feces_Ctr, method = "bray")
+
+CMRE9_r8100_t_feces_As_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_feces_As_br))) ###converting distance matrix to list 
+CMRE9_r8100_feces_As_br_pairlist <- CMRE9_r8100_t_feces_As_br_pairlist[as.numeric(CMRE9_r8100_t_feces_As_br_pairlist$col) > as.numeric(CMRE9_r8100_t_feces_As_br_pairlist$row),]
+CMRE9_r8100_feces_As_br_pairlist$Sampletype <- rep("Mouse",nrow(CMRE9_r8100_feces_As_br_pairlist)) #make new column Sampletype and fill all Mouse
+CMRE9_r8100_feces_As_br_pairlist$Treatment <- rep("As",nrow(CMRE9_r8100_feces_As_br_pairlist)) #make new column Sampletype and fill all Mouse
+
+##
+
+CMRE9_r8100_t_feces_Bx_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_feces_Bx_br))) ###converting distance matrix to list 
+CMRE9_r8100_feces_Bx_br_pairlist <- CMRE9_r8100_t_feces_Bx_br_pairlist[as.numeric(CMRE9_r8100_t_feces_Bx_br_pairlist$col) > as.numeric(CMRE9_r8100_t_feces_Bx_br_pairlist$row),]
+CMRE9_r8100_feces_Bx_br_pairlist$Sampletype <- rep("Mouse",nrow(CMRE9_r8100_feces_Bx_br_pairlist)) #make new column Sampletype and fill all Mouse
+CMRE9_r8100_feces_Bx_br_pairlist$Treatment <- rep("Bx",nrow(CMRE9_r8100_feces_Bx_br_pairlist)) #make new column Sampletype and fill all Mouse
+
+##
+
+CMRE9_r8100_t_feces_Tb_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_feces_Tb_br))) ###converting distance matrix to list 
+CMRE9_r8100_feces_Tb_br_pairlist <- CMRE9_r8100_t_feces_Tb_br_pairlist[as.numeric(CMRE9_r8100_t_feces_Tb_br_pairlist$col) > as.numeric(CMRE9_r8100_t_feces_Tb_br_pairlist$row),]
+CMRE9_r8100_feces_Tb_br_pairlist$Sampletype <- rep("Mouse",nrow(CMRE9_r8100_feces_Tb_br_pairlist)) #make new column Sampletype and fill all Mouse
+CMRE9_r8100_feces_Tb_br_pairlist$Treatment <- rep("Tb",nrow(CMRE9_r8100_feces_Tb_br_pairlist)) #make new column Sampletype and fill all Mouse
+
+##
+
+CMRE9_r8100_t_feces_Ctr_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_feces_Ctr_br))) ###converting distance matrix to list 
+CMRE9_r8100_feces_Ctr_br_pairlist <- CMRE9_r8100_t_feces_Ctr_br_pairlist[as.numeric(CMRE9_r8100_t_feces_Ctr_br_pairlist$col) > as.numeric(CMRE9_r8100_t_feces_Ctr_br_pairlist$row),]
+CMRE9_r8100_feces_Ctr_br_pairlist$Sampletype <- rep("Mouse",nrow(CMRE9_r8100_feces_Ctr_br_pairlist)) #make new column Sampletype and fill all Mouse
+CMRE9_r8100_feces_Ctr_br_pairlist$Treatment <- rep("Ctr",nrow(CMRE9_r8100_feces_Ctr_br_pairlist)) #make new column Sampletype and fill all Mouse
+
+##################now merge all treatment csv files
+
+CMRE9_r8100_feces_pairlist <- rbind(CMRE9_r8100_feces_Ctr_br_pairlist, CMRE9_r8100_feces_As_br_pairlist, CMRE9_r8100_feces_Bx_br_pairlist, CMRE9_r8100_feces_Tb_br_pairlist)
+
+######################################
+
+#######--For roots -----####### 
+
+CMRE9_r8100_t_roots_As <- subset_samples(CMRE9_r8100_t_roots, Treatment%in%c("As"))
+CMRE9_r8100_t_roots_Bx <- subset_samples(CMRE9_r8100_t_roots, Treatment%in%c("Bx"))
+CMRE9_r8100_t_roots_Tb <- subset_samples(CMRE9_r8100_t_roots, Treatment%in%c("Tb"))
+CMRE9_r8100_t_roots_Ctr <- subset_samples(CMRE9_r8100_t_roots, Treatment%in%c("Ctr"))
+
+CMRE9_r8100_t_roots_As_br <- distance(CMRE9_r8100_t_roots_As, method = "bray") #bray-curtis 
+CMRE9_r8100_t_roots_Bx_br <- distance(CMRE9_r8100_t_roots_Bx, method = "bray")
+CMRE9_r8100_t_roots_Tb_br <- distance(CMRE9_r8100_t_roots_Tb, method = "bray")
+CMRE9_r8100_t_roots_Ctr_br <- distance(CMRE9_r8100_t_roots_Ctr, method = "bray")
+
+CMRE9_r8100_t_roots_As_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_roots_As_br))) ###converting distance matrix to list 
+CMRE9_r8100_roots_As_br_pairlist <- CMRE9_r8100_t_roots_As_br_pairlist[as.numeric(CMRE9_r8100_t_roots_As_br_pairlist$col) > as.numeric(CMRE9_r8100_t_roots_As_br_pairlist$row),]
+CMRE9_r8100_roots_As_br_pairlist$Sampletype <- rep("Root",nrow(CMRE9_r8100_roots_As_br_pairlist)) #make new column Sampletype and fill all Root
+CMRE9_r8100_roots_As_br_pairlist$Treatment <- rep("As",nrow(CMRE9_r8100_roots_As_br_pairlist)) #make new column Sampletype and fill all As
+
+##
+
+CMRE9_r8100_t_roots_Bx_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_roots_Bx_br))) ###converting distance matrix to list 
+CMRE9_r8100_roots_Bx_br_pairlist <- CMRE9_r8100_t_roots_Bx_br_pairlist[as.numeric(CMRE9_r8100_t_roots_Bx_br_pairlist$col) > as.numeric(CMRE9_r8100_t_roots_Bx_br_pairlist$row),]
+CMRE9_r8100_roots_Bx_br_pairlist$Sampletype <- rep("Root",nrow(CMRE9_r8100_roots_Bx_br_pairlist)) #make new column Sampletype and fill all Root
+CMRE9_r8100_roots_Bx_br_pairlist$Treatment <- rep("Bx",nrow(CMRE9_r8100_roots_Bx_br_pairlist)) #make new column Sampletype and fill all Bx
+
+##
+
+CMRE9_r8100_t_roots_Tb_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_roots_Tb_br))) ###converting distance matrix to list 
+CMRE9_r8100_roots_Tb_br_pairlist <- CMRE9_r8100_t_roots_Tb_br_pairlist[as.numeric(CMRE9_r8100_t_roots_Tb_br_pairlist$col) > as.numeric(CMRE9_r8100_t_roots_Tb_br_pairlist$row),]
+CMRE9_r8100_roots_Tb_br_pairlist$Sampletype <- rep("Root",nrow(CMRE9_r8100_roots_Tb_br_pairlist)) #make new column Sampletype and fill all Root
+CMRE9_r8100_roots_Tb_br_pairlist$Treatment <- rep("Tb",nrow(CMRE9_r8100_roots_Tb_br_pairlist)) #make new column Sampletype and fill all Tb
+
+##
+
+CMRE9_r8100_t_roots_Ctr_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_roots_Ctr_br))) ###converting distance matrix to list 
+CMRE9_r8100_roots_Ctr_br_pairlist <- CMRE9_r8100_t_roots_Ctr_br_pairlist[as.numeric(CMRE9_r8100_t_roots_Ctr_br_pairlist$col) > as.numeric(CMRE9_r8100_t_roots_Ctr_br_pairlist$row),]
+CMRE9_r8100_roots_Ctr_br_pairlist$Sampletype <- rep("Root",nrow(CMRE9_r8100_roots_Ctr_br_pairlist)) #make new column Sampletype and fill all Root
+CMRE9_r8100_roots_Ctr_br_pairlist$Treatment <- rep("Ctr",nrow(CMRE9_r8100_roots_Ctr_br_pairlist)) #make new column Sampletype and fill all Ctr
+
+##################now merge all treatment csv files
+
+CMRE9_r8100_roots_pairlist <- rbind(CMRE9_r8100_roots_Ctr_br_pairlist, CMRE9_r8100_roots_As_br_pairlist, CMRE9_r8100_roots_Bx_br_pairlist, CMRE9_r8100_roots_Tb_br_pairlist)
+
+######################################
+
+#######--For soil -----#######
+
+CMRE9_r8100_t_soil_As <- subset_samples(CMRE9_r8100_t_soil, Treatment%in%c("As"))
+CMRE9_r8100_t_soil_Bx <- subset_samples(CMRE9_r8100_t_soil, Treatment%in%c("Bx"))
+CMRE9_r8100_t_soil_Tb <- subset_samples(CMRE9_r8100_t_soil, Treatment%in%c("Tb"))
+CMRE9_r8100_t_soil_Ctr <- subset_samples(CMRE9_r8100_t_soil, Treatment%in%c("Ctr"))
+
+CMRE9_r8100_t_soil_As_br <- distance(CMRE9_r8100_t_soil_As, method = "bray") #bray-curtis 
+CMRE9_r8100_t_soil_Bx_br <- distance(CMRE9_r8100_t_soil_Bx, method = "bray")
+CMRE9_r8100_t_soil_Tb_br <- distance(CMRE9_r8100_t_soil_Tb, method = "bray")
+CMRE9_r8100_t_soil_Ctr_br <- distance(CMRE9_r8100_t_soil_Ctr, method = "bray")
+
+CMRE9_r8100_t_soil_As_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_soil_As_br))) ###converting distance matrix to list 
+CMRE9_r8100_soil_As_br_pairlist <- CMRE9_r8100_t_soil_As_br_pairlist[as.numeric(CMRE9_r8100_t_soil_As_br_pairlist$col) > as.numeric(CMRE9_r8100_t_soil_As_br_pairlist$row),]
+CMRE9_r8100_soil_As_br_pairlist$Sampletype <- rep("Soil",nrow(CMRE9_r8100_soil_As_br_pairlist)) #make new column Sampletype and fill all Soil
+CMRE9_r8100_soil_As_br_pairlist$Treatment <- rep("As",nrow(CMRE9_r8100_soil_As_br_pairlist)) #make new column Sampletype and fill all As
+
+##
+
+CMRE9_r8100_t_soil_Bx_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_soil_Bx_br))) ###converting distance matrix to list 
+CMRE9_r8100_soil_Bx_br_pairlist <- CMRE9_r8100_t_soil_Bx_br_pairlist[as.numeric(CMRE9_r8100_t_soil_Bx_br_pairlist$col) > as.numeric(CMRE9_r8100_t_soil_Bx_br_pairlist$row),]
+CMRE9_r8100_soil_Bx_br_pairlist$Sampletype <- rep("Soil",nrow(CMRE9_r8100_soil_Bx_br_pairlist)) #make new column Sampletype and fill all Soil
+CMRE9_r8100_soil_Bx_br_pairlist$Treatment <- rep("Bx",nrow(CMRE9_r8100_soil_Bx_br_pairlist)) #make new column Sampletype and fill all Bx
+write.csv(CMRE9_r8100_soil_Bx_br_pairlist, file = "CMRE9_r8100_soil_Bx_br_pairlist.CSV", row.names = TRUE, sep = ',', col.names = TRUE) #save as CSV file
+CMRE9_r8100_soil_Bx_br_pairlist = read.csv(file = "CMRE9_r8100_soil_Bx_br_pairlist.CSV", header = TRUE)
+
+##
+
+CMRE9_r8100_t_soil_Tb_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_soil_Tb_br))) ###converting distance matrix to list 
+CMRE9_r8100_soil_Tb_br_pairlist <- CMRE9_r8100_t_soil_Tb_br_pairlist[as.numeric(CMRE9_r8100_t_soil_Tb_br_pairlist$col) > as.numeric(CMRE9_r8100_t_soil_Tb_br_pairlist$row),]
+CMRE9_r8100_soil_Tb_br_pairlist$Sampletype <- rep("Soil",nrow(CMRE9_r8100_soil_Tb_br_pairlist)) #make new column Sampletype and fill all Soil
+CMRE9_r8100_soil_Tb_br_pairlist$Treatment <- rep("Tb",nrow(CMRE9_r8100_soil_Tb_br_pairlist)) #make new column Sampletype and fill all Tb
+write.csv(CMRE9_r8100_soil_Tb_br_pairlist, file = "CMRE9_r8100_soil_Tb_br_pairlist.CSV", row.names = TRUE, sep = ',', col.names = TRUE) #save as CSV file
+CMRE9_r8100_soil_Tb_br_pairlist = read.csv(file = "CMRE9_r8100_soil_Tb_br_pairlist.CSV", header = TRUE)
+
+##
+
+CMRE9_r8100_t_soil_Ctr_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_soil_Ctr_br))) ###converting distance matrix to list 
+CMRE9_r8100_soil_Ctr_br_pairlist <- CMRE9_r8100_t_soil_Ctr_br_pairlist[as.numeric(CMRE9_r8100_t_soil_Ctr_br_pairlist$col) > as.numeric(CMRE9_r8100_t_soil_Ctr_br_pairlist$row),]
+CMRE9_r8100_soil_Ctr_br_pairlist$Sampletype <- rep("Soil",nrow(CMRE9_r8100_soil_Ctr_br_pairlist)) #make new column Sampletype and fill all Soil
+CMRE9_r8100_soil_Ctr_br_pairlist$Treatment <- rep("Ctr",nrow(CMRE9_r8100_soil_Ctr_br_pairlist)) #make new column Sampletype and fill all Ctr
+
+##################now merge all treatment csv files
+
+CMRE9_r8100_soil_pairlist <- rbind(CMRE9_r8100_soil_Ctr_br_pairlist, CMRE9_r8100_soil_As_br_pairlist, CMRE9_r8100_soil_Bx_br_pairlist, CMRE9_r8100_soil_Tb_br_pairlist)
+
+######################################
+
+#######--For water -----#######
+
+CMRE9_r8100_t_water_As <- subset_samples(CMRE9_r8100_t_water, Treatment%in%c("As"))
+CMRE9_r8100_t_water_Bx <- subset_samples(CMRE9_r8100_t_water, Treatment%in%c("Bx"))
+CMRE9_r8100_t_water_Tb <- subset_samples(CMRE9_r8100_t_water, Treatment%in%c("Tb"))
+CMRE9_r8100_t_water_Ctr <- subset_samples(CMRE9_r8100_t_water, Treatment%in%c("Ctr"))
+
+CMRE9_r8100_t_water_As_br <- distance(CMRE9_r8100_t_water_As, method = "bray") #bray-curtis 
+CMRE9_r8100_t_water_Bx_br <- distance(CMRE9_r8100_t_water_Bx, method = "bray")
+CMRE9_r8100_t_water_Tb_br <- distance(CMRE9_r8100_t_water_Tb, method = "bray")
+CMRE9_r8100_t_water_Ctr_br <- distance(CMRE9_r8100_t_water_Ctr, method = "bray")
+
+CMRE9_r8100_t_water_As_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_water_As_br))) ###converting distance matrix to list 
+CMRE9_r8100_water_As_br_pairlist <- CMRE9_r8100_t_water_As_br_pairlist[as.numeric(CMRE9_r8100_t_water_As_br_pairlist$col) > as.numeric(CMRE9_r8100_t_water_As_br_pairlist$row),]
+CMRE9_r8100_water_As_br_pairlist$Sampletype <- rep("Water",nrow(CMRE9_r8100_water_As_br_pairlist)) #make new column Sampletype and fill all Water
+CMRE9_r8100_water_As_br_pairlist$Treatment <- rep("As",nrow(CMRE9_r8100_water_As_br_pairlist)) #make new column Sampletype and fill all As
+
+##
+
+CMRE9_r8100_t_water_Bx_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_water_Bx_br))) ###converting distance matrix to list 
+CMRE9_r8100_water_Bx_br_pairlist <- CMRE9_r8100_t_water_Bx_br_pairlist[as.numeric(CMRE9_r8100_t_water_Bx_br_pairlist$col) > as.numeric(CMRE9_r8100_t_water_Bx_br_pairlist$row),]
+CMRE9_r8100_water_Bx_br_pairlist$Sampletype <- rep("Water",nrow(CMRE9_r8100_water_Bx_br_pairlist)) #make new column Sampletype and fill all Water
+CMRE9_r8100_water_Bx_br_pairlist$Treatment <- rep("Bx",nrow(CMRE9_r8100_water_Bx_br_pairlist)) #make new column Sampletype and fill all Bx
+
+##
+
+CMRE9_r8100_t_water_Tb_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_water_Tb_br))) ###converting distance matrix to list 
+CMRE9_r8100_water_Tb_br_pairlist <- CMRE9_r8100_t_water_Tb_br_pairlist[as.numeric(CMRE9_r8100_t_water_Tb_br_pairlist$col) > as.numeric(CMRE9_r8100_t_water_Tb_br_pairlist$row),]
+CMRE9_r8100_water_Tb_br_pairlist$Sampletype <- rep("Water",nrow(CMRE9_r8100_water_Tb_br_pairlist)) #make new column Sampletype and fill all Water
+CMRE9_r8100_water_Tb_br_pairlist$Treatment <- rep("Tb",nrow(CMRE9_r8100_water_Tb_br_pairlist)) #make new column Sampletype and fill all Tb
+
+##
+
+CMRE9_r8100_t_water_Ctr_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_water_Ctr_br))) ###converting distance matrix to list 
+CMRE9_r8100_water_Ctr_br_pairlist <- CMRE9_r8100_t_water_Ctr_br_pairlist[as.numeric(CMRE9_r8100_t_water_Ctr_br_pairlist$col) > as.numeric(CMRE9_r8100_t_water_Ctr_br_pairlist$row),]
+CMRE9_r8100_water_Ctr_br_pairlist$Sampletype <- rep("Water",nrow(CMRE9_r8100_water_Ctr_br_pairlist)) #make new column Sampletype and fill all Water
+CMRE9_r8100_water_Ctr_br_pairlist$Treatment <- rep("Ctr",nrow(CMRE9_r8100_water_Ctr_br_pairlist)) #make new column Sampletype and fill all Ctr
+
+##################now merge all treatment csv files
+
+CMRE9_r8100_water_pairlist <- rbind(CMRE9_r8100_water_Ctr_br_pairlist, CMRE9_r8100_water_As_br_pairlist, CMRE9_r8100_water_Bx_br_pairlist, CMRE9_r8100_water_Tb_br_pairlist)
+
+######################################
+
+#######--For sediment -----#######
+
+CMRE9_r8100_t_sedi_As <- subset_samples(CMRE9_r8100_t_sedi, Treatment%in%c("As"))
+CMRE9_r8100_t_sedi_Bx <- subset_samples(CMRE9_r8100_t_sedi, Treatment%in%c("Bx"))
+CMRE9_r8100_t_sedi_Tb <- subset_samples(CMRE9_r8100_t_sedi, Treatment%in%c("Tb"))
+CMRE9_r8100_t_sedi_Ctr <- subset_samples(CMRE9_r8100_t_sedi, Treatment%in%c("Ctr"))
+
+CMRE9_r8100_t_sedi_As_br <- distance(CMRE9_r8100_t_sedi_As, method = "bray") #bray-curtis 
+CMRE9_r8100_t_sedi_Bx_br <- distance(CMRE9_r8100_t_sedi_Bx, method = "bray")
+CMRE9_r8100_t_sedi_Tb_br <- distance(CMRE9_r8100_t_sedi_Tb, method = "bray")
+CMRE9_r8100_t_sedi_Ctr_br <- distance(CMRE9_r8100_t_sedi_Ctr, method = "bray")
+
+CMRE9_r8100_t_sedi_As_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_sedi_As_br))) ###converting distance matrix to list 
+CMRE9_r8100_sedi_As_br_pairlist <- CMRE9_r8100_t_sedi_As_br_pairlist[as.numeric(CMRE9_r8100_t_sedi_As_br_pairlist$col) > as.numeric(CMRE9_r8100_t_sedi_As_br_pairlist$row),]
+CMRE9_r8100_sedi_As_br_pairlist$Sampletype <- rep("Sediment",nrow(CMRE9_r8100_sedi_As_br_pairlist)) #make new column Sampletype and fill all Sediment
+CMRE9_r8100_sedi_As_br_pairlist$Treatment <- rep("As",nrow(CMRE9_r8100_sedi_As_br_pairlist)) #make new column Sampletype and fill all As
+
+##
+
+CMRE9_r8100_t_sedi_Bx_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_sedi_Bx_br))) ###converting distance matrix to list 
+CMRE9_r8100_sedi_Bx_br_pairlist <- CMRE9_r8100_t_sedi_Bx_br_pairlist[as.numeric(CMRE9_r8100_t_sedi_Bx_br_pairlist$col) > as.numeric(CMRE9_r8100_t_sedi_Bx_br_pairlist$row),]
+CMRE9_r8100_sedi_Bx_br_pairlist$Sampletype <- rep("Sediment",nrow(CMRE9_r8100_sedi_Bx_br_pairlist)) #make new column Sampletype and fill all Sediment
+CMRE9_r8100_sedi_Bx_br_pairlist$Treatment <- rep("Bx",nrow(CMRE9_r8100_sedi_Bx_br_pairlist)) #make new column Sampletype and fill all Bx
+
+##
+
+CMRE9_r8100_t_sedi_Tb_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_sedi_Tb_br))) ###converting distance matrix to list 
+CMRE9_r8100_sedi_Tb_br_pairlist <- CMRE9_r8100_t_sedi_Tb_br_pairlist[as.numeric(CMRE9_r8100_t_sedi_Tb_br_pairlist$col) > as.numeric(CMRE9_r8100_t_sedi_Tb_br_pairlist$row),]
+CMRE9_r8100_sedi_Tb_br_pairlist$Sampletype <- rep("Sediment",nrow(CMRE9_r8100_sedi_Tb_br_pairlist)) #make new column Sampletype and fill all Sediment
+CMRE9_r8100_sedi_Tb_br_pairlist$Treatment <- rep("Tb",nrow(CMRE9_r8100_sedi_Tb_br_pairlist)) #make new column Sampletype and fill all Tb
+
+##
+
+CMRE9_r8100_t_sedi_Ctr_br_pairlist <- dist2list(as.dist(t(CMRE9_r8100_t_sedi_Ctr_br))) ###converting distance matrix to list 
+CMRE9_r8100_sedi_Ctr_br_pairlist <- CMRE9_r8100_t_sedi_Ctr_br_pairlist[as.numeric(CMRE9_r8100_t_sedi_Ctr_br_pairlist$col) > as.numeric(CMRE9_r8100_t_sedi_Ctr_br_pairlist$row),]
+CMRE9_r8100_sedi_Ctr_br_pairlist$Sampletype <- rep("Sediment",nrow(CMRE9_r8100_sedi_Ctr_br_pairlist)) #make new column Sampletype and fill all Sediment
+CMRE9_r8100_sedi_Ctr_br_pairlist$Treatment <- rep("Ctr",nrow(CMRE9_r8100_sedi_Ctr_br_pairlist)) #make new column Sampletype and fill all Ctr
+
+##################now merge all treatment csv files
+
+CMRE9_r8100_sedi_pairlist <- rbind(CMRE9_r8100_sedi_Ctr_br_pairlist, CMRE9_r8100_sedi_As_br_pairlist, CMRE9_r8100_sedi_Bx_br_pairlist, CMRE9_r8100_sedi_Tb_br_pairlist)
+
+######################################
+
+##################-------now merge all Sampletype csv files-------###############
+
+CMRE9_r8100_pairlist <- rbind(CMRE9_r8100_feces_pairlist, CMRE9_r8100_roots_pairlist, CMRE9_r8100_soil_pairlist, CMRE9_r8100_water_pairlist, CMRE9_r8100_sedi_pairlist)
+
+######################################---Plot Bray------######################################
+
+CMRE9_r8100_pairlist$Sampletype<- factor(CMRE9_r8100_pairlist$Sampletype, levels = c("Water",  "Sediment", "Soil", "Root",  "Mouse"))
+CMRE9_r8100_pairlist$Treatment<- factor(CMRE9_r8100_pairlist$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
+
+CMRE9_r8100_pairlist_bray_boxplot <- ggplot(CMRE9_r8100_pairlist, aes(Sampletype, value, fill = CMRE9_r8100_pairlist$Treatment)) + geom_boxplot() + scale_fill_manual(values=c("gray50","#E69F00", "#009E73", "#D55E00")) + labs(x= " ", y = "Bray-Curtis") + theme_set(theme_bw()) + theme(legend.position="none", axis.title.x = element_text(size=22), axis.title.y = element_text(size=22), axis.text.x  = element_text(colour="black", vjust=0.5, size=16), axis.text.y  = element_text(colour="black", vjust=0.5, size=16)) + scale_y_continuous(breaks = seq(0.1, 0.9, by=0.15), limits=c(0.1,0.9)) 
+CMRE9_r8100_pairlist_bray_boxplot1 <- CMRE9_r8100_pairlist_bray_boxplot + scale_x_discrete(labels=c("Ctr As Bx Tb \nWater", "Ctr As Bx Tb \nSediment", "Ctr As Bx Tb \nSoil", "Ctr As Bx Tb  \nPlant", "Ctr As Bx Tb \nAnimal"))
+CMRE9_r8100_pairlist_bray_boxplot2 <- CMRE9_r8100_pairlist_bray_boxplot1 + stat_summary(fun.y=mean, geom="point", colour="black", shape=18, size=2, position=position_dodge(width=0.75))  
+
+##############################################################################################
+
 
 
 
