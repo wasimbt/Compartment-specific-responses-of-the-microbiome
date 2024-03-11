@@ -133,7 +133,7 @@ CMRE3cm_na <- subset_taxa(CMRE3cm, !is.na(Phylum) & !Phylum %in% c("", "uncharac
 CMRE4= prune_taxa(taxa_sums(CMRE3cm_na) > 10, CMRE3cm_na)
 
 #######################--Also remove PCR Blanks and Extraction Blanks
-CMRE4f <- subset_samples(CMRE4, sample_names(CMRE4) != "L1_FLD0089"  & sample_names(CMRE4) != "L1_FLD0185" & sample_names(CMRE4) != "L1_FLD0281" & sample_names(CMRE4) != "L1_FLD0282" & sample_names(CMRE4) != "L2_FLD0089" & sample_names(CMRE4) != "L2_FLD0185" & sample_names(CMRE4) != "L2_FLD0359" & sample_names(CMRE4) != "L2_FLD0360" & sample_names(CMRE4) != "L2_FLD0377"  & sample_names(CMRE4) != "L3_FLD0067" & sample_names(CMRE4) != "L3_FLD0089"  & sample_names(CMRE4) != "L3_FLD0235" & sample_names(CMRE4) != "L3_FLD0281" & sample_names(CMRE4) != "L3_FLD0377" & sample_names(CMRE4) != "L4_FLD0175" & sample_names(CMRE4) != "L4_FLD0176" & sample_names(CMRE4) != "L4_FLD0185" & sample_names(CMRE4) != "L4_FLD0281" & sample_names(CMRE4) != "L4_FLD0377" & sample_names(CMRE4) != "L5_FLD0185" & sample_names(CMRE4) != "L5_FLD0281" & sample_names(CMRE4) != "L5_FLD0367" & sample_names(CMRE4) != "L5_FLD0377")
+CMRE4f <- subset_samples(CMRE4, !Sampletype%in%c("NA")) 
 
 #####---Here pre-processing is necessary as there many OTUs without a single count
 CMRE5 = prune_taxa(taxa_sums(CMRE4f) > 0, CMRE4f) #remove OTUs without a single count from class object
