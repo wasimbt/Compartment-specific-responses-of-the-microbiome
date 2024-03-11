@@ -86,6 +86,7 @@ L1,FLD0084,sedi_As_0_7_1,NA,sedi,lake_sedi,Ctr,0,7
 L1,FLD0085,sedi_As_0_7_2,NA,sedi,lake_sedi,Ctr,0,7
 L1,FLD0086,sedi_As_0_7_3,NA,sedi,lake_sedi,Ctr,0,7
 L1,FLD0087,feces_Tb_1000_1_17_1,NA,feces,Mice,Tb,1000,1
+L1,FLD0089,pos_L1a,NA,NA,NA,NA,NA,NA
 L1,FLD0097,feces_As_100_0_9_1,NA,feces,Mice,As,0,0
 L1,FLD0098,feces_As_100_0_9_3,NA,feces,Mice,As,0,0
 L1,FLD0099,feces_As_100_0_9_5,NA,feces,Mice,As,0,0
@@ -170,6 +171,7 @@ L1,FLD0181,roots_Tb_10_7_2,Bx_,roots,plant_soil,Tb,10,7
 L1,FLD0182,roots_Tb_10_7_3,Bx_,roots,plant_soil,Tb,10,7
 L1,FLD0183,roots_As_1000_7_1,Bx_,roots,plant_soil,As,1000,7
 L1,FLD0184,roots_Tb_1000_7_3,WT,roots,plant_soil,Tb,1000,7
+L1,FLD0185,pos_L1b,NA,NA,NA,NA,NA,NA
 L1,FLD0193,roots_Bx_1000_1_4,WT,roots,plant_soil,Bx,1000,1
 L1,FLD0194,roots_Bx_1000_1_5,WT,roots,plant_soil,Bx,1000,1
 L1,FLD0195,roots_Bx_1000_1_6,WT,roots,plant_soil,Bx,1000,1
@@ -205,6 +207,8 @@ L1,FLD0235,water_Tb_1000_1_6,NA,water,lake_sedi,Tb,1000,1
 L1,FLD0236,water_Tb_0_7_6,NA,water,lake_sedi,Ctr,0,7
 L1,FLD0242,water_Ctr_0_7_5,NA,water,lake_sedi,Ctr,0,7
 L1,FLD0243,water_Ctr_0_7_6,NA,water,lake_sedi,Ctr,0,7
+L1,FLD0281,pos_L1c,NA,NA,NA,NA,NA,NA
+L1,FLD0282,neg_L1c,NA,NA,NA,NA,NA,NA
 L2,FLD0001,soil_Tb_1000_1_1,WT,soil,plant_soil,Tb,1000,1
 L2,FLD0002,soil_Tb_1000_1_2,WT,soil,plant_soil,Tb,1000,1
 L2,FLD0003,soil_Tb_1000_1_3,WT,soil,plant_soil,Tb,1000,1
@@ -293,6 +297,7 @@ L2,FLD0085,feces_As_10_0_7_3,NA,feces,Mice,As,0,0
 L2,FLD0086,feces_As_10_0_7_5,NA,feces,Mice,As,0,0
 L2,FLD0087,feces_As_10_0_8_2,NA,feces,Mice,As,0,0
 L2,FLD0088,feces_As_10_0_8_4,NA,feces,Mice,As,0,0
+L2,FLD0089,pos_L2a,NA,NA,NA,NA,NA,NA
 L2,FLD0097,feces_Tb_1000_0_17_1,NA,feces,Mice,Tb,0,0
 L2,FLD0098,feces_Tb_1000_0_17_3,NA,feces,Mice,Tb,0,0
 L2,FLD0099,feces_Tb_1000_0_17_5,NA,feces,Mice,Tb,0,0
@@ -381,6 +386,7 @@ L2,FLD0181,roots_Bx_1000_7_2,Bx_,roots,plant_soil,Bx,1000,7
 L2,FLD0182,roots_Bx_1000_7_3,Bx_,roots,plant_soil,Bx,1000,7
 L2,FLD0183,roots_As_1000_7_2,Bx_,roots,plant_soil,As,1000,7
 L2,FLD0184,roots_Tb_1000_7_4,WT,roots,plant_soil,Tb,1000,7
+L2,FLD0185,pos_L2b,NA,NA,NA,NA,NA,NA
 L2,FLD0289,roots_As_1000_1_5,WT,roots,plant_soil,As,1000,1
 L2,FLD0290,roots_As_1000_1_6,WT,roots,plant_soil,As,1000,1
 L2,FLD0291,roots_Tb_10_7_4,WT,roots,plant_soil,Tb,10,7
@@ -421,9 +427,12 @@ L2,FLD0347,water_As_10_7_3,NA,water,lake_sedi,As,10,7
 L2,FLD0348,water_Tb_1000_7_4,NA,water,lake_sedi,Tb,1000,7
 L2,FLD0349,water_Tb_1000_7_5,NA,water,lake_sedi,Tb,1000,7
 L2,FLD0350,water_Tb_1000_7_6,NA,water,lake_sedi,Tb,1000,7
+L2,FLD0359,empty_control_L2a,NA,NA,NA,NA,NA,NA
+L2,FLD0360,empty_control_L2b,NA,NA,NA,NA,NA,NA
 L2,FLD0364,water_As_100_7_4,NA,water,lake_sedi,As,100,7
 L2,FLD0365,water_As_100_7_5,NA,water,lake_sedi,As,100,7
 L2,FLD0366,water_As_100_7_6,NA,water,lake_sedi,As,100,7
+L2,FLD0377,pos_L2c,NA,NA,NA,NA,NA,NA
 L3,FLD0001,roots_Bx_1000_7_4,WT,roots,plant_soil,Bx,1000,7
 L3,FLD0002,roots_Bx_1000_7_5,WT,roots,plant_soil,Bx,1000,7
 L3,FLD0003,roots_Bx_1000_7_6,WT,roots,plant_soil,Bx,1000,7
@@ -463,6 +472,8 @@ L3,FLD0056,water_Tb_1000_7_1,NA,water,lake_sedi,Tb,1000,7
 L3,FLD0060,water_As_100_7_1,NA,water,lake_sedi,As,100,7
 L3,FLD0061,water_As_100_7_2,NA,water,lake_sedi,As,100,7
 L3,FLD0062,water_As_100_7_3,NA,water,lake_sedi,As,100,7
+L3,FLD0067,empty_control_L3,NA,NA,NA,NA,NA,NA
+L3,FLD0089,pos_L3c,NA,NA,NA,NA,NA,NA
 L3,FLD0193,soil_Ctr_0_1_1,WT,soil,plant_soil,Ctr,0,1
 L3,FLD0194,soil_Ctr_0_1_2,WT,soil,plant_soil,Ctr,0,1
 L3,FLD0195,soil_Ctr_0_1_3,WT,soil,plant_soil,Ctr,0,1
@@ -505,6 +516,7 @@ L3,FLD0231,soil_Bx_10_7_5,WT,soil,plant_soil,Bx,10,7
 L3,FLD0232,soil_Tb_100_7_5,WT,soil,plant_soil,Tb,100,7
 L3,FLD0233,soil_Tb_10_7_8,WT,soil,plant_soil,Tb,10,7
 L3,FLD0234,soil_Tb_100_7_8,WT,soil,plant_soil,Tb,100,7
+L3,FLD0235,confusing_remove,NA,NA,NA,NA,NA,NA
 L3,FLD0236,soil_As_10_7_7,WT,soil,plant_soil,As,10,7
 L3,FLD0237,soil_As_100_7_7,WT,soil,plant_soil,As,100,7
 L3,FLD0238,soil_As_1000_7_7,WT,soil,plant_soil,As,1000,7
@@ -550,6 +562,7 @@ L3,FLD0277,feces_Bx_100_0_3_3,NA,feces,Mice,Bx,0,0
 L3,FLD0278,feces_Bx_100_0_3_5,NA,feces,Mice,Bx,0,0
 L3,FLD0279,feces_Bx_100_0_4_2,NA,feces,Mice,Bx,0,0
 L3,FLD0280,feces_Bx_100_0_4_4,NA,feces,Mice,Bx,0,0
+L3,FLD0281,pos_L3a,NA,NA,NA,NA,NA,NA
 L3,FLD0289,feces_Bx_10_0_1_1,NA,feces,Mice,Bx,0,0
 L3,FLD0290,feces_Bx_10_0_1_3,NA,feces,Mice,Bx,0,0
 L3,FLD0291,feces_Bx_10_0_1_5,NA,feces,Mice,Bx,0,0
@@ -636,6 +649,7 @@ L3,FLD0373,roots_Tb_100_7_2,Bx_,roots,plant_soil,Tb,100,7
 L3,FLD0374,roots_Tb_100_7_3,Bx_,roots,plant_soil,Tb,100,7
 L3,FLD0375,roots_As_1000_7_3,Bx_,roots,plant_soil,As,1000,7
 L3,FLD0376,roots_Tb_1000_7_5,WT,roots,plant_soil,Tb,1000,7
+L3,FLD0377,pos_L3b,NA,NA,NA,NA,NA,NA
 L4,FLD0097,roots_Tb_100_7_4,WT,roots,plant_soil,Tb,100,7
 L4,FLD0098,roots_Tb_100_7_5,WT,roots,plant_soil,Tb,100,7
 L4,FLD0099,roots_Tb_100_7_6,WT,roots,plant_soil,Tb,100,7
@@ -679,6 +693,9 @@ L4,FLD0165,water_Tb_100_7_6,NA,water,lake_sedi,Tb,100,7
 L4,FLD0166,water_As_0_7_4,NA,water,lake_sedi,Ctr,0,7
 L4,FLD0167,water_As_0_7_5,NA,water,lake_sedi,Ctr,0,7
 L4,FLD0168,water_As_0_7_6,NA,water,lake_sedi,Ctr,0,7
+L4,FLD0175,empty_control_L4a,NA,NA,NA,NA,NA,NA
+L4,FLD0176,empty_control_L4b,NA,NA,NA,NA,NA,NA
+L4,FLD0185,pos_L4c,NA,NA,NA,NA,NA,NA
 L4,FLD0193,soil_Tb_10_1_1,WT,soil,plant_soil,Tb,10,1
 L4,FLD0194,soil_Tb_10_1_2,WT,soil,plant_soil,Tb,10,1
 L4,FLD0195,soil_Tb_10_1_3,WT,soil,plant_soil,Tb,10,1
@@ -767,6 +784,7 @@ L4,FLD0277,feces_As_10_1_8_2,NA,feces,Mice,As,10,1
 L4,FLD0278,feces_As_10_1_8_4,NA,feces,Mice,As,10,1
 L4,FLD0279,water_Ctr_0_1_1,NA,water,lake_sedi,Ctr,0,1
 L4,FLD0280,water_Tb_100_1_1,NA,water,lake_sedi,Tb,100,1
+L4,FLD0281,pos_L4a,NA,NA,NA,NA,NA,NA
 L4,FLD0289,feces_As_1000_0_11_1,NA,feces,Mice,As,0,0
 L4,FLD0290,feces_As_1000_0_11_3,NA,feces,Mice,As,0,0
 L4,FLD0291,feces_As_1000_0_11_5,NA,feces,Mice,As,0,0
@@ -851,6 +869,7 @@ L4,FLD0373,roots_Bx_10_1_5,WT,roots,plant_soil,Bx,10,1
 L4,FLD0374,roots_Bx_10_1_6,WT,roots,plant_soil,Bx,10,1
 L4,FLD0375,roots_Tb_10_7_7,WT,roots,plant_soil,Tb,10,7
 L4,FLD0376,roots_As_1000_7_4,WT,roots,plant_soil,As,1000,7
+L4,FLD0377,pos_L4b,NA,NA,NA,NA,NA,NA
 L5,FLD0097,soil_Ctr_0_7_1,WT,soil,plant_soil,Ctr,0,7
 L5,FLD0098,soil_Ctr_0_7_2,WT,soil,plant_soil,Ctr,0,7
 L5,FLD0099,soil_Ctr_0_7_3,WT,soil,plant_soil,Ctr,0,7
@@ -939,6 +958,7 @@ L5,FLD0181,feces_Tb_100_1_15_1,NA,feces,Mice,Tb,100,1
 L5,FLD0182,feces_Tb_100_1_15_3,NA,feces,Mice,Tb,100,1
 L5,FLD0183,feces_Tb_100_1_15_5,NA,feces,Mice,Tb,100,1
 L5,FLD0184,feces_Tb_100_1_16_2,NA,feces,Mice,Tb,100,1
+L5,FLD0185,pos_L5a,NA,NA,NA,NA,NA,NA
 L5,FLD0193,feces_Tb_10_0_13_1,NA,feces,Mice,Tb,0,0
 L5,FLD0194,feces_Tb_10_0_13_3,NA,feces,Mice,Tb,0,0
 L5,FLD0195,feces_Tb_10_0_13_5,NA,feces,Mice,Tb,0,0
@@ -1026,6 +1046,7 @@ L5,FLD0277,roots_As_100_1_5,WT,roots,plant_soil,As,100,1
 L5,FLD0278,roots_As_100_1_6,WT,roots,plant_soil,As,100,1
 L5,FLD0279,roots_Tb_10_7_8,WT,roots,plant_soil,Tb,10,7
 L5,FLD0280,roots_As_1000_7_5,WT,roots,plant_soil,As,1000,7
+L5,FLD0281,pos_L5b,NA,NA,NA,NA,NA,NA
 L5,FLD0289,roots_Tb_100_1_4,Bx_,roots,plant_soil,Tb,100,1
 L5,FLD0290,roots_Tb_100_1_5,Bx_,roots,plant_soil,Tb,100,1
 L5,FLD0291,roots_Tb_100_1_6,Bx_,roots,plant_soil,Tb,100,1
@@ -1063,3 +1084,5 @@ L5,FLD0343,water_As_0_7_3,NA,water,lake_sedi,Ctr,0,7
 L5,FLD0353,water_As_10_7_4,NA,water,lake_sedi,As,10,7
 L5,FLD0354,water_As_10_7_5,NA,water,lake_sedi,As,10,7
 L5,FLD0355,water_As_10_7_6,NA,water,lake_sedi,As,10,7
+L5,FLD0367,empty_control_L5,NA,NA,NA,NA,NA,NA
+L5,FLD0377,pos_L5c,NA,NA,NA,NA,NA,NA
