@@ -710,161 +710,7 @@ C <- plot_Fig2A + plot_Fig2B
 C
 ggplot2::ggsave("Fig.2_AB_CMRE9_r8100_alphaDiv_observed_Tukey_Boxplot_centered_letters_bars_withoutlegand.tiff", 
                 width = 10.30, height = 5.30, dpi=300)
-
-############################---Supplementary Figure- Shannon final box plot --------##############################
-#### for treatement and compartment 
-
-CMRE5_alpha_r8100$Sampletype<- factor(CMRE5_alpha_r8100$Sampletype, levels = c("Water", "Sediment", "Soil", "Root", "Mouse"))
-CMRE5_alpha_r8100$Treatment<- factor(CMRE5_alpha_r8100$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
-
-######-- Fig. 2A --####
-
-Fig2A_data <- CMRE5_alpha_r8100 %>% 
-  select(Treatment,Sampletype,Shannon,
-         Concentration,Lib)
-
-Fig2A_data_CTR <- Fig2A_data %>% filter(Treatment=="Ctr")
-
-Fig2A_data_Obs_means <- Fig2A_data_CTR %>% 
-  group_by(Sampletype) %>% 
-  summarise(MeanShannon=mean(Shannon),
-            QuantDShannon=quantile(Shannon,probs = 0.95))
-
-
-Fig2A_data_anova <- aov(Shannon ~ Treatment * Sampletype + Lib, data = Fig2A_data)
-
-Fig2A_tukey <- TukeyHSD(Fig2A_data_anova)# Tukey's test
-#The use of letters to indicate significant differences in pairwise comparisons is called compact letter display, and can simplify the visualisation and discussion of significant differences among means. We are going to use the multcompLetters4 function from the multcompView package. The arguments are the object from an aov function and the object from the TukeyHSD function.
-# compact letter display
-Fig2A_cld <-as.data.frame.list(multcompView::multcompLetters4(Fig2A_data_anova, Fig2A_tukey)[[4]])
-
-Fig2A_cld_Ctr <- Fig2A_cld %>% 
-  filter(grepl("Ctr", rownames(Fig2A_cld))) #select only the controls
-rownames(Fig2A_cld_Ctr) <- gsub("Ctr:","",rownames(Fig2A_cld_Ctr) )
-
-Fig2A_cld_Tbl <- data.frame(Sampletype =rownames(Fig2A_cld_Ctr),
-                            L=Fig2A_cld_Ctr$Letters)
-
-Fig2A_data_Obs_means_letters <- merge(Fig2A_data_Obs_means,Fig2A_cld_Tbl)
-
-plot_Fig2A <- ggbarplot(Fig2A_data %>% filter(Treatment=="Ctr"), 
-                        x = "Sampletype", 
-                        y = "Shannon", 
-                        fill = "grey50",
-                        width=0.2,
-                        add = c("mean_se", "jitter"),
-                        legend = "none",
-                        ylim=c(0,8)
-)      +
-  theme_bw() +
-  geom_text(data = Fig2A_data_Obs_means_letters, 
-            aes(x = Sampletype, y = QuantDShannon, label = L), 
-            size = 5,  vjust=-0.8, hjust =0.5)    +
-  ylab("Shannon")+  xlab("") + theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold"))  + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
-
-plot_Fig2A
-
-###########----Fig. 2B --############################################
-#removing the mean for each group
-Fig2B_data_noC <- CMRE5_alpha_r8100 %>% filter(Treatment!="Ctr") %>% select(Sampletype,Shannon,Treatment)
-#removing the means
-Fig2B_data_noC_diff <- merge(Fig2B_data_noC,Fig2A_data_Obs_means[,1:2])
-Fig2B_data_noC_diff$Diff <- Fig2B_data_noC_diff$Shannon-Fig2B_data_noC_diff$MeanShannon
-
-#with letters
-Fig2B_cld <- Fig2A_cld %>% filter(!grepl("Ctr", rownames(Fig2A_cld))) #select all, but the controls
-
-#Compact letter display to indicate significant differences
-Fig2B_cld_Tbl <- data.frame(Sampletype =rownames(Fig2B_cld),L=Fig2B_cld$Letters)
-Fig2B_cld_Tbl1 <- separate(Fig2B_cld_Tbl,col="Sampletype",sep = ":",into=c("Treatment","Sampletype"))
-Fig2B_data_Obs_means <- aggregate(Shannon ~  Sampletype*Treatment, CMRE5_alpha_r8100, mean)
-Fig2B_data_Obs_sd <- aggregate(Shannon ~  Sampletype*Treatment, CMRE5_alpha_r8100, sd)
-colnames(Fig2B_data_Obs_sd)[3] <- "sd"
-#merge
-Fig2B_data_mergeX.SD <- merge(Fig2B_data_Obs_means,Fig2B_data_Obs_sd,
-                              by=c("Sampletype","Treatment"))
-Fig2B_data_mergeX.SD.L <- merge(Fig2B_data_mergeX.SD,
-                                Fig2B_cld_Tbl1,
-                                by=c("Sampletype","Treatment"))
-
-#merging with control group mean 
-Fig2B_data_mergeX.SD.L.C <- merge(Fig2B_data_mergeX.SD.L,Fig2A_data_Obs_means[,1:2],by="Sampletype")
-
-rename(Fig2B_data_mergeX.SD.L.C,MeanControl= MeanShannon )
-Fig2B_data_mergeX.SD.L.C <- Fig2B_data_mergeX.SD.L.C %>% mutate(Diff=Shannon-MeanShannon)
-#removing the control
-Fig2B_data_mergeX.SD.L.C_noC <- Fig2B_data_mergeX.SD.L.C %>% filter(Treatment!="Ctr") 
-
-### rect  
-Fig2B_data_mergeX.SD.L.C_noC_Sort <- Fig2B_data_mergeX.SD.L.C_noC %>% arrange(Sampletype,Treatment) %>% 
-  mutate(MeanDiff=MeanShannon+Diff)
-
-Fig2B_data_mergeX.SD.L.C_noC_Sort$N <- 1:nrow(Fig2B_data_mergeX.SD.L.C_noC_Sort)
-Fig2B_data_mergeX.SD.L.C_noC_Sort
-
-# AS"#E69F00", 
-# BX"#009E73",  
-# Tb"#D55E00" 
-plot_Fig2B_prep <- ggplot(Fig2B_data_mergeX.SD.L.C_noC_Sort,
-                          aes(xmin=N, 
-                              xmax=N+0.8, #N+0.5
-                              ymin=MeanShannon, 
-                              ymax=MeanDiff, 
-                              fill=Treatment )) + geom_rect() +
-  scale_fill_manual(values=c("#E69F00", "#009E73", "#D55E00"))+
-  labs(x= "", y = "Difference in Shannon to ctr mean") + theme_set(theme_bw()) +
-  theme(  panel.grid.minor = element_blank(),
-          # axis.text.x = element_blank(),
-          # axis.ticks = element_blank(),
-          axis.title.x = element_text(size=14), 
-          axis.title.y = element_text(size=12), 
-          axis.text.x  = element_text(colour="black", vjust=0.5, size=14), 
-          axis.text.y  = element_text(colour="black", vjust=0.5, size=14))+
-  ylim(0, 8)
-
-# plot_Fig2B_prep
-
-NewY=Fig2B_data_mergeX.SD.L.C_noC_Sort$MeanDiff+ #adjusting the high of the labels
-  c(0,0,-0.05,
-    0,0,0,
-    0.1,0.10,0.1,
-    -0.1,-0.1,-0.1,
-    -0.1,-0.1,-0.1
-  )
-plot_Fig2B <- plot_Fig2B_prep +
-  geom_text(aes(x =N+0.25,y=NewY,label=L),
-            position = position_dodge(width = 1), 
-            angle = 0,size = 5, vjust=-2) +
-  scale_x_continuous(breaks  = c(2+3*(0:4)), #
-                     labels = c("Water","Sediment","Soil","Root","Mouse")
-  ) +
-  geom_segment(aes(x=1,xend=3+0.8, 
-                   y=MeanShannon[1],
-                   yend=MeanShannon[3])) +
-  geom_segment(aes(x=4,xend=6+0.8,
-                   y=MeanShannon[4],
-                   yend=MeanShannon[4])) +
-  geom_segment(aes(x=7,xend=9+0.8,
-                   y=MeanShannon[7],
-                   yend=MeanShannon[7])) +
-  geom_segment(aes(x=10,xend=12+0.8,
-                   y=MeanShannon[10],
-                   yend=MeanShannon[10])) +
-  geom_segment(aes(x=13,xend=15+0.8,
-                   y=MeanShannon[13],
-                   yend=MeanShannon[13])) +
-  theme_bw() +theme(panel.grid.minor = element_blank()) + theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=14, face = "bold"), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold")) + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
-
-
-plot_Fig2B
-
-# Combination of plots
-require(patchwork)
-plot_Fig2A + plot_Fig2B
-
-ggplot2::ggsave("Fig.2_Suppl_Shannon.tiff", 
-                width = 10.80, height = 6.30, dpi=300)
-
+############################################################################################################################
 
 ######################################################################################################
 ###########----Fig. 2C --############################################
@@ -2036,6 +1882,166 @@ CMRE9_r8100_t_br.ord <- ordinate(CMRE9_r8100_t , "NMDS", "bray")
 # Before making plot, order variables
 sample_data(CMRE9_r8100_t)$Sampletype<- factor(sample_data(CMRE9_r8100_t)$Sampletype, levels = c("water", "sedi", "soil", "roots", "feces"))
 CMRE9_r8100_plot_bray_beta_diversity = plot_ordination(CMRE9_r8100_t, CMRE9_r8100_t_br.ord, color="Sampletype")  + theme_set(theme_bw()) + theme(axis.title.x = element_text(size=21), axis.title.y = element_text(size=21), axis.text.x = element_text(size=19), axis.text.y = element_text(size=19)) + geom_point(size=2.50) + theme(legend.text=element_text(size=18), legend.title=element_text(size=20)) + scale_color_manual(labels = c("Water", "Sediment", "Soil", "Root", "Mouse"), values=c("steelblue3", "slategray4",  "salmon4", "darkolivegreen4", "tan3"))
+
+##############################################################################################################################
+
+##############################################################################################################################
+
+##########################################------Supplementary Figure 5---------#############################################
+
+###################--Shannon final box plot--for treatement and compartment 
+
+CMRE5_alpha_r8100$Sampletype<- factor(CMRE5_alpha_r8100$Sampletype, levels = c("Water", "Sediment", "Soil", "Root", "Mouse"))
+CMRE5_alpha_r8100$Treatment<- factor(CMRE5_alpha_r8100$Treatment, levels = c("Ctr", "As", "Bx", "Tb"))
+
+######-- Fig. S5A --####
+
+FigS5A_data <- CMRE5_alpha_r8100 %>% 
+  select(Treatment,Sampletype,Shannon,
+         Concentration,Lib)
+
+FigS5A_data_CTR <- FigS5A_data %>% filter(Treatment=="Ctr")
+
+FigS5A_data_Obs_means <- FigS5A_data_CTR %>% 
+  group_by(Sampletype) %>% 
+  summarise(MeanShannon=mean(Shannon),
+            QuantDShannon=quantile(Shannon,probs = 0.95))
+
+
+FigS5A_data_anova <- aov(Shannon ~ Treatment * Sampletype + Lib, data = FigS5A_data)
+
+FigS5A_tukey <- TukeyHSD(FigS5A_data_anova)# Tukey's test
+#The use of letters to indicate significant differences in pairwise comparisons is called compact letter display, and can simplify the visualisation and discussion of significant differences among means. We are going to use the multcompLetters4 function from the multcompView package. The arguments are the object from an aov function and the object from the TukeyHSD function.
+# compact letter display
+FigS5A_cld <-as.data.frame.list(multcompView::multcompLetters4(FigS5A_data_anova, FigS5A_tukey)[[4]])
+
+FigS5A_cld_Ctr <- FigS5A_cld %>% 
+  filter(grepl("Ctr", rownames(FigS5A_cld))) #select only the controls
+rownames(FigS5A_cld_Ctr) <- gsub("Ctr:","",rownames(FigS5A_cld_Ctr) )
+
+FigS5A_cld_Tbl <- data.frame(Sampletype =rownames(FigS5A_cld_Ctr),
+                            L=FigS5A_cld_Ctr$Letters)
+
+FigS5A_data_Obs_means_letters <- merge(FigS5A_data_Obs_means,FigS5A_cld_Tbl)
+
+plot_FigS5A <- ggbarplot(FigS5A_data %>% filter(Treatment=="Ctr"), 
+                        x = "Sampletype", 
+                        y = "Shannon", 
+                        fill = "grey50",
+                        width=0.2,
+                        add = c("mean_se", "jitter"),
+                        legend = "none",
+                        ylim=c(0,8)
+)      +
+  theme_bw() +
+  geom_text(data = FigS5A_data_Obs_means_letters, 
+            aes(x = Sampletype, y = QuantDShannon, label = L), 
+            size = 5,  vjust=-0.8, hjust =0.5)    +
+  ylab("Shannon")+  xlab("") + theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=18), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold"))  + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
+
+plot_FigS5A
+
+###########----Fig. S5B --############################################
+#removing the mean for each group
+FigS5B_data_noC <- CMRE5_alpha_r8100 %>% filter(Treatment!="Ctr") %>% select(Sampletype,Shannon,Treatment)
+#removing the means
+FigS5B_data_noC_diff <- merge(FigS5B_data_noC,FigS5A_data_Obs_means[,1:2])
+FigS5B_data_noC_diff$Diff <- FigS5B_data_noC_diff$Shannon-FigS5B_data_noC_diff$MeanShannon
+
+#with letters
+FigS5B_cld <- FigS5A_cld %>% filter(!grepl("Ctr", rownames(FigS5A_cld))) #select all, but the controls
+
+#Compact letter display to indicate significant differences
+FigS5B_cld_Tbl <- data.frame(Sampletype =rownames(FigS5B_cld),L=FigS5B_cld$Letters)
+FigS5B_cld_Tbl1 <- separate(FigS5B_cld_Tbl,col="Sampletype",sep = ":",into=c("Treatment","Sampletype"))
+FigS5B_data_Obs_means <- aggregate(Shannon ~  Sampletype*Treatment, CMRE5_alpha_r8100, mean)
+FigS5B_data_Obs_sd <- aggregate(Shannon ~  Sampletype*Treatment, CMRE5_alpha_r8100, sd)
+colnames(FigS5B_data_Obs_sd)[3] <- "sd"
+#merge
+FigS5B_data_mergeX.SD <- merge(FigS5B_data_Obs_means,FigS5B_data_Obs_sd,
+                              by=c("Sampletype","Treatment"))
+FigS5B_data_mergeX.SD.L <- merge(FigS5B_data_mergeX.SD,
+                                FigS5B_cld_Tbl1,
+                                by=c("Sampletype","Treatment"))
+
+#merging with control group mean 
+FigS5B_data_mergeX.SD.L.C <- merge(FigS5B_data_mergeX.SD.L,FigS5A_data_Obs_means[,1:2],by="Sampletype")
+
+rename(FigS5B_data_mergeX.SD.L.C,MeanControl= MeanShannon )
+FigS5B_data_mergeX.SD.L.C <- FigS5B_data_mergeX.SD.L.C %>% mutate(Diff=Shannon-MeanShannon)
+#removing the control
+FigS5B_data_mergeX.SD.L.C_noC <- FigS5B_data_mergeX.SD.L.C %>% filter(Treatment!="Ctr") 
+
+### rect  
+FigS5B_data_mergeX.SD.L.C_noC_Sort <- FigS5B_data_mergeX.SD.L.C_noC %>% arrange(Sampletype,Treatment) %>% 
+  mutate(MeanDiff=MeanShannon+Diff)
+
+FigS5B_data_mergeX.SD.L.C_noC_Sort$N <- 1:nrow(FigS5B_data_mergeX.SD.L.C_noC_Sort)
+FigS5B_data_mergeX.SD.L.C_noC_Sort
+
+# AS"#E69F00", 
+# BX"#009E73",  
+# Tb"#D55E00" 
+plot_FigS5B_prep <- ggplot(FigS5B_data_mergeX.SD.L.C_noC_Sort,
+                          aes(xmin=N, 
+                              xmax=N+0.8, #N+0.5
+                              ymin=MeanShannon, 
+                              ymax=MeanDiff, 
+                              fill=Treatment )) + geom_rect() +
+  scale_fill_manual(values=c("#E69F00", "#009E73", "#D55E00"))+
+  labs(x= "", y = "Difference in Shannon to ctr mean") + theme_set(theme_bw()) +
+  theme(  panel.grid.minor = element_blank(),
+          # axis.text.x = element_blank(),
+          # axis.ticks = element_blank(),
+          axis.title.x = element_text(size=14), 
+          axis.title.y = element_text(size=12), 
+          axis.text.x  = element_text(colour="black", vjust=0.5, size=14), 
+          axis.text.y  = element_text(colour="black", vjust=0.5, size=14))+
+  ylim(0, 8)
+
+# plot_FigS5B_prep
+
+NewY=FigS5B_data_mergeX.SD.L.C_noC_Sort$MeanDiff+ #adjusting the high of the labels
+  c(0,0,-0.05,
+    0,0,0,
+    0.1,0.10,0.1,
+    -0.1,-0.1,-0.1,
+    -0.1,-0.1,-0.1
+  )
+plot_FigS5B <- plot_FigS5B_prep +
+  geom_text(aes(x =N+0.25,y=NewY,label=L),
+            position = position_dodge(width = 1), 
+            angle = 0,size = 5, vjust=-2) +
+  scale_x_continuous(breaks  = c(2+3*(0:4)), #
+                     labels = c("Water","Sediment","Soil","Root","Mouse")
+  ) +
+  geom_segment(aes(x=1,xend=3+0.8, 
+                   y=MeanShannon[1],
+                   yend=MeanShannon[3])) +
+  geom_segment(aes(x=4,xend=6+0.8,
+                   y=MeanShannon[4],
+                   yend=MeanShannon[4])) +
+  geom_segment(aes(x=7,xend=9+0.8,
+                   y=MeanShannon[7],
+                   yend=MeanShannon[7])) +
+  geom_segment(aes(x=10,xend=12+0.8,
+                   y=MeanShannon[10],
+                   yend=MeanShannon[10])) +
+  geom_segment(aes(x=13,xend=15+0.8,
+                   y=MeanShannon[13],
+                   yend=MeanShannon[13])) +
+  theme_bw() +theme(panel.grid.minor = element_blank()) + theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=14, face = "bold"), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold")) + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
+
+
+plot_FigS5B
+
+# Combination of plots
+require(patchwork)
+plot_FigS5A + plot_FigS5B
+
+ggplot2::ggsave("Fig.S5_Suppl_Shannon.tiff", 
+                width = 10.80, height = 6.30, dpi=300)
+
 
 ##############################################################################################################################
 
