@@ -2022,13 +2022,28 @@ Sediment_p1 <- ggplot(Sediment_all_deg, aes(x=Treatment,  y= Degree), colour = T
 
 Figure_4 <- ggarrange(W_Ctr, Se_Ctr, S_Ctr, R_Ctr, M_Ctr, W_As, Se_As, S_As, R_As,  M_As,  W_Bx, Se_bx, S_Bx, R_Bx, M_Bx, W_Tb, Se_Tb, S_Tb, R_Tb, M_Tb, Water_p1, Sediment_p1, Soil_p1, Root_p1, Mouse_p1, ncol = 5, nrow = 5)
 
+
 ##############################################################################################################################
 
 ##############################################################################################################################
 
 ##########################################------Supplementary Figure 4---------###############################################
 
-###################subset dataset- first based on sample type than based on treatment 
+###################--NMDS plot
+
+set.seed(101)# set seed for reproducibility
+CMRE9_r8100_t_br.ord <- ordinate(CMRE9_r8100_t , "NMDS", "bray") 
+# Before making plot, order variables
+sample_data(CMRE9_r8100_t)$Sampletype<- factor(sample_data(CMRE9_r8100_t)$Sampletype, levels = c("water", "sedi", "soil", "roots", "feces"))
+CMRE9_r8100_plot_bray_beta_diversity = plot_ordination(CMRE9_r8100_t, CMRE9_r8100_t_br.ord, color="Sampletype")  + theme_set(theme_bw()) + theme(axis.title.x = element_text(size=21), axis.title.y = element_text(size=21), axis.text.x = element_text(size=19), axis.text.y = element_text(size=19)) + geom_point(size=2.50) + theme(legend.text=element_text(size=18), legend.title=element_text(size=20)) + scale_color_manual(labels = c("Water", "Sediment", "Soil", "Root", "Mouse"), values=c("steelblue3", "slategray4",  "salmon4", "darkolivegreen4", "tan3"))
+
+##############################################################################################################################
+
+##############################################################################################################################
+
+##########################################------Supplementary Figure 6---------###############################################
+
+###################--Beta Diversity-Box plots 
 
 CMRE9_r8100_t  = readRDS("CMRE9_r8100_t.RDS")
 
@@ -2278,6 +2293,167 @@ CMRE9_r8100_pairlist_bray_boxplot1 <- CMRE9_r8100_pairlist_bray_boxplot + scale_
 CMRE9_r8100_pairlist_bray_boxplot2 <- CMRE9_r8100_pairlist_bray_boxplot1 + stat_summary(fun.y=mean, geom="point", colour="black", shape=18, size=2, position=position_dodge(width=0.75))  
 
 ##############################################################################################
+
+##############################################################################################################################
+
+##############################################################################################################################
+
+##########################################------Supplementary Figure 9---------###############################################
+
+###################--Network degree distribution
+
+########## Degree Distribution Figure (supplementary) for article for all compartments #####################
+
+
+#### Mouse Degree distributions 
+
+Mouse.Ctr.feces.ig= readRDS("Mouse.Ctr.feces.ig.RDS")
+Mouse.As.feces.ig= readRDS("Mouse.As.feces.ig.RDS")
+Mouse.Bx.feces.ig= readRDS("Mouse.Bx.feces.ig.RDS")
+Mouse.Tb.feces.ig= readRDS("Mouse.Tb.feces.ig.RDS")
+
+dd.Mouse.Ctr.feces.ig <- degree.distribution(Mouse.Ctr.feces.ig)
+dd.Mouse.As.feces.ig <- degree.distribution(Mouse.As.feces.ig)
+dd.Mouse.Bx.feces.ig <- degree.distribution(Mouse.Bx.feces.ig)
+dd.Mouse.Tb.feces.ig <- degree.distribution(Mouse.Tb.feces.ig)
+
+tiff(filename="Mouse_Degree_Ctr-As-Bx-Tb6.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,3.9,1,1))
+plot(dd.Mouse.Ctr.feces.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.2, cex.axis=1.5, xlim=c(0, 72), ylim=c(0, 0.22), xlab="Degree", ylab="Frequency")
+lines(dd.Mouse.Ctr.feces.ig, lwd = 2, col = "gray50")
+lines(dd.Mouse.As.feces.ig, lwd = 2, col = "#E69F00")
+lines(dd.Mouse.Bx.feces.ig, lwd = 2, col = "#009E73")
+lines(dd.Mouse.Tb.feces.ig, lwd = 2, col = "#D55E00")
+dev.off()
+
+tiff(filename="Mouse_Degree_Ctr-As-Bx-Tb5_Zoom.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,4.1,1,1))
+plot(dd.Mouse.Ctr.feces.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.5, cex.axis=1.8, xlim=c(10, 33), ylim=c(0, 0.10), xlab="Degree", ylab="Frequency")
+lines(dd.Mouse.Ctr.feces.ig, lwd = 4, col = "gray50")
+lines(dd.Mouse.As.feces.ig, lwd = 4, col = "#E69F00")
+lines(dd.Mouse.Bx.feces.ig, lwd = 4, col = "#009E73")
+lines(dd.Mouse.Tb.feces.ig, lwd = 4, col = "#D55E00")
+dev.off()
+
+#### Soil Degree distributions 
+CMRE8_Soilb_Ctrc_Soil_ig= readRDS("CMRE8_Soilb_Ctrc_Soil_ig.RDS")
+CMRE8_Soilb_Asc_Soil_ig= readRDS("CMRE8_Soilb_Asc_Soil_ig.RDS")
+CMRE8_Soilb_Bxc_Soil_ig= readRDS("CMRE8_Soilb_Bxc_Soil_ig.RDS")
+CMRE8_Soilb_Tbc_Soil_ig= readRDS("CMRE8_Soilb_Tbc_Soil_ig.RDS")
+
+dd.Soil.Ctr.Soil.ig <- degree.distribution(CMRE8_Soilb_Ctrc_Soil_ig)
+dd.Soil.As.Soil.ig <- degree.distribution(CMRE8_Soilb_Asc_Soil_ig)
+dd.Soil.Bx.Soil.ig <- degree.distribution(CMRE8_Soilb_Bxc_Soil_ig)
+dd.Soil.Tb.Soil.ig <- degree.distribution(CMRE8_Soilb_Tbc_Soil_ig)
+
+tiff(filename="Soil_Degree_Ctr-As-Bx-Tb5.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,3.9,1,1))
+plot(dd.Soil.Ctr.Soil.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.2, cex.axis=1.5, xlim=c(0, 72), ylim=c(0, 0.22), xlab="Degree", ylab="Frequency")
+lines(dd.Soil.Ctr.Soil.ig, lwd = 2, col = "gray50")
+lines(dd.Soil.As.Soil.ig, lwd = 2, col = "#E69F00")
+lines(dd.Soil.Bx.Soil.ig, lwd = 2, col = "#009E73")
+lines(dd.Soil.Tb.Soil.ig, lwd = 2, col = "#D55E00")
+dev.off()
+
+tiff(filename="Soil_Degree_Ctr-As-Bx-Tb5_Zoom.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,4.1,1,1))
+plot(dd.Soil.Ctr.Soil.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.5, cex.axis=1.8, xlim=c(50, 72), ylim=c(0, 0.10), xlab="Degree", ylab="Frequency")
+lines(dd.Soil.Ctr.Soil.ig, lwd = 4, col = "gray50")
+lines(dd.Soil.As.Soil.ig, lwd = 4, col = "#E69F00")
+lines(dd.Soil.Bx.Soil.ig, lwd = 4, col = "#009E73")
+lines(dd.Soil.Tb.Soil.ig, lwd = 4, col = "#D55E00")
+dev.off()
+
+#### Root Degree distributions 
+CMRE8_Rootb_Ctrc_Root_ig= readRDS("CMRE8_Rootb_Ctrc_Root_ig.RDS")
+CMRE8_Rootb_Asc_Root_ig= readRDS("CMRE8_Rootb_Asc_Root_ig.RDS")
+CMRE8_Rootb_Bxc_Root_ig= readRDS("CMRE8_Rootb_Bxc_Root_ig.RDS")
+CMRE8_Rootb_Tbc_Root_ig= readRDS("CMRE8_Rootb_Tbc_Root_ig.RDS")
+
+dd.Root.Ctr.Root.ig <- degree.distribution(CMRE8_Rootb_Ctrc_Root_ig)
+dd.Root.As.Root.ig <- degree.distribution(CMRE8_Rootb_Asc_Root_ig)
+dd.Root.Bx.Root.ig <- degree.distribution(CMRE8_Rootb_Bxc_Root_ig)
+dd.Root.Tb.Root.ig <- degree.distribution(CMRE8_Rootb_Tbc_Root_ig)
+
+tiff(filename="Root_Degree_Ctr-As-Bx-Tb5.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,3.9,1,1))
+plot(dd.Root.Ctr.Root.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.2, cex.axis=1.5, xlim=c(0, 72), ylim=c(0, 0.22), xlab="Degree", ylab="Frequency")
+lines(dd.Root.Ctr.Root.ig, lwd = 2, col = "gray50")
+lines(dd.Root.As.Root.ig, lwd = 2, col = "#E69F00")
+lines(dd.Root.Bx.Root.ig, lwd = 2, col = "#009E73")
+lines(dd.Root.Tb.Root.ig, lwd = 2, col = "#D55E00")
+dev.off()
+
+tiff(filename="Root_Degree_Ctr-As-Bx-Tb5-zoom.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,4.1,1,1))
+plot(dd.Root.Ctr.Root.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.5, cex.axis=1.8, xlim=c(20, 37), ylim=c(0, 0.10), xlab="Degree", ylab="Frequency")
+lines(dd.Root.Ctr.Root.ig, lwd = 4, col = "gray50")
+lines(dd.Root.As.Root.ig, lwd = 4, col = "#E69F00")
+lines(dd.Root.Bx.Root.ig, lwd = 4, col = "#009E73")
+lines(dd.Root.Tb.Root.ig, lwd = 4, col = "#D55E00")
+dev.off()
+
+#### Sediment Degree distributions 
+CMRE9_Sedimentb_Ctrc_Sediment_ig= readRDS("CMRE9_Sedimentb_Ctrc_Sediment_ig.RDS")
+CMRE9_Sedimentb_Asc_Sediment_ig= readRDS("CMRE9_Sedimentb_Asc_Sediment_ig.RDS")
+CMRE9_Sedimentb_Bxc_Sediment_ig= readRDS("CMRE9_Sedimentb_Bxc_Sediment_ig.RDS")
+CMRE9_Sedimentb_Tbc_Sediment_ig= readRDS("CMRE9_Sedimentb_Tbc_Sediment_ig.RDS")
+
+dd.Sediment.Ctr.Sediment.ig <- degree.distribution(CMRE9_Sedimentb_Ctrc_Sediment_ig)
+dd.Sediment.As.Sediment.ig <- degree.distribution(CMRE9_Sedimentb_Asc_Sediment_ig)
+dd.Sediment.Bx.Sediment.ig <- degree.distribution(CMRE9_Sedimentb_Bxc_Sediment_ig)
+dd.Sediment.Tb.Sediment.ig <- degree.distribution(CMRE9_Sedimentb_Tbc_Sediment_ig)
+
+tiff(filename="Sediment_Degree_Ctr-As-Bx-Tb6.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,3.9,1,1))
+plot(dd.Sediment.Ctr.Sediment.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.2, cex.axis=1.5, xlim=c(0, 72), ylim=c(0, 0.22), xlab="Degree", ylab="Frequency")
+lines(dd.Sediment.Ctr.Sediment.ig, lwd = 2, col = "gray50")
+lines(dd.Sediment.As.Sediment.ig, lwd = 2, col = "#E69F00")
+lines(dd.Sediment.Bx.Sediment.ig, lwd = 2, col = "#009E73")
+lines(dd.Sediment.Tb.Sediment.ig, lwd = 2, col = "#D55E00")
+dev.off()
+
+tiff(filename="Sediment_Degree_Ctr-As-Bx-Tb5_Zoom.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,4.1,1,1))
+plot(dd.Sediment.Ctr.Sediment.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.5, cex.axis=1.8, xlim=c(35, 53), ylim=c(0, 0.10), xlab="Degree", ylab="Frequency")
+lines(dd.Sediment.Ctr.Sediment.ig, lwd = 4, col = "gray50")
+lines(dd.Sediment.As.Sediment.ig, lwd = 4, col = "#E69F00")
+lines(dd.Sediment.Bx.Sediment.ig, lwd = 4, col = "#009E73")
+lines(dd.Sediment.Tb.Sediment.ig, lwd = 4, col = "#D55E00")
+dev.off()
+
+#### Water Degree distributions 
+CMRE9_Waterb_Ctrc_Water_ig= readRDS("CMRE9_Waterb_Ctrc_Water_ig.RDS")
+CMRE9_Waterb_Asc_Water_ig= readRDS("CMRE9_Waterb_Asc_Water_ig.RDS")
+CMRE9_Waterb_Bxc_Water_ig= readRDS("CMRE9_Waterb_Bxc_Water_ig.RDS")
+CMRE9_Waterb_Tbc_Water_ig= readRDS("CMRE9_Waterb_Tbc_Water_ig.RDS")
+
+dd.Water.Ctr.Water.ig <- degree.distribution(CMRE9_Waterb_Ctrc_Water_ig)
+dd.Water.As.Water.ig <- degree.distribution(CMRE9_Waterb_Asc_Water_ig)
+dd.Water.Bx.Water.ig <- degree.distribution(CMRE9_Waterb_Bxc_Water_ig)
+dd.Water.Tb.Water.ig <- degree.distribution(CMRE9_Waterb_Tbc_Water_ig)
+
+tiff(filename="Water_Degree_Ctr-As-Bx-Tb6.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,3.9,1,1))
+plot(dd.Water.Ctr.Water.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.2, cex.axis=1.5, xlim=c(0, 72), ylim=c(0, 0.22), xlab="Degree", ylab="Frequency")
+lines(dd.Water.Ctr.Water.ig, lwd = 2, col = "gray50")
+lines(dd.Water.As.Water.ig, lwd = 2, col = "#E69F00")
+lines(dd.Water.Bx.Water.ig, lwd = 2, col = "#009E73")
+lines(dd.Water.Tb.Water.ig, lwd = 2, col = "#D55E00")
+dev.off()
+
+tiff(filename="Water_Degree_Ctr-As-Bx-Tb5_zoom.tif", width = 5, height = 4.5, units = 'in', res = 300, bg="white")
+par(mar=c(3.6,4.1,1,1))
+plot(dd.Water.Ctr.Water.ig, mgp = c(2.4, 0.8, 0), pch = 19, font=2, cex = 0.1, cex.lab=2.5, cex.axis=1.8, xlim=c(25, 38), ylim=c(0, 0.12), xlab="Degree", ylab="Frequency")
+lines(dd.Water.Ctr.Water.ig, lwd = 4, col = "gray50")
+lines(dd.Water.As.Water.ig, lwd = 4, col = "#E69F00")
+lines(dd.Water.Bx.Water.ig, lwd = 4, col = "#009E73")
+lines(dd.Water.Tb.Water.ig, lwd = 4, col = "#D55E00")
+dev.off()
+
+##############################################################################################
+
+##############################################################################################################################
 
 
 
