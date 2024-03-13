@@ -1877,12 +1877,19 @@ Figure_4 <- ggarrange(W_Ctr, Se_Ctr, S_Ctr, R_Ctr, M_Ctr, W_As, Se_As, S_As, R_A
 
 ###################--NMDS plot
 
-set.seed(101)# set seed for reproducibility
-CMRE9_r8100_t_br.ord <- ordinate(CMRE9_r8100_t , "NMDS", "bray") 
-# Before making plot, order variables
-sample_data(CMRE9_r8100_t)$Sampletype<- factor(sample_data(CMRE9_r8100_t)$Sampletype, levels = c("water", "sedi", "soil", "roots", "feces"))
-CMRE9_r8100_plot_bray_beta_diversity = plot_ordination(CMRE9_r8100_t, CMRE9_r8100_t_br.ord, color="Sampletype")  + theme_set(theme_bw()) + theme(axis.title.x = element_text(size=21), axis.title.y = element_text(size=21), axis.text.x = element_text(size=19), axis.text.y = element_text(size=19)) + geom_point(size=2.50) + theme(legend.text=element_text(size=18), legend.title=element_text(size=20)) + scale_color_manual(labels = c("Water", "Sediment", "Soil", "Root", "Mouse"), values=c("steelblue3", "slategray4",  "salmon4", "darkolivegreen4", "tan3"))
-
+levels(sample_data(CMRE9_r8100)$Sampletype) <- c("Animal", "Plant", "Sediment", "Soil","Water")
+sample_data(CMRE9_r8100)$Sampletype <- factor(sample_data(CMRE9_r8100)$Sampletype, 
+                                             levels = c("Water", "Sediment", "Soil", "Plant", "Animal")) # ordering samples
+set.seed(100)
+CMRE9_r8100_ordi <- phyloseq::ordinate(CMRE9_r8100, method="NMDS", distance="bray")
+p0 <- phyloseq::plot_ordination(CMRE9_r8100, CMRE9_r8100_ordi, color="Sampletype") +
+      theme_bw() +
+      geom_point(size=3) + #, alpha=0.75) +
+      scale_color_manual(labels = c("Water", "Sediment", "Soil", "Plant", "Animal"), 
+                         values=c("steelblue3", "slategray4",  "salmon4", "darkolivegreen4", "tan3"), name="Food chain component") 
+pdf("Fig_S4_betaDiversity_NMDS_v20240111.pdf", width=15/cm(1), height=10/cm(1), pointsize=2, fonts="Helvetica")
+print(p0)
+dev.off()
 ##############################################################################################################################
 
 ##############################################################################################################################
