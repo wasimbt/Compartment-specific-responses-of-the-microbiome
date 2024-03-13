@@ -1873,7 +1873,7 @@ Figure_4 <- ggarrange(W_Ctr, Se_Ctr, S_Ctr, R_Ctr, M_Ctr, W_As, Se_As, S_As, R_A
 
 ##############################################################################################################################
 
-##########################################------Supplementary Figure 4---------###############################################
+##########################################------Supplementary Figure S4---------###############################################
 
 ###################--NMDS plot
 
@@ -1884,7 +1884,7 @@ set.seed(100)
 CMRE9_r8100_ordi <- phyloseq::ordinate(CMRE9_r8100, method="NMDS", distance="bray")
 p0 <- phyloseq::plot_ordination(CMRE9_r8100, CMRE9_r8100_ordi, color="Sampletype") +
       theme_bw() +
-      geom_point(size=3) + #, alpha=0.75) +
+      geom_point(size=2) + #, alpha=0.75) +
       scale_color_manual(labels = c("Water", "Sediment", "Soil", "Plant", "Animal"), 
                          values=c("steelblue3", "slategray4",  "salmon4", "darkolivegreen4", "tan3"), name="Food chain component") 
 pdf("Fig_S4_betaDiversity_NMDS_v20240111.pdf", width=15/cm(1), height=10/cm(1), pointsize=2, fonts="Helvetica")
@@ -1894,7 +1894,7 @@ dev.off()
 
 ##############################################################################################################################
 
-##########################################------Supplementary Figure 5---------#############################################
+##########################################------Supplementary Figure S5---------#############################################
 
 ###################--Shannon final box plot--for treatement and compartment 
 
@@ -2054,7 +2054,7 @@ ggplot2::ggsave("Fig.S5_Suppl_Shannon.tiff",
 
 ##############################################################################################################################
 
-##########################################------Supplementary Figure 6---------###############################################
+##########################################------Supplementary Figure S6---------###############################################
 
 ###################--Beta Diversity-Box plots 
 
@@ -2311,12 +2311,9 @@ CMRE9_r8100_pairlist_bray_boxplot2 <- CMRE9_r8100_pairlist_bray_boxplot1 + stat_
 
 ##############################################################################################################################
 
-##########################################------Supplementary Figure 9---------###############################################
+##########################################------Supplementary Figure S9---------###############################################
 
 ###################--Network degree distribution
-
-########## Degree Distribution Figure (supplementary) for article for all compartments #####################
-
 
 #### Mouse Degree distributions 
 
