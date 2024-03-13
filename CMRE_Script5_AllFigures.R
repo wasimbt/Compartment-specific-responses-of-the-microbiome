@@ -1868,6 +1868,168 @@ Sediment_p1 <- ggplot(Sediment_all_deg, aes(x=Treatment,  y= Degree), colour = T
 
 Figure_4 <- ggarrange(W_Ctr, Se_Ctr, S_Ctr, R_Ctr, M_Ctr, W_As, Se_As, S_As, R_As,  M_As,  W_Bx, Se_bx, S_Bx, R_Bx, M_Bx, W_Tb, Se_Tb, S_Tb, R_Tb, M_Tb, Water_p1, Sediment_p1, Soil_p1, Root_p1, Mouse_p1, ncol = 5, nrow = 5)
 
+##############################################################################################################################
+
+##############################################################################################################################
+
+##########################################------Supplementary Figure S4---------###############################################
+
+###################--Chemical validation experiment plot
+---
+title: "CMRE chemical data Figure v2"
+author: "Klaus Schlaeppi"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    
+  html_document:
+    
+    fig_caption: yes
+    fig_height: 20
+    fig_width: 15
+    toc: yes
+    toc_float: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T)
+```
+
+```{r,include=FALSE}
+rm(list=ls())
+```
+
+```{r,include=FALSE}
+# install.packages("sciplot")
+# install.packages("plyr")
+# install.packages("dplyr")
+# install.packages("pander")
+# install.packages("knitr")
+# install.packages("readr")
+# install.packages("readxl")
+# install.packages("ggplot2")
+# install.packages("emmeans")
+# install.packages("multcomp")
+# install.packages("ggpubr")
+# install.packages("ggpubr")
+# install.packages("ggpmisc")
+# install.packages("phyloseq")
+# install.packages("gplots") # to convert colour names to #hex identities
+```
+
+```{r libraries, echo=F, message=F, warning=F}
+library(pander)
+library(readr)
+library(readxl)
+library(ggpubr)
+library(cowplot)
+library(gplots) # to convert colour names to #hex identities
+```
+
+# colors
+
+```{r}
+col_assignments <- data.frame(color=c("grey50", "#E69F00", "#009E73", "#D55E00")) 
+rownames(col_assignments) <- c("Ctr", "As", "Bx", "Tb")
+# barplot(rep(1,4), col=col_assignments$color, names=col_assignments$treatment, border=NA)
+plot(rep(1,4), col=col_assignments$color, cex=10, pch=19, ylim=c(.75,1.25), xlim=c(0,5), axes=F, xlab="",ylab="")
+text(1:4, 1, labels=rownames(col_assignments), cex=2)
+```
+
+
+
+# treatment solution and lake water data
+
+```{r,include=FALSE, echo=F, message=F, warning=F}
+# load data
+data <- as.data.frame(readxl::read_excel("input/treatment_solutions_lake_water_chem_results.xlsx", sheet="allThree") )
+
+data$Experiment <- as.factor(data$Experiment)
+data$Experiment <- factor(data$Experiment, levels(data$Experiment) [c(2,3,1)] )
+levels(data$Experiment) <- c("Water/sediment", "Soil/plant", "Animal")
+data$Treatment <- as.factor(data$Treatment)
+# data$Treatment <- factor(data$Treatment, levels(data$Treatment) [c(1,4,3,2)] )
+data$Values <- as.numeric(data$`Final Conc. (μg/L)`)
+
+
+# data1 <- droplevels(data[data$Analysis=="As",])
+# 
+# ggplot(data1, aes(x=Treatment, y=Values)) + #ylim(-1,2000) +
+#   scale_y_continuous(trans='pseudo_log', breaks=c(1,10,100,1000, 10000, 100000)) +
+#   theme_bw() +
+#   facet_wrap(~Experiment, nrow = 1) +  
+#   geom_boxplot(show.legend=FALSE, outlier.shape=NA) +
+#   scale_fill_manual(values=c("grey90", "grey90", "grey90")) +
+#   geom_point(aes(colour=Treatment, size=2), position=position_jitterdodge(), alpha=0.75, show.legend=T) +
+#   scale_size(guide=F) +
+#   scale_color_manual(values=rep(col_assignments["As",],4), guide=F) +
+#   labs(x=" ", y="concentration [µg/L]", title="As in treatment solutions")
+
+
+
+chemical_plots1 <- function(CHEMICAL){
+    DATA <- droplevels( data[data$Analysis==paste(CHEMICAL), ] )
+    ggplot(DATA, aes(x=Treatment, y=Values) ) +
+    scale_y_continuous(trans='pseudo_log', breaks=c(0, 10, 30, 100, 300, 1000, 3000)) +
+    theme_bw() +
+    facet_wrap(~Experiment, nrow = 1) +  
+#    geom_boxplot(show.legend=FALSE, outlier.shape=NA) +
+    scale_fill_manual(values=c("grey90", "grey90", "grey90")) +
+    geom_point(aes(colour=Treatment, size=2), position=position_jitterdodge(), alpha=0.75, show.legend=F) +
+    scale_size(guide=F) + 
+    scale_color_manual(values=rep(col_assignments[CHEMICAL,],4), guide=F) +
+    labs(x="Treatment solutions", y="concentration [µg/L]", title=paste(CHEMICAL) )
+}
+```
+
+```{r, echo=FALSE, message=F, warning=F, fig.width=7, fig.height=5}
+chemical_plots1("As")
+```
+
+```{r, eval=T}
+# pdf("Treatment_solutions_As.pdf", width=18/cm(1), height=9/cm(1), pointsize=2, fonts="Helvetica")
+# chemical_plots1("As")
+# dev.off()
+```
+
+```{r, eval=T}
+chemical_plots1("Bx")
+
+# pdf("Treatment_solutions_Bx.pdf", width=18/cm(1), height=9/cm(1), pointsize=2, fonts="Helvetica")
+# chemical_plots1("Bx")
+# dev.off()
+```
+
+```{r, eval=T}
+chemical_plots1("Tb")
+
+# pdf("Treatment_solutions_Tb.pdf", width=18/cm(1), height=9/cm(1), pointsize=2, fonts="Helvetica")
+# chemical_plots1("Tb")
+# dev.off()
+```
+
+
+
+# combined Figure 1
+
+```{r}
+
+chemical_plots_combined <- plot_grid(
+  chemical_plots1("As"),
+  chemical_plots1("Bx"),
+  chemical_plots1("Tb"),
+  align="hv", nrow=3, ncol=1, rel_heights=c(10, 10, 10) )
+
+print(chemical_plots_combined)
+
+pdf("CMRE_chemical_data_Figure_combined.pdf", width=20/cm(1), height=30/cm(1), pointsize=10, fonts="Helvetica")
+print(chemical_plots_combined)
+noshow <- dev.off()
+
+```
 
 ##############################################################################################################################
 
