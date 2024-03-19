@@ -699,8 +699,7 @@ plot_Fig2B <- plot_Fig2B_prep +
   geom_segment(aes(x=13,xend=15+0.8,
                    y=MeanObserved[13],
                    yend=MeanObserved[13])) +
-  theme_bw() + theme(panel.grid.minor = element_blank())  + theme(axis.title.x = element_text(size=16), axis.title.y = element_text(size=14), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold"))  + theme(legend.position = "none") + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
-
+  theme_bw() + theme(panel.grid.minor.y = element_line(linewidth = 0.25, linetype = 1))  + theme(axis.title.x = element_text(size=16), axis.title.y = element_text(size=14), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold"))  + theme(legend.position = "none") + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
 
 plot_Fig2B
 
@@ -2199,7 +2198,7 @@ plot_FigS5B <- plot_FigS5B_prep +
   geom_segment(aes(x=13,xend=15+0.8,
                    y=MeanShannon[13],
                    yend=MeanShannon[13])) +
-  theme_bw() +theme(panel.grid.minor = element_blank()) + theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=14, face = "bold"), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold")) + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
+  theme_bw() + theme(panel.grid.minor.y = element_line(linewidth = 0.25, linetype = 1)) + theme(axis.title.x = element_text(size=18), axis.title.y = element_text(size=14, face = "bold"), axis.text.x = element_text(size=14, face = "bold"), axis.text.y = element_text(size=12, face = "bold")) + theme(plot.margin = unit(c(1,1,-1.5,0), "lines"))
 
 
 plot_FigS5B
