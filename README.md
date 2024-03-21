@@ -21,4 +21,4 @@ CMRE_Script4_NetworkAnalysis.R ---------------- source code for network analysis
 
 CMRE_Script5_Figures_in_Article.R --------------source code for preparing all plots in the publication
 
-CMRE_Script6_Supplementary_Figures.R -----------source code for preparing all plots in the publication
+CMRE_Script6_Supplementary_Figures.R -----------source code for preparing all plots in the supplement
