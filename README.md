@@ -1,5 +1,5 @@
-# Compartment-specific-responses-of-the-microbiome
-Compartment specific responses of the microbiome to common disturbance factors in the human food chain 
+# Component-specific-responses-of-the-microbiome
+Component specific responses of the microbiome to common disturbance factors in the human food chain 
 
 This is the official code repository for the paper "Compartment specific responses of the microbiome to common disturbance factors in the human food chain" published in... by authors, .....
 
@@ -19,5 +19,6 @@ CMRE_Script3_DifferentialAbundanceAnalysis.R -- source code for differential abu
 
 CMRE_Script4_NetworkAnalysis.R ---------------- source code for network analysis
 
-CMRE_Script5_AllFigures.R --------------------- source code for preparing all plots in the publication
+CMRE_Script5_Figures_in_Article.R --------------source code for preparing all plots in the publication
 
+CMRE_Script6_Supplementary_Figures.R -----------source code for preparing all plots in the publication
